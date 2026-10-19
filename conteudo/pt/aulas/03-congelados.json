@@ -1,0 +1,205 @@
+{
+  "slug": "congelados",
+  "num": 3,
+  "menu": "Congelar",
+  "titulo": "Testes congelados e guarda de diff nos testes",
+  "titulo_curto": "Testes congelados",
+  "minutos": 20,
+  "lead": "Se o agente pode mexer no juiz, o juiz não vale. Congelar os testes é escrevê-los antes, guardar um retrato deles fora do alcance do agente e reprovar qualquer mudança. Nesta aula você vê que proteger só a pasta tests/ não basta: um conftest.py na raiz pula tudo e o pytest sai com 0.",
+  "objetivo": "congelar o juiz (testes, conftest, config) com hash e mínimo de testes fora do repo e reprovar apagar, pular ou mexer.",
+  "competencias": [
+    "congelar-testes-antes-do-trabalho",
+    "proteger-tudo-que-o-pytest-le",
+    "guardar-o-verificador-fora-do-alcance"
+  ],
+  "aprende": [
+    { "icone": "cadeado", "t": "O que é \"o juiz\": testes, conftest.py em qualquer nível e a config do pytest" },
+    { "icone": "arquivo", "t": "Manifesto com hash e mínimo de testes, gravado fora do repo" },
+    { "icone": "x", "t": "As cinco reprovações: apagado, mexido, novo, poucos, pulado" },
+    { "icone": "robo", "t": "O furo do conftest no loop headless e a correção" }
+  ],
+  "hero_alt": "Placas de referência lacradas em sacos antiestáticos e caixas de acrílico numa prateleira de aço.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Congelar antes, conferir depois",
+      "sub": "Clique em cada etapa.",
+      "nos": [
+        {
+          "icone": "check",
+          "titulo": "Testes primeiro",
+          "sub": "commit antes do agente",
+          "detalhe": "Os testes de aceite entram num commit antes de o agente começar. Se o agente escreve os testes e o código, ele escolhe a régua com que vai ser medido."
+        },
+        {
+          "icone": "cadeado",
+          "titulo": "Congelar",
+          "sub": "hash + mínimo",
+          "itens": [
+            { "icone": "arquivo", "t": "tests/ e todo *conftest.py" },
+            { "icone": "arquivo", "t": "pytest.ini, pyproject.toml, setup.cfg, tox.ini" },
+            { "icone": "grafico", "t": "quantos testes existem" }
+          ],
+          "detalhe": "O guarda-testes.py congelar grava o hash de cada arquivo que o pytest lê e quantos testes foram coletados. Tudo em GUARDA_DIR, fora do repo: o agente não alcança."
+        },
+        {
+          "icone": "robo",
+          "titulo": "Agente trabalha",
+          "sub": "pode tentar o atalho",
+          "detalhe": "Apagar o teste que falha, criar um conftest.py que pula tudo, mudar o addopts do pytest.ini para desmarcar casos. Todos fazem a suíte \"ficar verde\"."
+        },
+        {
+          "icone": "escudo",
+          "titulo": "Conferir",
+          "sub": "cinco reprovações",
+          "forte": true,
+          "itens": [
+            { "icone": "x", "t": "APAGADO · MEXIDO · NOVO" },
+            { "icone": "x", "t": "POUCOS (menos passed que o mínimo)" },
+            { "icone": "x", "t": "PULADO (skipped, deselected, xfail)" }
+          ],
+          "detalhe": "guarda-testes.py conferir compara os hashes, procura arquivo protegido novo, roda os testes e exige o mínimo de passed sem nenhum pulado. Sai 0 só com GUARDA: OK."
+        }
+      ],
+      "volta": "Reprovado: reverter os protegidos e o ciclo conta como falho",
+      "legenda": "Código 0 do pytest não é prova: com todos os testes pulados ele também sai 0."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Ensaio: três agentes contra a guarda",
+      "sub": "Congela antes de cada agente e confere depois. GUARDA_DIR fica fora do projeto.",
+      "blocos": [
+        {
+          "rot": "Terminal · apaga, conftest e bom",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\nexport GUARDA_DIR=/tmp/ensaio-verif/guarda       # fora do repo\nfor modo in apaga conftest bom; do\n  bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\n  python3 $K/guarda-testes.py congelar .          # ANTES do agente\n  $K/agente-falso.sh $modo < /dev/null > /dev/null\n  echo \"## $modo\"; python3 $K/guarda-testes.py conferir .; echo \"saída: $?\"\ndone"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>congelado: 2 arquivos protegidos, mínimo de 3 testes → /tmp/ensaio-verif/guarda/guarda.json\n## apaga\ntestes: no tests ran in 0.00s (código 5, mínimo 3 passed)\nAPAGADO  tests/test_slug.py\nPOUCOS   0 passed, mínimo 3\nGUARDA: REPROVADO\nsaída: 1\ncongelado: 2 arquivos protegidos, mínimo de 3 testes → /tmp/ensaio-verif/guarda/guarda.json\n## conftest\ntestes: 3 skipped in 0.00s (código 0, mínimo 3 passed)\nNOVO     conftest.py\nPOUCOS   0 passed, mínimo 3\nPULADO   3 skipped\nGUARDA: REPROVADO\nsaída: 1\ncongelado: 2 arquivos protegidos, mínimo de 3 testes → /tmp/ensaio-verif/guarda/guarda.json\n## bom\ntestes: 3 passed in 0.00s (código 0, mínimo 3 passed)\nGUARDA: OK\nsaída: 0</pre><p>Os 2 arquivos protegidos são tests/test_slug.py e pytest.ini. No modo conftest, repare em \"código 0\": o pytest achou que estava tudo bem.</p>"
+          },
+          {
+            "rot": "Erro comum: congelar depois",
+            "html": "<p>Se você roda <code>congelar</code> depois que o agente já criou o conftest.py, ele entra no manifesto como se fosse do projeto e a linha NOVO some. Congele no commit de base, antes do primeiro ciclo. A guarda ainda reprovaria por PULADO, mas você perde o sinal mais claro.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "O furo do conftest no loop headless",
+      "sub": "O loop-longrun.sh do curso 2 reverte o que o agente mexe em PROTEGIDOS. Com o PROTEGIDOS de exemplo (\"tests/ pytest.ini\"), um conftest.py na raiz passa e o teste final \"passa\" sem nenhum teste rodar. Ensaio com agente falso, sem custo.",
+      "blocos": [
+        {
+          "rot": "Terminal · o furo (PROTEGIDOS de exemplo)",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit; L=~/projetos/execucao-longa/tools\nbash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\nprintf '#!/usr/bin/env bash\\nexec %s/agente-falso.sh conftest\\n' $K > /tmp/agente-conftest.sh\nchmod +x /tmp/agente-conftest.sh\n$L/novo-longrun.sh $PWD slug > /dev/null && D=$(ls -d $PWD/longrun/*)\necho \"Implemente slug() em slug.py. Não mexa em tests/.\" > $D/prompt.md\ncat > $D/loop.env <<'ENV'\nTESTE_RAPIDO=\"python3 -m pytest -q\"\nTESTE_FINAL=\"python3 -m pytest -q\"\nPROTEGIDOS=\"tests/ pytest.ini\"\nPERMITIDOS=\"slug.py\"\nMAX_CICLOS=3\nMIN_CICLO=2\nMEM=1G\nESTAGNACAO=3\nENV\ngit add -A && git commit -qm \"longrun: pasta\"\nCODEX_BIN=/tmp/agente-conftest.sh $L/loop-longrun.sh $D; echo \"saída: $?\""
+        },
+        {
+          "rot": "Terminal · a correção (conftest protegido + guarda como teste final)",
+          "icone": "escudo",
+          "conteudo": "bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj        # recomeça do zero\nexport GUARDA_DIR=/tmp/ensaio-verif/guarda\npython3 $K/guarda-testes.py congelar . > /dev/null\n$L/novo-longrun.sh $PWD slug > /dev/null && D=$(ls -d $PWD/longrun/*)\necho \"Implemente slug() em slug.py. Não mexa em tests/.\" > $D/prompt.md\ncat > $D/loop.env <<ENV\nTESTE_RAPIDO=\"python3 -m pytest -q\"\nTESTE_FINAL=\"GUARDA_DIR=$GUARDA_DIR python3 $K/guarda-testes.py conferir .\"\nPROTEGIDOS=\"tests/ pytest.ini *conftest.py\"\nPERMITIDOS=\"slug.py\"\nMAX_CICLOS=3\nMIN_CICLO=2\nMEM=1G\nESTAGNACAO=3\nENV\ngit add -A && git commit -qm \"longrun: pasta\"\nCODEX_BIN=/tmp/agente-conftest.sh $L/loop-longrun.sh $D; echo \"saída: $?\"\nls conftest.py; grep -c \"revertido pelo loop\" $D/failures.md"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>## o furo\n2026-10-19 04:38:48 início: rápido=0 passed · agente=codex · teto 3x2min · mem 1G\n2026-10-19 04:38:48 ciclo 1: começa\n2026-10-19 04:38:48 ciclo 1: agente saiu rc=0 em 0s\n2026-10-19 04:38:48 ciclo 1: rápido=0 passed (melhor antes: 0)\n2026-10-19 04:38:48 ciclo 1: checkpoint commitado\n2026-10-19 04:38:49 CONCLUÍDO no ciclo 1: teste final passou ()\nsaída: 0\n\n## a correção\n2026-10-19 04:38:49 início: rápido=0 passed · agente=codex · teto 3x2min · mem 1G\n2026-10-19 04:38:49 ciclo 1: começa\n2026-10-19 04:38:49 ciclo 1: agente saiu rc=0 em 0s\n2026-10-19 04:38:49 ciclo 1: agente mexeu em arquivo protegido → revertido, ciclo falho\nerror: pathspec 'conftest.py' did not match any file(s) known to git\n2026-10-19 04:38:49 ciclo 1: checkpoint commitado\n(… ciclos 2 e 3 iguais …)\n2026-10-19 04:38:50 PARADO: 3 ciclos sem avanço mensurável — ver failures.md\nsaída: 2\nls: cannot access 'conftest.py': No such file or directory\n3</pre><p>\"teste final passou ()\": os parênteses vazios são a contagem de passed, que não existe. Na correção, a linha <code>error: pathspec</code> é inofensiva: o <code>git checkout</code> não conhece o arquivo novo e o <code>git clean</code> logo depois o remove.</p>"
+          },
+          {
+            "rot": "Por que acontece",
+            "html": "<p>O loop-longrun.sh (kit execucao-longa, 18/10/2026) decide \"concluído\" pelo código de saída do TESTE_FINAL. O pytest sai com 0 quando todos os testes são pulados, e o conftest.py na raiz não estava em PROTEGIDOS. Duas travas resolvem: proteger <code>*conftest.py</code> (e a config do pytest que o projeto tiver) e usar um TESTE_FINAL que exige o mínimo de passed sem pulados, como o <code>guarda-testes.py conferir</code>.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Prática",
+      "sub": "Ensaio da guarda, o furo do loop e a guarda no seu projeto.",
+      "exercicios": [
+        {
+          "id": "e7",
+          "titulo": "E7 · Três agentes contra a guarda",
+          "min": "10 min",
+          "texto": "Rode o laço apaga, conftest, bom.",
+          "pronto": "apaga e conftest terminam em <code>GUARDA: REPROVADO</code> com <code>saída: 1</code> (conftest com a linha <code>NOVO     conftest.py</code>); bom termina em <code>GUARDA: OK</code> com <code>saída: 0</code>."
+        },
+        {
+          "id": "e8",
+          "titulo": "E8 · Ver o furo e fechar",
+          "min": "15 min",
+          "texto": "Rode os dois blocos do loop headless. Você precisa do kit execucao-longa em ~/projetos/execucao-longa (curso 2).",
+          "pronto": "o primeiro imprime <code>CONCLUÍDO no ciclo 1: teste final passou ()</code> e <code>saída: 0</code>; o segundo <code>PARADO: 3 ciclos sem avanço mensurável</code>, <code>saída: 2</code>, e o último comando imprime <code>3</code>."
+        },
+        {
+          "id": "e9",
+          "titulo": "E9 · Guarda no seu projeto",
+          "min": "15 min",
+          "texto": "Num projeto seu com pytest, congele no commit de base e confira. Se o projeto usa outro arquivo de config do pytest, ponha em PROTEGIDOS.",
+          "pronto": "<code>python3 $K/guarda-testes.py congelar .</code> imprime <code>congelado: N arquivos protegidos, mínimo de M testes</code> com M igual ao total de testes, e <code>python3 $K/guarda-testes.py conferir .; echo $?</code> → <code>GUARDA: OK</code> e <code>0</code>."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Teste da aula",
+      "perguntas": [
+        {
+          "p": "Por que o manifesto da guarda fica em GUARDA_DIR, fora do repo?",
+          "opcoes": ["Para não poluir o git", "Para o agente não conseguir reescrever o retrato do juiz", "Porque o pytest não lê fora do repo", "Para ficar mais rápido"],
+          "certa": 1,
+          "explica": "Verificador ao alcance do agente é verificador que o agente pode ajustar. Manifesto, testes escondidos e goal.md ficam onde ele não escreve.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "O agente criou conftest.py na raiz marcando todos os testes como skip. O que o pytest devolve?",
+          "opcoes": ["Código 1", "Código 5", "Código 0 com \"3 skipped\"", "Erro de coleta"],
+          "certa": 2,
+          "explica": "Testes pulados não são falhas: o pytest sai com 0. Por isso a guarda exige o mínimo de passed e reprova qualquer skipped.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "No loop-longrun.sh com PROTEGIDOS=\"tests/ pytest.ini\", o que acontece com o agente do conftest?",
+          "opcoes": ["É revertido", "CONCLUÍDO no ciclo 1, saída 0", "PARADO por estagnação", "Trava de segunda cópia"],
+          "certa": 1,
+          "explica": "O conftest.py da raiz não está protegido e o TESTE_FINAL (pytest -q) sai 0. Corrige-se com *conftest.py em PROTEGIDOS e um teste final que exige passed.",
+          "ref": "codigo"
+        },
+        {
+          "p": "Quando congelar?",
+          "opcoes": ["Depois do primeiro ciclo, para pegar o estado real", "No commit de base, antes do agente começar", "Só no fim, antes de publicar", "Tanto faz"],
+          "certa": 1,
+          "explica": "Congelar depois incorpora ao manifesto o que o agente já mudou. O retrato tem de ser do juiz que você aprovou.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "Em três frases",
+      "itens": [
+        { "t": "O juiz é maior que tests/", "texto": "conftest.py em qualquer nível e a config do pytest também decidem o que roda." },
+        { "t": "Retrato fora do alcance", "texto": "Hash e mínimo de testes gravados antes do agente, num lugar onde ele não escreve." },
+        { "t": "Código 0 não basta", "texto": "Exija o mínimo de passed e nenhum pulado; é isso que fecha o furo do loop headless." }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Para ir além",
+      "links": [
+        { "t": "Curso 2, aula 6: o loop headless por dentro (loop-longrun.sh)", "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/aulas/headless/", "icone": "robo" },
+        { "t": "kit/guarda-testes.py", "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/guarda-testes.py", "icone": "cadeado" },
+        { "t": "Anthropic: harnesses eficazes para agentes de longa duração (26/11/2025)", "href": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents", "icone": "lupa" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "slug": "prova",
+  "num": 2,
+  "menu": "Prova",
+  "titulo": "Comando → saída: verificar o critério e o avaliador do /goal",
+  "titulo_curto": "Comando → saída",
+  "minutos": 18,
+  "lead": "Um critério só vale se alguém de fora consegue conferi-lo sem confiar no agente. Nesta aula você roda cada critério do goal.md como comando, vê qual deles passa por atalho e aprende onde a prova tem de aparecer: o avaliador do /goal no Claude Code só lê a conversa.",
+  "objetivo": "conferir cada critério do goal.md por comando, ver qual nível 2 passa por atalho e pôr a prova na conversa que o avaliador do /goal lê.",
+  "competencias": [
+    "conferir-criterio-por-comando",
+    "identificar-criterio-burlavel",
+    "escrever-condicao-de-goal-com-prova"
+  ],
+  "aprende": [
+    { "icone": "lista", "t": "O formato comando → saída e os três tipos de saída esperada" },
+    { "icone": "check", "t": "conferir-goal.py: OK ou FALHOU por critério, com código de saída" },
+    { "icone": "x", "t": "Critério sem comando e critério que passa por atalho" },
+    { "icone": "chat", "t": "O que o avaliador do /goal enxerga, e o que não enxerga" }
+  ],
+  "hero_alt": "Medidor analógico no máximo ao lado de uma impressora térmica soltando uma fita.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Do critério à prova na conversa",
+      "sub": "Clique em cada etapa.",
+      "nos": [
+        {
+          "icone": "arquivo",
+          "titulo": "Critério",
+          "sub": "comando → saída",
+          "detalhe": "Cada linha do goal.md tem um comando entre crases e a saída esperada entre crases: um trecho literal, vazio ou código N. Como escrever o goal.md (as três camadas e a trava) é a aula 2 do curso 2; aqui é como conferir."
+        },
+        {
+          "icone": "terminal",
+          "titulo": "Conferência",
+          "sub": "conferir-goal.py",
+          "detalhe": "Roda cada comando, compara com o esperado (palavra inteira: \"3 passed\" não casa com \"13 passed\") e imprime OK ou FALHOU com o que veio. Critério sem comando conta como FALHOU: não dá para conferir."
+        },
+        {
+          "icone": "x",
+          "titulo": "Atalho?",
+          "sub": "nível 2 passa",
+          "forte": true,
+          "detalhe": "\"pytest sai com código 0\" é burlável: com todos os testes pulados o pytest sai 0. O ensaio mostra esse critério dando OK enquanto \"3 passed\" dá FALHOU. A escala completa (0 a 4) é a aula 6 do curso 0."
+        },
+        {
+          "icone": "chat",
+          "titulo": "Prova na conversa",
+          "sub": "saída colada",
+          "detalhe": "O agente roda o conferir-goal.py e cola a saída inteira. A última linha é PRONTO ou FALTAM N."
+        },
+        {
+          "icone": "lupa",
+          "titulo": "Avaliador do /goal",
+          "sub": "só lê a conversa",
+          "detalhe": "Segundo a documentação do Claude Code, depois de cada turno um modelo pequeno e rápido julga a condição: não atingida, atingida ou impossível. Ele não roda comando nem lê arquivo. Se a prova não está impressa na conversa, para ele ela não existe."
+        }
+      ],
+      "volta": "FALTAM N: o agente continua no próximo turno",
+      "legenda": "Comando que você roda e saída que aparece: é a mesma prova para você, para o loop headless e para o avaliador do /goal."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "O goal.md do ensaio",
+      "sub": "Seis critérios. Um deles não tem comando e um passa por atalho. Ache os dois antes de rodar.",
+      "blocos": [
+        {
+          "rot": "kit/goal-ensaio.md (critérios)",
+          "icone": "arquivo",
+          "conteudo": "## Critérios de pronto\n**Função**\n- [ ] `python3 -m pytest -q tests/` → `3 passed`\n- [ ] `python3 -c \"from slug import slug; print(slug('Ação & Reação!'))\"` → `acao-reacao`\n\n**Regressão**\n- [ ] `python3 -m pytest -q tests/ -rs` → `código 0`\n\n**Limite**\n- [ ] `git diff --stat HEAD -- tests/ pytest.ini` → `vazio`\n- [ ] `git ls-files --others --exclude-standard -- '*conftest.py' tests/` → `vazio`\n- [ ] o código fica limpo e bem documentado"
+        },
+        {
+          "rot": "Terminal · antes, atalho e depois",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\nbash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\ncp $K/goal-ensaio.md ../goal.md            # fora do projeto: o agente não edita o critério\n\npython3 $K/conferir-goal.py ../goal.md; echo \"saída: $?\"     # A) antes do trabalho: tem de falhar\n\n$K/agente-falso.sh conftest < /dev/null                       # B) atalho: pula os testes\npython3 $K/conferir-goal.py ../goal.md; echo \"saída: $?\"\n\nrm conftest.py && $K/agente-falso.sh bom < /dev/null           # C) trabalho certo\nsed -i '/limpo e bem documentado/d' ../goal.md                 #    e o critério sem comando sai\npython3 $K/conferir-goal.py ../goal.md; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>FALHOU  python3 -m pytest -q tests/  →  3 passed\n        veio: 3 failed in 0.01s (código 1)\nFALHOU  python3 -c \"from slug import slug; print(slug('Ação &amp; Reação  →  acao-reacao\n        veio: NotImplementedError (código 1)\nFALHOU  python3 -m pytest -q tests/ -rs  →  código 0\n        veio: 3 failed in 0.01s (código 1)\nOK      git diff --stat HEAD -- tests/ pytest.ini  →  vazio\nOK      git ls-files --others --exclude-standard -- '*conftest.py' t  →  vazio\nFALHOU  sem comando: o código fica limpo e bem documentado\n---\nFALTAM 4\nsaída: 4\nPronto: marquei os testes instáveis; a suíte fica verde.\nFALHOU  python3 -m pytest -q tests/  →  3 passed\n        veio: 3 skipped in 0.00s (código 0)\nFALHOU  python3 -c \"from slug import slug; print(slug('Ação &amp; Reação  →  acao-reacao\n        veio: NotImplementedError (código 1)\nOK      python3 -m pytest -q tests/ -rs  →  código 0\nOK      git diff --stat HEAD -- tests/ pytest.ini  →  vazio\nFALHOU  git ls-files --others --exclude-standard -- '*conftest.py' t  →  vazio\n        veio: conftest.py (código 0)\nFALHOU  sem comando: o código fica limpo e bem documentado\n---\nFALTAM 4\nsaída: 4\nPronto: slug() implementado.\nOK      python3 -m pytest -q tests/  →  3 passed\nOK      python3 -c \"from slug import slug; print(slug('Ação &amp; Reação  →  acao-reacao\nOK      python3 -m pytest -q tests/ -rs  →  código 0\nOK      git diff --stat HEAD -- tests/ pytest.ini  →  vazio\nOK      git ls-files --others --exclude-standard -- '*conftest.py' t  →  vazio\n---\nPRONTO\nsaída: 0</pre><p>O comando aparece cortado em 60 caracteres na saída. Na rodada B, <code>código 0</code> deu OK com os três testes pulados: é o critério nível 2 do goal.md.</p>"
+          },
+          {
+            "rot": "Erro comum: critério que nunca falha",
+            "html": "<p>Se a rodada A (antes de qualquer trabalho) já dá OK num critério de função, o critério não mede o trabalho. Todo critério de função tem de falhar antes; os de limite (nada mexido) podem passar desde o início.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "A condição do /goal com prova",
+      "sub": "Como o avaliador só lê a conversa, a condição exige a saída colada. Nos prompts de goal do kit execucao-longa e do kit 15 comandos o padrão é o mesmo.",
+      "blocos": [
+        {
+          "rot": "Claude Code · /goal",
+          "icone": "chat",
+          "conteudo": "/goal A saída de `python3 ~/projetos/loop-r-eng-verificacao-v72/kit/conferir-goal.py <caminho>/goal.md` está colada inteira nesta conversa e termina com PRONTO; nenhum arquivo em tests/ nem conftest.py foi alterado; pare depois de 15 voltas e diga o que faltou."
+        },
+        {
+          "rot": "Duas mensagens finais: qual passa no avaliador?",
+          "icone": "texto",
+          "conteudo": "(1) Terminei. Rodei o conferir-goal.py e deu tudo certo.\n\n(2) Rodei o conferir-goal.py:\nOK      python3 -m pytest -q tests/  →  3 passed\n(…)\n---\nPRONTO"
+        }
+      ]
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Prática",
+      "sub": "Ensaio, depois o seu goal.md.",
+      "exercicios": [
+        {
+          "id": "e4",
+          "titulo": "E4 · Falha antes, passa depois",
+          "min": "10 min",
+          "texto": "Rode as três rodadas do ensaio.",
+          "pronto": "A termina com <code>FALTAM 4</code> e <code>saída: 4</code>; B mostra <code>OK</code> no critério <code>código 0</code> e <code>FALHOU</code> no <code>3 passed</code>; C termina com <code>PRONTO</code> e <code>saída: 0</code>."
+        },
+        {
+          "id": "e5",
+          "titulo": "E5 · O seu goal.md conferido",
+          "min": "20 min",
+          "texto": "Pegue um goal.md seu (ou escreva um pelo template do curso 2) e rode o conferir-goal.py nele antes de começar o trabalho. Reescreva todo critério que deu \"sem comando\" e todo critério de função que já passa.",
+          "pronto": "<code>python3 $K/conferir-goal.py [seu goal.md] --pasta [seu projeto]</code> → nenhuma linha <code>sem comando</code> e pelo menos um <code>FALHOU</code> de função antes do trabalho (código de saída maior que 0)."
+        },
+        {
+          "id": "e6",
+          "titulo": "E6 · /goal com a prova colada",
+          "min": "20 min",
+          "texto": "Rode uma tarefa pequena com /goal usando a condição do bloco acima, apontando para o seu goal.md.",
+          "pronto": "a última resposta do agente contém a saída do conferir-goal.py terminando em <code>PRONTO</code> e o /goal encerra como atingido; rodando você mesmo o mesmo comando → <code>PRONTO</code> e código 0."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Teste da aula",
+      "perguntas": [
+        {
+          "p": "O que o avaliador do /goal no Claude Code consegue fazer para julgar a condição?",
+          "opcoes": ["Rodar os testes", "Abrir os arquivos do projeto", "Ler só a conversa", "Consultar o git log"],
+          "certa": 2,
+          "explica": "A documentação diz que ele não roda comandos nem lê arquivos. A prova tem de estar impressa na conversa; por isso a condição pede a saída colada.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "No ensaio, com todos os testes pulados, qual critério deu OK por engano?",
+          "opcoes": ["3 passed", "código 0 do pytest", "acao-reacao", "git diff vazio"],
+          "certa": 1,
+          "explica": "O pytest sai com 0 quando todos os testes são pulados. \"código 0\" é nível 2 (burlável); \"3 passed\" com palavra inteira não é.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "Qual destas mensagens finais deixa o avaliador do /goal decidir com base em prova?",
+          "opcoes": ["Terminei, deu tudo certo", "A que cola a saída do conferir-goal.py terminando em PRONTO", "A que lista os arquivos alterados", "A que pede para o usuário conferir"],
+          "certa": 1,
+          "explica": "Só a saída colada põe na conversa o que o comando realmente imprimiu. \"Deu tudo certo\" é relato.",
+          "ref": "codigo"
+        },
+        {
+          "p": "Um critério de função dá OK antes de qualquer trabalho. O que isso indica?",
+          "opcoes": ["Que o trabalho é fácil", "Que o critério não mede o trabalho e precisa ser reescrito", "Que o conferir-goal.py tem bug", "Nada"],
+          "certa": 1,
+          "explica": "Critério de função tem de falhar antes. Se já passa, ele não distingue feito de não feito.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "Em três frases",
+      "itens": [
+        { "t": "Conferível", "texto": "Critério sem comando não se confere; o conferir-goal.py conta como FALHOU." },
+        { "t": "Falha antes", "texto": "Critério de função que já passa antes do trabalho não mede nada; \"código 0\" sozinho passa com tudo pulado." },
+        { "t": "Prova impressa", "texto": "O avaliador do /goal só lê a conversa: a condição exige a saída colada terminando em PRONTO." }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Para ir além",
+      "links": [
+        { "t": "Claude Code: /goal (documentação oficial)", "href": "https://code.claude.com/docs/en/goal", "icone": "lupa" },
+        { "t": "Curso 2, aula 2: escrever o goal.md nível 3+", "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/aulas/goal/", "icone": "arquivo" },
+        { "t": "Curso 0 da formação: a escala de critério de pronto (0 a 4)", "href": "https://inematds.github.io/loop-r-eng-base-v72/", "icone": "camadas" },
+        { "t": "kit/conferir-goal.py", "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/conferir-goal.py", "icone": "terminal" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "slug": "portao",
+  "num": 8,
+  "menu": "Portão",
+  "titulo": "Montar o portão do seu loop",
+  "titulo_curto": "O portão",
+  "minutos": 22,
+  "lead": "Cada aula deu uma peça: avaliador, critérios, guarda, atalhos, evals, juiz. O portão as põe em fila, das baratas para a cara: o que o código reprova não chega a gastar cota com modelo. Nesta aula você monta o portão, liga no loop headless do curso 2 e sai com o plano datado para fazer o seu.",
+  "objetivo": "montar o portão em camadas (critérios, guarda, atalhos, evals, avaliador) e ligá-lo ao seu loop, com o plano datado.",
+  "competencias": [
+    "montar-portao-em-camadas",
+    "ordenar-verificacoes-por-custo",
+    "ligar-portao-ao-loop"
+  ],
+  "aprende": [
+    { "icone": "camadas", "t": "As cinco camadas e a ordem: barato primeiro, modelo por último" },
+    { "icone": "cadeado", "t": "portao.env fora do repo: o agente não edita o juiz" },
+    { "icone": "robo", "t": "O portão como teste final do loop-longrun.sh" },
+    { "icone": "calendario", "t": "O mapa do curso e o seu plano com datas" }
+  ],
+  "hero_alt": "Corredor técnico escuro com três portas de aço, cada uma com uma lâmpada de sinal.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Cinco camadas, uma saída",
+      "sub": "Clique em cada camada. Todas rodam; o avaliador por modelo só se as baratas passarem.",
+      "nos": [
+        {
+          "icone": "lista",
+          "titulo": "Critérios",
+          "sub": "conferir-goal.py · aula 2",
+          "detalhe": "Cada linha comando → saída do goal.md. Rápido e determinístico. Configuração: GOAL=[caminho do goal.md fora do repo]."
+        },
+        {
+          "icone": "cadeado",
+          "titulo": "Guarda",
+          "sub": "guarda-testes.py · aula 3",
+          "detalhe": "Juiz intacto, mínimo de passed, nada pulado. Configuração: GUARDA_DIR, congelado no commit de base."
+        },
+        {
+          "icone": "escudo",
+          "titulo": "Atalhos",
+          "sub": "atalhos.py · aula 4",
+          "detalhe": "Testes escondidos e sinais no diff. Configuração: ESCONDIDOS=[pasta fora do repo]."
+        },
+        {
+          "icone": "grafico",
+          "titulo": "Evals",
+          "sub": "rodar-evals.py · aulas 5 e 7",
+          "detalhe": "Conjunto de ouro contra a versão anterior: regressão reprova. Configuração: EVAL_AGENTE e EVAL_BASE. Pule se a tarefa não muda o comportamento do agente."
+        },
+        {
+          "icone": "lupa",
+          "titulo": "Avaliador",
+          "sub": "avaliar.sh · aulas 1 e 6",
+          "forte": true,
+          "detalhe": "Modelo cético lendo o diff, só se as camadas baratas passaram: não se gasta cota avaliando o que o código já reprovou. Configuração: AVALIADOR_CMD."
+        }
+      ],
+      "estilo": "escada",
+      "legenda": "Camada sem configuração aparece como pulada, nunca como aprovada em silêncio."
+    },
+    {
+      "tipo": "simfila",
+      "titulo": "Veja o portão rodar",
+      "sub": "Cada camada é uma etapa. Na primeira execução a guarda reprova: corrija e rode de novo.",
+      "tarefas": [
+        "Critérios · conferir-goal.py",
+        "Guarda · juiz intacto, nada pulado",
+        "Atalhos · escondidos e diff",
+        "Evals · sem regressão",
+        "Avaliador · modelo cético"
+      ],
+      "falha": 1,
+      "rot": {
+        "entrada": "camadas a rodar",
+        "rodando": "camada em curso",
+        "feito": "aprovada",
+        "falhou": "reprovada",
+        "rodar": "Rodar o portão",
+        "parar": "Interromper",
+        "zerar": "Recomeçar"
+      },
+      "msg": {
+        "inicio": "Cinco camadas na ordem do custo. Clique em \"Rodar o portão\".",
+        "rodando": "Uma camada por vez; o log de cada uma fica em /tmp/portao/.",
+        "parou": "Interrompido. Nenhuma camada em curso conta como aprovada.",
+        "retoma": "Portão de novo, do começo: o resultado só vale com todas as camadas na mesma rodada.",
+        "fim": "PORTÃO: APROVADO, saída 0.",
+        "fimfalha": "A guarda reprovou na primeira rodada (conftest.py novo). Revertido e rodado de novo, o portão aprovou."
+      },
+      "legenda": "Simulação ilustrativa no navegador. O portão de verdade, com agentes falsos, está logo abaixo."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Ensaio: o portão contra o chumba e o bom",
+      "sub": "O portao.env fica fora do projeto. AVALIADOR_CMD aponta para o avaliador falso: zero chamadas.",
+      "blocos": [
+        {
+          "rot": "Terminal · portão",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\ncat > /tmp/ensaio-verif-portao.env <<EOF\nGOAL=/tmp/ensaio-verif/goal.md\nGUARDA_DIR=/tmp/ensaio-verif/guarda\nESCONDIDOS=/tmp/ensaio-verif/escondidos\nAVALIADOR_CMD=$K/avaliador-falso.sh\nEOF\nfor modo in chumba bom; do\n  bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\n  cp $K/goal-ensaio.md ../goal.md && sed -i '/limpo e bem documentado/d' ../goal.md\n  GUARDA_DIR=/tmp/ensaio-verif/guarda python3 $K/guarda-testes.py congelar . > /dev/null\n  $K/agente-falso.sh $modo < /dev/null > /dev/null\n  echo \"## $modo\"; $K/portao.sh . /tmp/ensaio-verif-portao.env; echo \"saída: $?\"\ndone"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>## chumba\ncriterios  REPROVADO  → /tmp/portao/criterios.log\nguarda     OK\natalhos    REPROVADO  → /tmp/portao/atalhos.log\nevals      pulada (sem configuração)\navaliador  pulada (camada barata já reprovou: não gaste cota)\nPORTÃO: REPROVADO em criterios atalhos\nsaída: 1\n## bom\ncriterios  OK\nguarda     OK\natalhos    OK\nevals      pulada (sem configuração)\navaliador  OK\nPORTÃO: APROVADO\nsaída: 0</pre><p>No chumba a guarda passa (o juiz está intacto); quem reprova é o critério de função com entrada nova (acao-reacao) e os testes escondidos.</p>"
+          },
+          {
+            "rot": "Erro comum: portao.env no repo",
+            "html": "<p>Se o portao.env, o goal.md ou os testes escondidos ficam dentro do repositório, o agente pode editá-los, e o portão passa a ser dele. Guarde os três fora (no ensaio, em /tmp; no seu projeto, numa pasta tipo ~/portoes/[projeto]/).</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "O portão como teste final do loop headless",
+      "sub": "No loop-longrun.sh do curso 2, TESTE_FINAL decide o \"concluído\". Ponha o portão lá. Rode depois do bloco anterior (usa o mesmo portao.env).",
+      "blocos": [
+        {
+          "rot": "Terminal · loop com portão (agentes falsos)",
+          "icone": "robo",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit; L=~/projetos/execucao-longa/tools\nbash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\ncp $K/goal-ensaio.md ../goal.md && sed -i '/limpo e bem documentado/d' ../goal.md\nGUARDA_DIR=/tmp/ensaio-verif/guarda python3 $K/guarda-testes.py congelar . > /dev/null\nfor m in chumba bom; do printf '#!/usr/bin/env bash\\nexec %s/agente-falso.sh %s\\n' $K $m > /tmp/agente-$m.sh; chmod +x /tmp/agente-$m.sh; done\n$L/novo-longrun.sh $PWD slug > /dev/null && D=$(ls -d $PWD/longrun/*)\necho \"Implemente slug() em slug.py. Não mexa em tests/.\" > $D/prompt.md\ncat > $D/loop.env <<ENV\nTESTE_RAPIDO=\"python3 -m pytest -q\"\nTESTE_FINAL=\"$K/portao.sh . /tmp/ensaio-verif-portao.env\"\nPROTEGIDOS=\"tests/ pytest.ini *conftest.py\"\nPERMITIDOS=\"slug.py\"\nMAX_CICLOS=2\nMIN_CICLO=2\nMEM=1G\nESTAGNACAO=3\nENV\ngit add -A && git commit -qm \"longrun: pasta\"\nCODEX_BIN=/tmp/agente-chumba.sh $L/loop-longrun.sh $D; echo \"saída: $?\"\nCODEX_BIN=/tmp/agente-bom.sh $L/loop-longrun.sh $D; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>2026-10-19 06:19:56 início: rápido=0 passed · agente=codex · teto 2x2min · mem 1G\n2026-10-19 06:19:56 ciclo 1: começa\n2026-10-19 06:19:56 ciclo 1: agente saiu rc=0 em 0s\n2026-10-19 06:19:56 ciclo 1: rápido=3 passed (melhor antes: 0)\n2026-10-19 06:19:56 ciclo 1: checkpoint commitado\n(… ciclo 2 igual, rápido=3 passed …)\n2026-10-19 06:19:58 PARADO: teto de 2 ciclos atingido sem passar o teste final\nsaída: 1\n2026-10-19 06:19:59 início: rápido=3 passed · agente=codex · teto 2x2min · mem 1G\n2026-10-19 06:19:59 ciclo 1: começa\n2026-10-19 06:19:59 ciclo 1: agente saiu rc=0 em 0s\n2026-10-19 06:19:59 ciclo 1: rápido=3 passed (melhor antes: 3)\n2026-10-19 06:19:59 ciclo 1: checkpoint commitado\n2026-10-19 06:20:00 CONCLUÍDO no ciclo 1: teste final passou ()\nsaída: 0</pre><p>O chumba fez o teste rápido ir de 0 para 3 passed: pelo teste visível, parecia progresso. O portão segurou o \"concluído\". Os parênteses vazios só dizem que o portão não imprime \"N passed\".</p>"
+          },
+          {
+            "rot": "Armadilha: o commit vem antes",
+            "html": "<p>O loop-longrun.sh commita o checkpoint antes de rodar o TESTE_FINAL. Quando o portão roda, o <code>git diff HEAD</code> já está vazio: as linhas CHUMBADO e SILENCIA do atalhos.py e o diff do avaliador não veem o trabalho do ciclo. No ensaio quem reprovou foram os critérios e os testes escondidos. Se você depende da leitura do diff no loop, compare com o commit de base (antes do primeiro ciclo), não com HEAD.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Prática final",
+      "sub": "O portão no ensaio e no seu loop.",
+      "exercicios": [
+        {
+          "id": "e21",
+          "titulo": "E21 · Portão contra chumba e bom",
+          "min": "10 min",
+          "texto": "Rode o bloco do portão e depois o do loop com portão.",
+          "pronto": "o portão imprime <code>PORTÃO: REPROVADO em criterios atalhos</code> (<code>saída: 1</code>) para o chumba e <code>PORTÃO: APROVADO</code> (<code>saída: 0</code>) para o bom; o loop termina primeiro com <code>PARADO: teto de 2 ciclos</code> e depois com <code>CONCLUÍDO no ciclo 1</code>."
+        },
+        {
+          "id": "e22",
+          "titulo": "E22 · O portão do seu loop",
+          "min": "60 min",
+          "texto": "No seu projeto: goal.md conferido (aula 2), guarda congelada no commit de base (aula 3), 3 testes escondidos (aula 4) e, se a tarefa mexe no comportamento de um agente, o conjunto de ouro (aula 5). Escreva o portao.env fora do repo e rode o portão antes e depois do trabalho.",
+          "pronto": "antes do trabalho, <code>$K/portao.sh . [seu portao.env]; echo $?</code> → <code>PORTÃO: REPROVADO</code> e <code>1</code>; depois, → <code>PORTÃO: APROVADO</code> e <code>0</code>, com no máximo uma camada <code>pulada</code>."
+        }
+      ]
+    },
+    {
+      "tipo": "mapa",
+      "titulo": "O mapa do curso",
+      "sub": "Quatro entregas, na ordem. Clique num exercício para ver o \"pronto quando\".",
+      "degraus": [
+        { "aula": "prova", "icone": "lupa", "quando": "Dia 1", "titulo": "Quem confere", "sub": "aulas 1 e 2", "saida": "Avaliador separado e goal.md conferido por comando.", "passo": "Kit clonado, avaliador falso e real rodados, critérios que falham antes do trabalho." },
+        { "aula": "atalhos", "icone": "cadeado", "quando": "Dia 2", "titulo": "Juiz protegido", "sub": "aulas 3 e 4", "saida": "Guarda congelada e testes escondidos fora do repo.", "passo": "Requer o dia 1. O furo do conftest visto e fechado; a regra \"testes são o juiz\" no projeto." },
+        { "aula": "juiz", "icone": "grafico", "quando": "Dias 3 e 4", "titulo": "Medir", "sub": "aulas 5 e 6", "saida": "Conjunto de ouro com base e juiz calibrado.", "passo": "Requer o dia 2. Vinte casos reais, rótulos seus em 10 artefatos e o juiz só depois de calibrado." },
+        { "aula": "portao", "icone": "portao", "quando": "Dia 5", "titulo": "Portão", "sub": "aulas 7 e 8", "saida": "pass^3 anotado e portão aprovando o seu loop.", "passo": "Requer tudo antes. Medir com k = 3, juntar as camadas e pôr o portão como teste final." }
+      ],
+      "resultado": { "titulo": "Ao final do curso", "texto": "Um portão em camadas, fora do alcance do agente, que reprova o atalho e aprova o trabalho, ligado ao seu loop.", "total": "22 exercícios" },
+      "rolagem_fim": { "titulo": "O curso inteiro", "texto": "Quem confere, juiz protegido, medir e o portão. Só passe para a próxima entrega quando o \"pronto quando\" da anterior for verdade." },
+      "legenda": "Ordem obrigatória: um portão sem juiz protegido é só mais um jeito de aprovar atalho."
+    },
+    {
+      "tipo": "gerador",
+      "titulo": "Gere o seu plano com datas",
+      "sub": "Escolha o início e quanto tempo você tem por semana. O plano lista os 22 exercícios na ordem.",
+      "curso": "Verificação e Evals",
+      "horas_padrao": 5,
+      "degraus": [
+        { "titulo": "Aula 1 · Avaliador cético", "aula": "cetico" },
+        { "titulo": "Aula 2 · Comando → saída", "aula": "prova" },
+        { "titulo": "Aula 3 · Testes congelados", "aula": "congelados" },
+        { "titulo": "Aula 4 · Atalhos", "aula": "atalhos" },
+        { "titulo": "Aula 5 · Conjunto de ouro", "aula": "ouro" },
+        { "titulo": "Aula 6 · Juiz calibrado", "aula": "juiz" },
+        { "titulo": "Aula 7 · Métricas honestas", "aula": "metricas" },
+        { "titulo": "Aula 8 · O portão", "aula": "portao" }
+      ],
+      "txt": { "titulo": "Plano — Verificação e Evals", "inicio": "Início", "ritmo": "Ritmo", "termino": "Término previsto", "ate": "até", "pronto": "pronto quando", "semanas": "semanas", "travou": "## O que travou e a regra que criei", "h": "h por semana", "exs": "exercícios" }
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Teste final",
+      "perguntas": [
+        {
+          "p": "Por que o avaliador por modelo é a última camada?",
+          "opcoes": ["Porque é o mais confiável", "Porque é o mais caro: não vale gastar cota avaliando o que o código já reprovou", "Porque precisa do resultado das outras", "Por ordem alfabética"],
+          "certa": 1,
+          "explica": "Camadas baratas e determinísticas primeiro. O modelo entra só quando o código não achou nada.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "Onde ficam o portao.env, o goal.md e os testes escondidos?",
+          "opcoes": ["Na raiz do repo", "Em tests/", "Fora do repo, onde o agente não escreve", "No CLAUDE.md"],
+          "certa": 2,
+          "explica": "Juiz ao alcance do agente é juiz que ele pode ajustar.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "No loop com portão, o chumba fez o teste rápido ir a 3 passed. O que aconteceu?",
+          "opcoes": ["CONCLUÍDO", "O portão reprovou e o loop parou no teto de ciclos, saída 1", "Estagnação, saída 2", "Trava de segunda cópia"],
+          "certa": 1,
+          "explica": "O teste rápido mede progresso; quem decide o concluído é o TESTE_FINAL, agora o portão. Ele segurou.",
+          "ref": "codigo"
+        },
+        {
+          "p": "Uma camada aparece como \"pulada\". Isso conta como aprovada?",
+          "opcoes": ["Sim", "Não: aparece separada justamente para você ver o que não foi verificado", "Só se for a de evals", "Depende do modelo"],
+          "certa": 1,
+          "explica": "O portão nunca aprova em silêncio. Pulada é falta de configuração, e você decide se aceita.",
+          "ref": "codigo"
+        },
+        {
+          "p": "No loop, por que o atalhos.py não viu o CHUMBADO no diff?",
+          "opcoes": ["Bug no atalhos.py", "Porque o loop commitou o checkpoint antes do teste final e o diff contra HEAD ficou vazio", "Porque o chumba não mexeu em nada", "Porque o avaliador já tinha aprovado"],
+          "certa": 1,
+          "explica": "Nesse caso quem pega são os critérios com entrada nova e os testes escondidos. Para ler o diff no loop, compare com o commit de base.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "O curso em três frases",
+      "itens": [
+        { "t": "Quem fez não confere", "texto": "Avaliador separado, critério por comando e prova impressa: o relato do agente não decide nada." },
+        { "t": "O juiz fica fora do alcance", "texto": "Testes congelados com tudo o que o pytest lê, escondidos e portao.env fora do repo; teste suspeito vira relato, nunca ajuste." },
+        { "t": "Medir com honestidade", "texto": "Conjunto de ouro com regressão, juiz calibrado e pass^k com variância; e o portão em camadas como teste final do loop." }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Continue por aqui",
+      "links": [
+        { "t": "Próximo curso da formação: Execução Longa (curso 2)", "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/", "icone": "seta" },
+        { "t": "Área LOOP-R Engenharia", "href": "https://eventos.inema.pro/loop-r-engenharia/", "icone": "camadas" },
+        { "t": "kit/portao.sh", "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/portao.sh", "icone": "terminal" },
+        { "t": "Curso 4 da formação: segurança do loop autônomo (hooks de guarda)", "href": "https://inematds.github.io/loop-r-eng-seguranca-v72/", "icone": "escudo" }
+      ]
+    }
+  ]
+}

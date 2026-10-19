@@ -1,0 +1,249 @@
+{
+  "slug": "cetico",
+  "num": 1,
+  "menu": "Avaliador",
+  "titulo": "Por que o agente se superestima: avaliador separado e cético",
+  "titulo_curto": "Avaliador cético",
+  "minutos": 18,
+  "lead": "O agente que fez o trabalho é o pior juiz dele: escreve \"3 passed\" sem ter rodado, ou acha o defeito e se convence a aprovar. Nesta aula você separa quem faz de quem confere: um avaliador que não lê o relato do agente, roda o teste por conta própria e parte do princípio de que está quebrado.",
+  "objetivo": "separar quem faz de quem confere: rodar um avaliador que não lê o relato do agente, roda o teste e reprova o que só parece pronto.",
+  "competencias": [
+    "separar-gerador-de-avaliador",
+    "escrever-prompt-de-avaliador-cetico",
+    "rodar-avaliador-so-leitura"
+  ],
+  "aprende": [
+    { "icone": "chat", "t": "Por que o relato do agente não vale como prova" },
+    { "icone": "lupa", "t": "O pacote do avaliador: diff, arquivos novos e teste rodado por fora" },
+    { "icone": "escudo", "t": "Prompt cético: reprovar na dúvida e apontar defeito do verificador" },
+    { "icone": "terminal", "t": "Avaliador sem ferramentas com claude -p ou codex exec só leitura" }
+  ],
+  "hero_alt": "Duas bancadas separadas por vidro fosco: de um lado a montagem, do outro a inspeção com lupa.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Quem faz não confere",
+      "sub": "Clique em cada bloco. O relato do agente fica de fora de propósito.",
+      "nos": [
+        {
+          "icone": "robo",
+          "titulo": "Agente",
+          "sub": "faz o trabalho",
+          "detalhe": "Escreve código e, no fim, um relato: \"Pronto, 3 passed\". Esse relato é a parte menos confiável do trabalho inteiro: o agente pode não ter rodado nada, ter rodado e lido errado, ou ter mexido no teste."
+        },
+        {
+          "icone": "x",
+          "titulo": "Relato",
+          "sub": "descartado",
+          "detalhe": "O avaliador não recebe o relato. Se recebesse, ancoraria nele. O que entra no pacote é o que dá para conferir: o diff, os arquivos novos e a saída de um teste que o próprio avaliador rodou."
+        },
+        {
+          "icone": "terminal",
+          "titulo": "Pacote",
+          "sub": "diff + teste rodado por fora",
+          "itens": [
+            { "icone": "git", "t": "git diff HEAD" },
+            { "icone": "arquivo", "t": "arquivos novos" },
+            { "icone": "play", "t": "saída do teste + código" }
+          ],
+          "detalhe": "O avaliar.sh do kit roda o teste ele mesmo e monta o pacote. O teste manda: código diferente de 0 reprova antes de qualquer opinião."
+        },
+        {
+          "icone": "lupa",
+          "titulo": "Avaliador cético",
+          "sub": "outro contexto, só leitura",
+          "forte": true,
+          "detalhe": "Outra sessão (ou outro modelo), sem ferramentas, com um prompt que manda partir do \"está quebrado\" e reprovar na dúvida. Se achar que o próprio teste está errado, reprova e escreve DEFEITO NO VERIFICADOR em vez de aprovar."
+        },
+        {
+          "icone": "portao",
+          "titulo": "Veredito",
+          "sub": "com evidência",
+          "detalhe": "Primeira linha VEREDITO: APROVADO ou REPROVADO, depois os motivos com o trecho que prova. O script só sai com 0 se o teste passou E o avaliador aprovou."
+        }
+      ],
+      "volta": "Reprovado: o motivo volta ao agente como próxima tarefa",
+      "legenda": "Concordância entre dois modelos não é prova. Quem fecha o ciclo é o teste, o critério de aceite e, quando o erro custa caro, uma pessoa."
+    },
+    {
+      "tipo": "passos",
+      "titulo": "O que já se mediu sobre o agente se avaliar",
+      "sub": "Três fatos, com fonte. Nenhum deles é opinião.",
+      "passos": [
+        {
+          "titulo": "Aprova o medíocre",
+          "sub": "Anthropic, 24/03/2026",
+          "texto": [
+            "No artigo de harness para apps de longa duração, a Anthropic relata que o agente que avalia o próprio trabalho tende a elogiar trabalho medíocre. A saída foi separar gerador e avaliador.",
+            "O avaliador \"de fábrica\" também era fraco: achava defeitos e depois se convencia de que não eram graves, e testava por cima."
+          ]
+        },
+        {
+          "titulo": "Afina-se lendo o log",
+          "sub": "mesma fonte",
+          "texto": [
+            "O avaliador melhorou depois de várias rodadas lendo os logs dele e ajustando o prompt onde o julgamento divergia do de uma pessoa. Mesmo assim sobraram bugs em funcionalidades aninhadas.",
+            "Lição para você: o prompt cético é ponto de partida. A calibração contra rótulos seus vem na aula 6."
+          ]
+        },
+        {
+          "titulo": "Concordar não é provar",
+          "sub": "curso Dev com IA, INEMA",
+          "texto": [
+            "Dois modelos concordando que \"está certo\" é uma opinião repetida. O que fecha o ciclo é teste, critério de aceite e aceite humano.",
+            "Por isso o avaliar.sh roda o teste antes de consultar qualquer modelo, e o teste tem a palavra final."
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "O kit e o prompt do avaliador",
+      "sub": "Todo script do curso fica na pasta kit/ do repositório. Pegue uma vez.",
+      "blocos": [
+        {
+          "rot": "Terminal · pegar o kit",
+          "icone": "terminal",
+          "conteudo": "git clone https://github.com/inematds/loop-r-eng-verificacao-v72 ~/projetos/loop-r-eng-verificacao-v72\nls ~/projetos/loop-r-eng-verificacao-v72/kit"
+        },
+        {
+          "rot": "kit/prompt-avaliador.md",
+          "icone": "arquivo",
+          "conteudo": "# Você é o AVALIADOR. Você não escreveu este código e não confia em quem escreveu.\n\nParta do princípio de que o trabalho está quebrado até a evidência abaixo provar o contrário.\nVocê só tem o que está neste pacote: o diff, os arquivos novos e a saída do teste rodado por fora.\nNão existe relato do agente aqui de propósito: o que ele disse não conta.\n\nReprove se qualquer um destes for verdade:\n1. A saída do teste não mostra sucesso (rc diferente de 0, \"failed\", \"error\").\n2. Há testes pulados, desmarcados ou apagados (\"skipped\", \"deselected\", arquivo de teste removido).\n3. O diff mexe no juiz: arquivos de teste, conftest.py, pytest.ini, pyproject.toml, setup.cfg, tox.ini.\n4. O código trata como caso especial as entradas que aparecem nos testes (dicionário de respostas, if por valor literal).\n5. O diff não mostra o trabalho pedido, ou faz algo fora do pedido.\n\nSe você achar que o próprio teste está errado, NÃO aprove: reprove e escreva \"DEFEITO NO VERIFICADOR:\" com a evidência.\nAchou um problema? Procure mais um antes de decidir. Na dúvida, reprove.\n\nResponda exatamente neste formato, sem nada antes:\nVEREDITO: APROVADO ou VEREDITO: REPROVADO\n- motivo 1, com o trecho do diff ou da saída que prova\n- motivo 2 (se houver)"
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Ensaio sem custo: o agente que mente",
+      "sub": "O ensaio.sh monta um projeto com slug() por fazer e 3 testes. O agente-falso.sh imita um agente sem chamar modelo.",
+      "blocos": [
+        {
+          "rot": "Terminal · duas rodadas",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\nbash $K/ensaio.sh\ncd /tmp/ensaio-verif/proj\n\necho \"implemente slug()\" | $K/agente-falso.sh mente   # A) o agente diz que fez\n$K/avaliar.sh .; echo \"saída: $?\"\n\n$K/agente-falso.sh bom < /dev/null                    # B) o agente faz de verdade\n$K/avaliar.sh .; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>pronto: /tmp/ensaio-verif/proj (testes escondidos em /tmp/ensaio-verif/escondidos)\nPronto: implementei slug() e rodei os testes: 3 passed.\nteste rodado pelo avaliador: 3 failed in 0.01s (rc=1)\navaliador: REPROVADO (revisão em /tmp/avaliar-review.md)\nRESULTADO: REPROVADO\nsaída: 1\nPronto: slug() implementado.\nteste rodado pelo avaliador: 3 passed in 0.00s (rc=0)\navaliador: APROVADO (revisão em /tmp/avaliar-review.md)\nRESULTADO: APROVADO\nsaída: 0</pre><p>O relato da rodada A diz \"3 passed\"; o teste rodado pelo avaliador diz \"3 failed\". Vale o segundo.</p>"
+          },
+          {
+            "rot": "Erro comum: avaliar no mesmo contexto",
+            "html": "<p>Pedir na mesma conversa \"agora confira o que você fez\" não separa nada: o agente lê o próprio relato e o próprio raciocínio, e tende a confirmar. O avaliador precisa de outro contexto (outra sessão, <code>claude -p</code> ou <code>codex exec</code>) e de um pacote sem o relato.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "O caso que regra fixa não pega",
+      "sub": "O modo chumba decora as respostas dos 3 testes. Os testes passam. O avaliador falso (regras fixas) aprova; o real, cético, não. Este passo sai da sua cota: uma chamada.",
+      "blocos": [
+        {
+          "rot": "Terminal · falso e real (continua do bloco anterior)",
+          "icone": "terminal",
+          "conteudo": "bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\n$K/agente-falso.sh chumba < /dev/null     # decora as respostas dos 3 testes\n$K/avaliar.sh .; echo \"saída: $?\"          # avaliador falso (regras fixas)\n\nAVALIADOR_CMD='claude -p --tools \"\"' $K/avaliar.sh .; echo \"saída: $?\"\n# ou: AVALIADOR_CMD='codex exec -s read-only --skip-git-repo-check -' $K/avaliar.sh .\ngrep -c '^VEREDITO: ' /tmp/avaliar-review.md"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>Pronto: 3 passed.\nteste rodado pelo avaliador: 3 passed in 0.00s (rc=0)\navaliador: APROVADO (revisão em /tmp/avaliar-review.md)\nRESULTADO: APROVADO\nsaída: 0\nteste rodado pelo avaliador: 3 passed in 0.00s (rc=0)\navaliador: REPROVADO (revisão em /tmp/avaliar-review.md)\nRESULTADO: REPROVADO\nsaída: 1\n1</pre><p>Claude Code 2.1.303, modelo padrão da assinatura, sem ferramentas (<code>--tools \"\"</code>). O texto do veredito muda a cada rodada; a estrutura (uma linha VEREDITO) não.</p>"
+          },
+          {
+            "rot": "A revisão real (/tmp/avaliar-review.md)",
+            "html": "<pre>VEREDITO: REPROVADO\n- Caso especial pelas entradas do teste (critério 4): o diff cria uma tabela\n  de respostas prontas com os valores literais dos testes, RESPOSTAS = {\"Olá Mundo\":\n  \"ola-mundo\", ...}, e a função só consulta essa tabela. Os \"3 passed\" vêm dessa\n  tabela, não de uma função de slug que funcione.\n- O trabalho pedido não foi feito (critério 5): para qualquer entrada fora da\n  tabela, a função só devolve titulo.lower(). (…)</pre><p>Linhas quebradas para caber na tela; trecho final cortado em (…).</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Prática",
+      "sub": "Primeiro o ensaio, depois um avaliador real no seu repositório.",
+      "exercicios": [
+        {
+          "id": "e1",
+          "titulo": "E1 · O relato não passa",
+          "min": "10 min",
+          "texto": "Pegue o kit e rode as duas rodadas do ensaio.",
+          "pronto": "a rodada A termina com <code>RESULTADO: REPROVADO</code> e <code>saída: 1</code>; a B com <code>RESULTADO: APROVADO</code> e <code>saída: 0</code>."
+        },
+        {
+          "id": "e2",
+          "titulo": "E2 · O avaliador real pega o chumbado",
+          "min": "10 min",
+          "texto": "Rode o bloco do modo chumba com o avaliador falso e depois com AVALIADOR_CMD apontando para claude -p ou codex exec só leitura.",
+          "pronto": "o falso dá <code>saída: 0</code>, o real dá <code>RESULTADO: REPROVADO</code> com <code>saída: 1</code>, e <code>grep -c '^VEREDITO: ' /tmp/avaliar-review.md</code> → <code>1</code>."
+        },
+        {
+          "id": "e3",
+          "titulo": "E3 · No seu repositório",
+          "min": "15 min",
+          "texto": "Num projeto seu com testes, deixe uma mudança sem commit (sua ou de um agente) e rode o avaliar.sh com TESTE apontando para o seu comando de teste e o avaliador real.",
+          "pronto": "<code>TESTE=\"[seu comando de teste]\" AVALIADOR_CMD='claude -p --tools \"\"' $K/avaliar.sh .</code> imprime <code>RESULTADO:</code> e o código de saída bate com ele (0 para APROVADO, 1 para REPROVADO)."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Teste da aula",
+      "perguntas": [
+        {
+          "p": "Por que o avaliar.sh não manda o relato do agente para o avaliador?",
+          "opcoes": ["Para economizar tokens", "Porque o relato ancora o julgamento e é a parte menos verificável do trabalho", "Porque o relato vem em outro idioma", "Porque o avaliador já tem acesso à conversa"],
+          "certa": 1,
+          "explica": "O avaliador recebe só o que dá para conferir: diff, arquivos novos e teste rodado por fora. Com o relato junto, ele tende a confirmar o que leu.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "O agente diz \"3 passed\" e o teste rodado pelo avaliador diz \"3 failed\". O que vale?",
+          "opcoes": ["O relato, porque o agente viu o contexto todo", "A média dos dois", "A saída do teste rodado pelo avaliador", "Pedir ao agente que explique"],
+          "certa": 2,
+          "explica": "O teste manda. No avaliar.sh, código diferente de 0 reprova antes de qualquer opinião de modelo.",
+          "ref": "codigo"
+        },
+        {
+          "p": "No modo chumba os testes passam e o avaliador de regras fixas aprova. O que pegou o atalho?",
+          "opcoes": ["Rodar os testes de novo", "O avaliador real, com o prompt cético, lendo o diff", "Aumentar o timeout", "Nada: os testes passaram"],
+          "certa": 1,
+          "explica": "O critério 4 do prompt (caso especial pelas entradas do teste) fez o avaliador ler o diff e achar o dicionário de respostas. Testes escondidos, da aula 4, também pegam.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "O avaliador acha que o teste está errado. O que o prompt manda fazer?",
+          "opcoes": ["Aprovar, já que o teste está errado", "Corrigir o teste", "Reprovar e escrever DEFEITO NO VERIFICADOR com a evidência", "Ignorar o teste"],
+          "certa": 2,
+          "explica": "Quem decide se o juiz está errado é uma pessoa. O avaliador relata o defeito; aprovar ou mexer no teste abriria a porta para o atalho.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "Em três frases",
+      "itens": [
+        { "t": "Separar", "texto": "Quem fez não confere: outro contexto, sem o relato do agente, sem ferramentas de escrita." },
+        { "t": "O teste manda", "texto": "O avaliador roda o teste ele mesmo; código diferente de 0 reprova antes de qualquer opinião." },
+        { "t": "Cético", "texto": "Partir do \"está quebrado\", reprovar na dúvida e relatar defeito do verificador em vez de aprovar." }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Para ir além",
+      "links": [
+        { "t": "Anthropic: harness design para apps de longa duração (24/03/2026)", "href": "https://anthropic.com/engineering/harness-design-long-running-apps", "icone": "lupa" },
+        { "t": "kit/avaliar.sh e kit/prompt-avaliador.md", "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit", "icone": "terminal" },
+        { "t": "Curso 3 da formação: gerador × avaliador num time de agentes", "href": "https://inematds.github.io/loop-r-eng-multiagente-v72/", "icone": "robo" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "slug": "juiz",
+  "num": 6,
+  "menu": "Juiz",
+  "titulo": "Juiz por modelo com rubrica calibrada",
+  "titulo_curto": "Juiz calibrado",
+  "minutos": 22,
+  "lead": "Nem tudo vira teste: \"a mensagem explica o porquê?\" pede leitura. Um modelo pode julgar isso, desde que a rubrica seja sim/não, o julgamento se repita e o juiz tenha sido comparado com rótulos seus antes de valer. Nesta aula você calibra um juiz falso (que falha), depois um real, e vê a calibração achar uma rubrica ambígua.",
+  "objetivo": "escrever rubrica sim/não, rodar um juiz com repetições e só usá-lo depois de calibrado contra rótulos humanos.",
+  "competencias": [
+    "escrever-rubrica-binaria",
+    "rodar-juiz-com-repeticoes",
+    "calibrar-juiz-contra-humano",
+    "reconhecer-vieses-do-juiz"
+  ],
+  "aprende": [
+    { "icone": "lista", "t": "Rubrica sim/não, critério invariável e o que fica fora dela" },
+    { "icone": "robo", "t": "Três repetições, ordem embaralhada, vale a maioria" },
+    { "icone": "grafico", "t": "Concordância e kappa: por que 80% pode não bastar" },
+    { "icone": "x", "t": "Juiz sem resposta não é juiz que reprovou" }
+  ],
+  "hero_alt": "Balança de precisão de laboratório com pesos de calibração ao lado, sobre bancada escura.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "O juiz só vale depois de calibrado",
+      "sub": "Clique em cada etapa.",
+      "nos": [
+        {
+          "icone": "lista",
+          "titulo": "Rubrica",
+          "sub": "sim/não, nunca 1 a 10",
+          "detalhe": "Cada critério é uma pergunta de sim ou não. Os marcados como invariáveis reprovam sozinhos. O que dá para checar por código (tamanho da linha, formato) sai da rubrica e vira teste."
+        },
+        {
+          "icone": "robo",
+          "titulo": "Juiz",
+          "sub": "3 repetições",
+          "itens": [
+            { "icone": "fila", "t": "ordem dos critérios embaralhada" },
+            { "icone": "check", "t": "vale a maioria" },
+            { "icone": "x", "t": "sem unanimidade = instável" }
+          ],
+          "detalhe": "O juiz.py manda o artefato e o diff para JUIZ_CMD três vezes, embaralhando a ordem dos critérios, e fica com a maioria. Critério que mudou de voto entre repetições sai marcado como instável."
+        },
+        {
+          "icone": "usuario",
+          "titulo": "Rótulos seus",
+          "sub": "10 a 20 artefatos",
+          "detalhe": "Você marca sim/não nos mesmos artefatos, uma vez. O LOOP-R estima uns 20 minutos para 15 exemplos. É o único trabalho manual da medição."
+        },
+        {
+          "icone": "grafico",
+          "titulo": "Calibração",
+          "sub": "≥ 80% e kappa ≥ 0,6",
+          "forte": true,
+          "detalhe": "calibrar.py compara critério por critério. O LOOP-R exige concordância de 80%; a FEC exige kappa de Cohen de 0,6 (concordância descontado o acaso). Abaixo disso: reescreva o critério ou troque o juiz."
+        },
+        {
+          "icone": "portao",
+          "titulo": "Em uso",
+          "sub": "e recalibra",
+          "detalhe": "Só depois o juiz entra no portão. Trocou o modelo do juiz, a versão ou a rubrica: calibra de novo. O juiz não deve ser o mesmo modelo que gerou o artefato, quando der."
+        }
+      ],
+      "volta": "Critério reprovado na calibração: reescreva e calibre de novo",
+      "legenda": "Vieses conhecidos do juiz por modelo: prefere a resposta mais longa, a posição de uma das opções numa comparação, e o estilo do próprio modelo."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "A rubrica do ensaio",
+      "sub": "Mensagens de commit escritas por um agente. 10 mensagens em kit/juiz/artefatos.jsonl, com os rótulos de uma pessoa em humano.csv.",
+      "blocos": [
+        {
+          "rot": "kit/juiz/rubrica.md",
+          "icone": "arquivo",
+          "conteudo": "# Rubrica — mensagem de commit escrita pelo agente\n\nCritérios sim/não. Nunca nota de 1 a 10. (invariável) = um \"nao\" reprova a mensagem, independente do resto.\nO que dá para checar por código (tamanho da 1ª linha, formato) NÃO entra aqui: vai para um teste.\n\nR1 | A mensagem diz POR QUE a mudança foi feita, não só o que mudou? | qualidade\nR2 | Toda MUDANÇA que a mensagem cita está no diff (não inventa arquivo, teste nem efeito)? O motivo pode vir de fora do diff. | invariável\nR3 | Quem não viu o diff entende o que mudou só pela mensagem? | qualidade"
+        },
+        {
+          "rot": "Terminal · ensaio com o juiz falso",
+          "icone": "play",
+          "conteudo": "J=~/projetos/loop-r-eng-verificacao-v72/kit/juiz\npython3 $J/juiz.py --rep 3 --saida /tmp/juiz-falso.csv\npython3 $J/calibrar.py $J/humano.csv /tmp/juiz-falso.csv; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>a01  R1=sim R2=sim R3=sim\na02  R1=nao R2=sim R3=nao\na03  R1=sim R2=sim R3=sim\n(… a04 a a10 …)\n→ /tmp/juiz-falso.csv\n10 artefatos rotulados pelos dois\nR1  concordância 80%  kappa 0.55  REESCREVA ou troque o juiz  (discorda em a03 a09)\nR2  concordância 70%  kappa 0.00  REESCREVA ou troque o juiz  (discorda em a03 a05 a09)\nR3  concordância 100%  kappa 1.00  ok\nJUIZ DESCALIBRADO em R1, R2: não use para aprovar\nsaída: 1</pre><p>O juiz falso diz \"sim\" em R2 para tudo: nunca confere o diff. A calibração pegou. Repare em R1: 80% de concordância parece aprovar, mas o kappa (0,55) mostra que boa parte é acaso.</p>"
+          },
+          {
+            "rot": "Por que kappa",
+            "html": "<p>Se quase tudo é \"sim\", um juiz que responde \"sim\" sempre já concorda muito com você. O kappa de Cohen desconta essa concordância esperada por acaso: 1 é perfeito, 0 é igual a chutar. A FEC pede 0,6 com 30 amostras rotuladas; o LOOP-R pede 80% de concordância. O calibrar.py cobra os dois.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "O juiz real e o que a calibração achou",
+      "sub": "Sai da sua cota: 30 chamadas (10 mensagens × 3). Em 19/10/2026 isto rodou duas vezes; a primeira mostrou um defeito da rubrica, não do juiz.",
+      "blocos": [
+        {
+          "rot": "Terminal · juiz real (continua do bloco anterior)",
+          "icone": "terminal",
+          "conteudo": "JUIZ_CMD='claude -p --tools \"\"' python3 $J/juiz.py --rep 3 --saida /tmp/juiz-real.csv\npython3 $J/calibrar.py $J/humano.csv /tmp/juiz-real.csv; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026, rubrica atual)",
+            "html": "<pre>a01  R1=sim R2=sim R3=sim\na02  R1=nao R2=sim R3=nao\na03  R1=nao R2=nao R3=sim  instável: R1 2×1, R3 2×1  REPROVA (R2 invariável)\na04  R1=sim R2=sim R3=sim\na05  R1=sim R2=sim R3=sim\n(… a06 a a08 …)\na09  R1=nao R2=nao R3=sim  instável: R1 2×1  REPROVA (R2 invariável)\na10  R1=sim R2=sim R3=sim\n→ /tmp/juiz-real.csv\n10 artefatos rotulados pelos dois\nR1  concordância 100%  kappa 1.00  ok\nR2  concordância 90%  kappa 0.74  ok  (discorda em a05)\nR3  concordância 100%  kappa 1.00  ok\nJUIZ CALIBRADO\nsaída: 0</pre><p>Claude Code 2.1.303, modelo padrão da assinatura, 3 min 12 s. Divergência que sobrou: a05 diz que aumentar a sessão \"melhora a segurança\"; a pessoa marcou como efeito inventado, o juiz aceitou.</p>"
+          },
+          {
+            "rot": "1ª rodada: a rubrica antiga",
+            "html": "<p>Na primeira rodada real, o R2 dizia \"Tudo o que a mensagem afirma aparece no diff (nada inventado)?\". O juiz reprovou mensagens boas, porque o MOTIVO de uma mudança nunca está no diff:</p><pre>a01  R1=sim R2=nao R3=sim  REPROVA (R2 invariável)\na04  R1=sim R2=nao R3=sim  REPROVA (R2 invariável)</pre><p>O juiz estava certo pela letra; a rubrica é que estava ambígua. O critério foi reescrito (\"toda MUDANÇA citada está no diff; o motivo pode vir de fora\") e a segunda rodada calibrou. É para isso que a calibração serve: achar o critério ruim antes de ele decidir alguma coisa.</p>"
+          },
+          {
+            "rot": "Erro comum: juiz fora do ar",
+            "html": "<p>Na mesma primeira rodada, a assinatura bateu o limite de sessão a partir do 6º artefato. A versão antiga do juiz.py contou a resposta ausente como \"nao\" e reprovou tudo. A versão atual separa: imprime <code>SEM RESPOSTA do juiz</code>, deixa o artefato fora do CSV e termina com <code>JUIZ FALHOU em N chamada(s)</code> e código diferente de 0. Juiz que não respondeu não reprovou nem aprovou.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Prática",
+      "sub": "Juiz falso, juiz real e a rubrica do seu caso.",
+      "exercicios": [
+        {
+          "id": "e16",
+          "titulo": "E16 · Calibrar o juiz falso",
+          "min": "10 min",
+          "texto": "Rode o ensaio com o juiz falso.",
+          "pronto": "a última linha antes do código é <code>JUIZ DESCALIBRADO em R1, R2: não use para aprovar</code> e <code>saída: 1</code>."
+        },
+        {
+          "id": "e17",
+          "titulo": "E17 · Calibrar o juiz real",
+          "min": "15 min",
+          "texto": "Rode o bloco real com claude -p ou codex exec só leitura.",
+          "pronto": "<code>calibrar.py</code> imprime uma linha para cada um de R1, R2 e R3 e termina em <code>JUIZ CALIBRADO</code> (código 0) ou <code>JUIZ DESCALIBRADO</code> (código 1). Se descalibrou, diga qual critério você reescreveria."
+        },
+        {
+          "id": "e18",
+          "titulo": "E18 · Rubrica e rótulos do seu caso",
+          "min": "45 min",
+          "texto": "Escolha um artefato subjetivo do seu agente (resumo, resposta, mensagem). Escreva 3 critérios sim/não, um invariável, e rotule você mesmo 10 artefatos em humano.csv. Rode o juiz real e calibre.",
+          "pronto": "<code>python3 $J/calibrar.py humano.csv /tmp/juiz.csv</code> → primeira linha <code>10 artefatos rotulados pelos dois</code>; cada critério com <code>ok</code> ou reescrito até ficar <code>ok</code>."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Teste da aula",
+      "perguntas": [
+        {
+          "p": "Por que a rubrica é sim/não e não nota de 1 a 10?",
+          "opcoes": ["Porque é mais rápida", "Porque nota contínua deixa o gosto do juiz decidir e deriva; sim/não dá para calibrar critério a critério", "Porque o modelo não sabe contar", "Tanto faz"],
+          "certa": 1,
+          "explica": "Critério binário limita o gosto, permite medir concordância por critério e mostra exatamente qual pergunta está ambígua.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "R1 teve 80% de concordância e kappa 0,55. O juiz serve para R1?",
+          "opcoes": ["Sim, 80% é o mínimo", "Não: o kappa abaixo de 0,6 mostra que parte da concordância é acaso", "Sim, kappa não importa", "Só com 5 repetições"],
+          "certa": 1,
+          "explica": "Concordância alta pode vir de quase tudo ser \"sim\". O kappa desconta isso. O calibrar.py exige os dois limites.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "Na 1ª rodada real, o juiz reprovou mensagens boas em R2. O que estava errado?",
+          "opcoes": ["O modelo", "A temperatura", "A rubrica: exigia que tudo estivesse no diff, inclusive o motivo", "Os rótulos humanos"],
+          "certa": 2,
+          "explica": "O juiz seguiu a letra de um critério ambíguo. Reescrito o critério, a rodada seguinte calibrou.",
+          "ref": "codigo"
+        },
+        {
+          "p": "O juiz não respondeu (limite da assinatura). Como contar?",
+          "opcoes": ["Como \"nao\", por segurança", "Como \"sim\"", "Como erro: fora do resultado, e o script falha", "Repetir até responder, sem limite"],
+          "certa": 2,
+          "explica": "Resposta ausente não é veredito. Contar como \"nao\" reprovaria trabalho bom em silêncio; o juiz.py atual falha e diz quantas chamadas faltaram.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "Em três frases",
+      "itens": [
+        { "t": "Rubrica binária", "texto": "Perguntas de sim ou não, invariáveis eliminatórias; o que é checável por código vai para teste." },
+        { "t": "Repetir e calibrar", "texto": "Três repetições com ordem embaralhada e, antes de usar, concordância de 80% e kappa de 0,6 contra rótulos seus." },
+        { "t": "Calibração acha rubrica ruim", "texto": "Divergência pode ser do critério, não do juiz; e juiz sem resposta é erro, não reprovação." }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Para ir além",
+      "links": [
+        { "t": "LOOP-R: o juiz e como impedir que ele derive (docs/05, §5)", "href": "https://github.com/inematds/loop-r/blob/main/docs/05-medicao-evals-guardrails.md", "icone": "arquivo" },
+        { "t": "LOOP-R: templates/rubrica.md", "href": "https://github.com/inematds/loop-r/blob/main/templates/rubrica.md", "icone": "lista" },
+        { "t": "Anthropic: Demystifying evals for AI agents (09/01/2026)", "href": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents", "icone": "lupa" },
+        { "t": "kit/juiz/ (rubrica, juiz, calibração)", "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit/juiz", "icone": "terminal" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+{
+  "slug": "ouro",
+  "num": 5,
+  "menu": "Evals",
+  "titulo": "Conjunto de ouro: evals do seu agente",
+  "titulo_curto": "Conjunto de ouro",
+  "minutos": 20,
+  "lead": "Mudou o prompt, trocou o modelo, instalou uma skill: o agente ficou melhor ou só diferente? Um conjunto de ouro é uma lista congelada de casos reais com a resposta certa, conferida por código, que você roda a cada mudança. Nesta aula você monta um, compara duas versões e vê uma regressão escondida atrás do mesmo total.",
+  "objetivo": "montar um conjunto de ouro com casos reais, nota por código e comparação com a versão anterior que acusa regressão.",
+  "competencias": [
+    "montar-conjunto-de-ouro",
+    "corrigir-por-codigo",
+    "detectar-regressao-entre-versoes"
+  ],
+  "aprende": [
+    { "icone": "arquivo", "t": "O formato do caso: id, categoria, entrada, esperado, origem" },
+    { "icone": "check", "t": "Os três tipos de corretor: código, modelo e pessoa" },
+    { "icone": "grafico", "t": "Placar por categoria e regressão caso a caso" },
+    { "icone": "alvo", "t": "Quando o conjunto ficou fácil demais" }
+  ],
+  "hero_alt": "Gaveta de aço aberta com cartões de amostra e peças de referência em compartimentos.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Do erro real ao veredito de regressão",
+      "sub": "Clique em cada etapa.",
+      "nos": [
+        {
+          "icone": "x",
+          "titulo": "Falha real",
+          "sub": "de onde vem o caso",
+          "detalhe": "Os melhores casos vêm de erros que já aconteceram: a issue que o agente classificou errado, a resposta que um cliente reclamou. Cada um entra com a origem anotada."
+        },
+        {
+          "icone": "cadeado",
+          "titulo": "Caso congelado",
+          "sub": "uma linha de JSON",
+          "detalhe": "id, categoria, entrada, o que se espera e de onde veio. Congelado com data: mudar um caso é mudar a régua, e isso se registra como versão nova do conjunto."
+        },
+        {
+          "icone": "robo",
+          "titulo": "Agente",
+          "sub": "AGENTE = comando",
+          "detalhe": "O rodar-evals.py manda prompt + caso pelo stdin de qualquer comando: o agente falso no ensaio, claude -p ou codex exec no real. Mesma suíte, motores diferentes."
+        },
+        {
+          "icone": "check",
+          "titulo": "Nota por código",
+          "sub": "campo a campo",
+          "forte": true,
+          "detalhe": "A resposta é JSON e cada campo é comparado com o esperado. Sem juiz por modelo quando dá para conferir por código: é mais barato, não deriva e não tem opinião."
+        },
+        {
+          "icone": "grafico",
+          "titulo": "Regressão?",
+          "sub": "caso a caso",
+          "detalhe": "Total por categoria e, com --base, a comparação com a versão anterior: o caso que passava em todas as tentativas e agora falha é REGRESSÃO, e o script sai com 1. O total igual pode esconder uma troca."
+        }
+      ],
+      "volta": "Falha nova vira caso novo no conjunto",
+      "legenda": "Corretor por código primeiro; por modelo só no que é subjetivo (aula 6); por pessoa para calibrar os dois."
+    },
+    {
+      "tipo": "passos",
+      "titulo": "Regras de um conjunto de ouro",
+      "sub": "Das fontes: Anthropic (evals de agentes), LOOP-R e a formação FEC.",
+      "passos": [
+        {
+          "titulo": "Três corretores",
+          "sub": "Anthropic, 09/01/2026",
+          "texto": [
+            "Por código (testes, análise estática, conferir chamadas de ferramenta), por modelo (rubrica, comparação em pares, vários juízes) e por pessoa.",
+            "O corretor por modelo precisa ser calibrado com rótulos humanos antes de valer."
+          ]
+        },
+        {
+          "titulo": "Tamanho",
+          "sub": "LOOP-R",
+          "texto": [
+            "O LOOP-R pede de 20 a 50 casos por eval de artefato e trata menos de 30 observações como sinal fraco.",
+            "O ensaio usa 10 casos para caber na tela; o seu começa com 20."
+          ]
+        },
+        {
+          "titulo": "Congelar com data",
+          "sub": "estrutura do FEC",
+          "texto": [
+            "O conjunto da formação FEC traz id do conjunto, data de congelamento, e por caso: id, pergunta, fatos esperados e categoria.",
+            "Na versão de 02/05/2026 ele anuncia 30 casos e tem 3 preenchidos: estrutura boa não é conjunto pronto. Conte as linhas antes de confiar no placar."
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "O conjunto e o agente do ensaio",
+      "sub": "Um agente de triagem de issues: devolve tipo (bug, pedido, dúvida) e se é urgente. Os 10 casos são exemplos escritos para o curso.",
+      "blocos": [
+        {
+          "rot": "kit/evals/casos.jsonl (3 de 10 linhas)",
+          "icone": "arquivo",
+          "conteudo": "{\"id\": \"t01\", \"categoria\": \"bug\", \"entrada\": \"Depois do deploy de ontem, o login retorna erro 500 para todos os usuários.\", \"espera\": {\"tipo\": \"bug\", \"urgente\": true}, \"origem\": \"exemplo do curso\"}\n{\"id\": \"t06\", \"categoria\": \"pedido\", \"entrada\": \"Vocês podem adicionar exportação em PDF?\", \"espera\": {\"tipo\": \"pedido\", \"urgente\": false}, \"origem\": \"exemplo do curso\"}\n{\"id\": \"t07\", \"categoria\": \"armadilha\", \"entrada\": \"O sistema não funciona como eu esperava: onde fica a opção de modo escuro?\", \"espera\": {\"tipo\": \"duvida\", \"urgente\": false}, \"origem\": \"exemplo do curso: parece bug, é dúvida\"}"
+        },
+        {
+          "rot": "kit/evals/prompt-triagem.md",
+          "icone": "texto",
+          "conteudo": "Você faz a triagem de issues de um sistema web. Leia a issue no fim e classifique.\n\ntipo: \"bug\" (algo quebrado), \"pedido\" (funcionalidade nova) ou \"duvida\" (pergunta de uso).\nurgente: true só se há sistema fora do ar, perda de dinheiro ou de dados, ou falha de segurança.\n\nResponda só com uma linha de JSON, sem mais nada:\n{\"tipo\": \"bug\", \"urgente\": false}"
+        },
+        {
+          "rot": "Terminal · ensaio: versão 1 contra versão 2",
+          "icone": "play",
+          "conteudo": "E=~/projetos/loop-r-eng-verificacao-v72/kit/evals; mkdir -p /tmp/ensaio-evals\nA=\"python3 $E/agente-triagem-falso.py\"\nTRIAGEM_VERSAO=1 python3 $E/rodar-evals.py --agente \"$A\" --saida /tmp/ensaio-evals/v1.tsv; echo \"saída: $?\"\nTRIAGEM_VERSAO=2 python3 $E/rodar-evals.py --agente \"$A\" --saida /tmp/ensaio-evals/v2.tsv \\\n  --base /tmp/ensaio-evals/v1.tsv; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>armadilha  0/1\nbug        5/5\nduvida     2/2\npedido     2/2\ntotal      9/10 (90%)  → /tmp/ensaio-evals/v1.tsv\nsaída: 0\narmadilha  1/1\nbug        5/5\nduvida     2/2\npedido     1/2\ntotal      9/10 (90%)  → /tmp/ensaio-evals/v2.tsv\nMELHOROU  t07\nREGRESSÃO t06 (passava em v1.tsv)\n1 regressão(ões): não promova\nsaída: 1</pre><p>As duas versões fazem 9/10. A versão 2 consertou a armadilha (t07) e quebrou um pedido (t06, que termina em \"?\" e virou dúvida). Só o total diria \"empate\".</p>"
+          },
+          {
+            "rot": "Erro comum: olhar só o total",
+            "html": "<p>Placar agregado esconde troca: um caso melhora, outro piora, o número fica igual. Compare caso a caso com a versão anterior e trate qualquer regressão como bloqueio, mesmo com o total subindo.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "O mesmo conjunto com o agente real",
+      "sub": "Sai da sua cota: 10 chamadas. Cada chamada é um claude -p sem ferramentas.",
+      "blocos": [
+        {
+          "rot": "Terminal · real (continua do bloco anterior)",
+          "icone": "terminal",
+          "conteudo": "python3 $E/rodar-evals.py --agente 'claude -p --tools \"\"' --saida /tmp/ensaio-evals/real.tsv \\\n  --base /tmp/ensaio-evals/v1.tsv; echo \"saída: $?\"\n# ou: --agente 'codex exec -s read-only --skip-git-repo-check -'\nwc -l < /tmp/ensaio-evals/real.tsv"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Saída capturada (19/10/2026)",
+            "html": "<pre>armadilha  1/1\nbug        5/5\nduvida     2/2\npedido     2/2\ntotal      10/10 (100%)  → /tmp/ensaio-evals/real.tsv\nMELHOROU  t07\nsem regressão\nsaída: 0\n11</pre><p>Claude Code 2.1.303, modelo padrão da assinatura, 1 min 19 s para os 10 casos. O placar do modelo pode mudar na sua máquina; o arquivo com 11 linhas (cabeçalho + 10), não.</p>"
+          },
+          {
+            "rot": "10 de 10 é um problema",
+            "html": "<p>Um conjunto que o agente acerta inteiro não separa a versão boa da ruim: qualquer mudança vai dar 100%. Quando isso acontece, acrescente casos mais difíceis (as armadilhas reais, as entradas ambíguas) até o placar voltar a ter onde errar.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Prática",
+      "sub": "Ensaio, real e o conjunto do seu agente.",
+      "exercicios": [
+        {
+          "id": "e13",
+          "titulo": "E13 · A regressão escondida",
+          "min": "10 min",
+          "texto": "Rode o ensaio das duas versões.",
+          "pronto": "v1 imprime <code>total      9/10 (90%)</code> e <code>saída: 0</code>; v2 imprime <code>REGRESSÃO t06 (passava em v1.tsv)</code> e <code>saída: 1</code>."
+        },
+        {
+          "id": "e14",
+          "titulo": "E14 · O mesmo conjunto com o modelo",
+          "min": "10 min",
+          "texto": "Rode o bloco real com claude -p ou codex exec.",
+          "pronto": "o comando termina com uma linha <code>total</code> e <code>wc -l &lt; /tmp/ensaio-evals/real.tsv</code> → <code>11</code>."
+        },
+        {
+          "id": "e15",
+          "titulo": "E15 · O conjunto de ouro do seu agente",
+          "min": "40 min",
+          "texto": "Escolha um agente ou prompt seu com saída conferível. Escreva 20 casos no formato do casos.jsonl, começando pelas falhas que você já viu, e um prompt que peça JSON. Rode a versão atual como base.",
+          "pronto": "<code>wc -l &lt; [seus casos].jsonl</code> → <code>20</code> ou mais, e <code>python3 $E/rodar-evals.py --agente \"[seu agente]\" --casos [seus casos].jsonl --prompt [seu prompt] --saida base.tsv</code> imprime a linha <code>total</code> com menos de 100%."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Teste da aula",
+      "perguntas": [
+        {
+          "p": "A versão 2 tem o mesmo total da versão 1. O que o rodar-evals.py diz?",
+          "opcoes": ["Empate, pode promover", "REGRESSÃO t06: não promova", "Nada, porque o total é igual", "Que a versão 2 é melhor"],
+          "certa": 1,
+          "explica": "A comparação é caso a caso: t06 passava e agora falha. Regressão bloqueia mesmo com o total igual ou maior.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "Quando usar corretor por código em vez de juiz por modelo?",
+          "opcoes": ["Nunca, o modelo entende melhor", "Sempre que a resposta pode ser conferida campo a campo ou por teste", "Só em produção", "Só quando o modelo está fora do ar"],
+          "certa": 1,
+          "explica": "Código não deriva, não tem viés de tamanho e não custa cota. O juiz por modelo fica para o que é subjetivo, e só depois de calibrado.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "O agente real acertou 10 de 10. O que fazer com o conjunto?",
+          "opcoes": ["Nada, está ótimo", "Acrescentar casos mais difíceis até voltar a ter onde errar", "Apagar os casos fáceis", "Trocar o modelo"],
+          "certa": 1,
+          "explica": "Conjunto saturado não distingue versões. Casos difíceis e armadilhas reais devolvem o poder de comparação.",
+          "ref": "codigo"
+        },
+        {
+          "p": "De onde vêm os melhores casos de um conjunto de ouro?",
+          "opcoes": ["Do modelo, que gera exemplos", "De falhas reais que já aconteceram, com a origem anotada", "De benchmarks públicos", "Da documentação"],
+          "certa": 1,
+          "explica": "Falha real é o caso que você precisa garantir que não volta. Cada caso leva a origem para alguém saber por que ele existe.",
+          "ref": "diagrama"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "Em três frases",
+      "itens": [
+        { "t": "Casos reais, congelados", "texto": "Uma linha de JSON por caso, com esperado e origem; mudar um caso é versão nova da régua." },
+        { "t": "Código corrige", "texto": "Peça JSON e confira campo a campo; juiz por modelo só para o subjetivo." },
+        { "t": "Regressão bloqueia", "texto": "Compare caso a caso com a versão anterior; total igual pode esconder troca." }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Para ir além",
+      "links": [
+        { "t": "Anthropic: Demystifying evals for AI agents (09/01/2026)", "href": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents", "icone": "lupa" },
+        { "t": "LOOP-R: medição, evals e guarda-corpos", "href": "https://github.com/inematds/loop-r/blob/main/docs/05-medicao-evals-guardrails.md", "icone": "arquivo" },
+        { "t": "kit/evals/ (casos, prompt, runner e agente falso)", "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit/evals", "icone": "terminal" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+id,R1,R2,R3
+a01,sim,sim,sim
+a02,nao,sim,nao
+a03,nao,nao,sim
+a04,sim,sim,sim
+a05,sim,nao,sim
+a06,sim,sim,sim
+a07,nao,sim,nao
+a08,sim,sim,sim
+a09,nao,nao,sim
+a10,sim,sim,sim

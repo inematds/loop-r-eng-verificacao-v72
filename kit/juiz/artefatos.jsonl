@@ -1,0 +1,10 @@
+{"id": "a01", "diff": "slug.py: troca a implementação por normalização NFKD + regex. Nenhum teste mudou.", "texto": "Corrige slug para remover acentos. Usa normalização NFKD; antes 'Olá' virava 'olá' e o endereço quebrava."}
+{"id": "a02", "diff": "slug.py: troca a implementação por normalização NFKD + regex. Nenhum teste mudou.", "texto": "update"}
+{"id": "a03", "diff": "slug.py: troca a implementação por normalização NFKD + regex. Nenhum teste mudou.", "texto": "Corrige slug para remover acentos e adiciona testes para emojis."}
+{"id": "a04", "diff": "login.py: aumenta o tempo de sessão de 15 para 60 minutos.", "texto": "Aumenta o tempo de sessão para 60 min. Usuários perdiam o formulário longo no meio do preenchimento."}
+{"id": "a05", "diff": "login.py: aumenta o tempo de sessão de 15 para 60 minutos.", "texto": "Aumenta o tempo de sessão para 60 min para melhorar a segurança."}
+{"id": "a06", "diff": "busca.py: tira os acentos do termo e do texto antes de comparar.", "texto": "Busca encontra 'ação' digitando 'acao', porque agora tiramos os acentos dos dois lados antes de comparar."}
+{"id": "a07", "diff": "busca.py: tira os acentos do termo e do texto antes de comparar.", "texto": "fix busca"}
+{"id": "a08", "diff": "pagamentos.py: grava o pagamento aprovado antes de responder ao gateway.", "texto": "Grava o pagamento antes de responder ao gateway. Evita perder o registro quando o gateway reenvia a notificação."}
+{"id": "a09", "diff": "pagamentos.py: grava o pagamento aprovado antes de responder ao gateway.", "texto": "Grava o pagamento antes de responder ao gateway e corrige a duplicidade em todos os relatórios."}
+{"id": "a10", "diff": "pedidos.py: confere se o pedido é do usuário logado antes de mostrar.", "texto": "Confere o dono do pedido antes de mostrar. Antes, trocar o número na URL mostrava o pedido de outro cliente."}

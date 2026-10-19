@@ -1,0 +1,10 @@
+{"id": "t01", "categoria": "bug", "entrada": "Depois do deploy de ontem, o login retorna erro 500 para todos os usuários.", "espera": {"tipo": "bug", "urgente": true}, "origem": "exemplo do curso"}
+{"id": "t02", "categoria": "bug", "entrada": "O botão de exportar CSV fica desalinhado no Safari.", "espera": {"tipo": "bug", "urgente": false}, "origem": "exemplo do curso"}
+{"id": "t03", "categoria": "pedido", "entrada": "Seria ótimo poder filtrar os relatórios por data.", "espera": {"tipo": "pedido", "urgente": false}, "origem": "exemplo do curso"}
+{"id": "t04", "categoria": "duvida", "entrada": "Como eu troco a senha da minha conta?", "espera": {"tipo": "duvida", "urgente": false}, "origem": "exemplo do curso"}
+{"id": "t05", "categoria": "bug", "entrada": "Pagamentos aprovados não estão sendo registrados no banco desde as 9h.", "espera": {"tipo": "bug", "urgente": true}, "origem": "exemplo do curso"}
+{"id": "t06", "categoria": "pedido", "entrada": "Vocês podem adicionar exportação em PDF?", "espera": {"tipo": "pedido", "urgente": false}, "origem": "exemplo do curso"}
+{"id": "t07", "categoria": "armadilha", "entrada": "O sistema não funciona como eu esperava: onde fica a opção de modo escuro?", "espera": {"tipo": "duvida", "urgente": false}, "origem": "exemplo do curso: parece bug, é dúvida"}
+{"id": "t08", "categoria": "bug", "entrada": "Consigo ver os pedidos de outros clientes trocando o número na URL.", "espera": {"tipo": "bug", "urgente": true}, "origem": "exemplo do curso: falha de segurança"}
+{"id": "t09", "categoria": "duvida", "entrada": "Qual o limite de usuários no plano gratuito?", "espera": {"tipo": "duvida", "urgente": false}, "origem": "exemplo do curso"}
+{"id": "t10", "categoria": "bug", "entrada": "A busca ignora palavras com acento: ação não encontra nada.", "espera": {"tipo": "bug", "urgente": false}, "origem": "exemplo do curso"}
