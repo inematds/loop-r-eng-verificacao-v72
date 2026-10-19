@@ -288,7 +288,7 @@
           "p": "Why is the model evaluator the last layer?",
           "opcoes": [
             "Because it is the most reliable",
-            "Because it's the costliest: don't spend quota on what code already failed",
+            "Priciest, so don't spend quota on what code already failed",
             "In alphabetical order",
             "Because it needs the results of the other layers to build its own prompt"
           ],

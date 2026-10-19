@@ -207,7 +207,7 @@
         {
           "p": "In the 1st real round, the judge failed good messages in R2. What was wrong?",
           "opcoes": [
-            "The rubric: it demanded even the change's reason in the diff",
+            "The rubric: diff had to even state why it changed",
             "The human labels, made in a rush and without a second reading",
             "The temperature",
             "The model"

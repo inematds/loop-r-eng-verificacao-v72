@@ -246,7 +246,7 @@
           "opcoes": [
             "Increase the timeout",
             "Nothing: the tests passed and that alone is enough proof",
-            "The real evaluator, skeptical prompt, reading the diff",
+            "Real evaluator, skeptical prompt, reading the diff",
             "Run the tests again, now with verbose output (-v)"
           ],
           "certa": 2,
@@ -260,7 +260,7 @@
             "Approve, since the test is wrong and the code looks correct",
             "Ignore the test",
             "Fix the test and note the change in the final report",
-            "Fail it and write DEFEITO NO VERIFICADOR with evidence"
+            "Fail it and write DEFEITO NO VERIFICADOR with the evidence"
           ],
           "certa": 3,
           "explica": "A person decides whether the judge is wrong. The evaluator reports the defect; approving or editing the test would open the door to the shortcut.",

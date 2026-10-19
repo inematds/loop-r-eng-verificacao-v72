@@ -195,7 +195,7 @@
             "That the work is easy and was almost done already",
             "That conferir-goal.py has a bug in reading the output",
             "Nothing",
-            "That the criterion misses the work; rewrite it"
+            "Criterion doesn't measure the work; rewrite it"
           ],
           "certa": 3,
           "explica": "A function criterion has to fail first. If it already passes, it can't tell done from not done.",
