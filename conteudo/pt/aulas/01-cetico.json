@@ -197,31 +197,31 @@
       "perguntas": [
         {
           "p": "Por que o avaliar.sh não manda o relato do agente para o avaliador?",
-          "opcoes": ["Para economizar tokens", "Porque o relato ancora o julgamento e é a parte menos verificável do trabalho", "Porque o relato vem em outro idioma", "Porque o avaliador já tem acesso à conversa"],
-          "certa": 1,
+          "opcoes": ["Porque o avaliador já tem acesso à conversa e leria o relato duas vezes", "Para economizar tokens, já que o relato costuma ser longo e repetitivo", "Porque o relato vem em outro idioma", "Porque o relato ancora o julgamento e é o menos verificável"],
+          "certa": 3,
           "explica": "O avaliador recebe só o que dá para conferir: diff, arquivos novos e teste rodado por fora. Com o relato junto, ele tende a confirmar o que leu.",
           "ref": "diagrama",
           "cert": true
         },
         {
           "p": "O agente diz \"3 passed\" e o teste rodado pelo avaliador diz \"3 failed\". O que vale?",
-          "opcoes": ["O relato, porque o agente viu o contexto todo", "A média dos dois", "A saída do teste rodado pelo avaliador", "Pedir ao agente que explique"],
+          "opcoes": ["Pedir ao agente que explique", "A média dos dois", "A saída do teste rodado pelo avaliador", "O relato, porque o agente viu o contexto todo"],
           "certa": 2,
           "explica": "O teste manda. No avaliar.sh, código diferente de 0 reprova antes de qualquer opinião de modelo.",
           "ref": "codigo"
         },
         {
           "p": "No modo chumba os testes passam e o avaliador de regras fixas aprova. O que pegou o atalho?",
-          "opcoes": ["Rodar os testes de novo", "O avaliador real, com o prompt cético, lendo o diff", "Aumentar o timeout", "Nada: os testes passaram"],
-          "certa": 1,
+          "opcoes": ["Aumentar o timeout", "Nada: os testes passaram e isso já basta como prova", "O avaliador real, com o prompt cético, lendo o diff", "Rodar os testes de novo, agora com saída detalhada (-v)"],
+          "certa": 2,
           "explica": "O critério 4 do prompt (caso especial pelas entradas do teste) fez o avaliador ler o diff e achar o dicionário de respostas. Testes escondidos, da aula 4, também pegam.",
           "ref": "codigo",
           "cert": true
         },
         {
           "p": "O avaliador acha que o teste está errado. O que o prompt manda fazer?",
-          "opcoes": ["Aprovar, já que o teste está errado", "Corrigir o teste", "Reprovar e escrever DEFEITO NO VERIFICADOR com a evidência", "Ignorar o teste"],
-          "certa": 2,
+          "opcoes": ["Aprovar, já que o teste está errado e o código parece correto", "Ignorar o teste", "Corrigir o teste e anotar a mudança no relato final", "Reprovar e escrever DEFEITO NO VERIFICADOR com a evidência"],
+          "certa": 3,
           "explica": "Quem decide se o juiz está errado é uma pessoa. O avaliador relata o defeito; aprovar ou mexer no teste abriria a porta para o atalho.",
           "ref": "codigo"
         }

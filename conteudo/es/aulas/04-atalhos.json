@@ -240,12 +240,12 @@
         {
           "p": "El agente devuelve un diccionario con las entradas exactas de los tests. ¿Qué detector NO detecta esto?",
           "opcoes": [
-            "Tests ocultos",
             "La guardia de tests de la clase 3",
             "La línea CHUMBADO de atalhos.py",
+            "Tests ocultos",
             "El evaluador escéptico"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "La guardia solo mira si el juez cambió y si los tests pasan. Aquí el juez está intacto y los tests visibles pasan; lo detecta quien mira más allá de ellos.",
           "ref": "diagrama",
           "cert": true
@@ -253,22 +253,22 @@
         {
           "p": "En EvilGenie (nov/2025), ¿qué ayudó poco a detectar atajos?",
           "opcoes": [
-            "Juez por modelo en los casos claros",
             "Tests ocultos",
             "Mirar la edición del archivo de tests",
+            "Juez por modelo en los casos claros",
             "Nada ayudó"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "Los tests ocultos ayudaron poco ahí; el juez por modelo detectó bien los casos claros. De ahí que convenga juntar detectores en vez de confiar en uno solo.",
           "ref": "passos"
         },
         {
           "p": "El agente dice que un test está mal. ¿Qué hacer?",
           "opcoes": [
-            "Dejar que lo ajuste",
             "Omitir el test por ahora",
+            "Borrar y reescribir el test",
             "Prohibir tocarlo, pedir el registro con evidencia y seguir",
-            "Borrar y reescribir el test"
+            "Dejar que lo ajuste"
           ],
           "certa": 2,
           "explica": "El test queda intacto y la duda se convierte en registro. Quien cambia el juez es una persona, fuera del loop.",
@@ -278,12 +278,12 @@
         {
           "p": "El loop que optimiza su propia métrica a lo largo de semanas (Goodhart) es tema de qué curso?",
           "opcoes": [
-            "De este, lección 4",
             "Del curso 5, El loop que aprende",
             "Del curso 3",
-            "De ninguno"
+            "De ninguno",
+            "De este, lección 4"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "Aquí el tema es el atajo dentro de una tarea. Optimizar contra el propio medidor, con promoción y rollback, es la lección 6 del curso 5.",
           "ref": "links"
         }

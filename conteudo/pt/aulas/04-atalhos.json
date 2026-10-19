@@ -182,22 +182,22 @@
       "perguntas": [
         {
           "p": "O agente devolve um dicionário com as entradas exatas dos testes. Qual detector NÃO pega isso?",
-          "opcoes": ["Testes escondidos", "A guarda de testes da aula 3", "A linha CHUMBADO do atalhos.py", "O avaliador cético"],
-          "certa": 1,
+          "opcoes": ["A guarda de testes da aula 3", "A linha CHUMBADO do atalhos.py", "Testes escondidos", "O avaliador cético"],
+          "certa": 0,
           "explica": "A guarda só olha se o juiz mudou e se os testes passam. Aqui o juiz está intacto e os testes visíveis passam; quem pega é quem olha além deles.",
           "ref": "diagrama",
           "cert": true
         },
         {
           "p": "No EvilGenie (nov/2025), o que ajudou pouco a detectar atalho?",
-          "opcoes": ["Juiz por modelo nos casos claros", "Testes escondidos", "Olhar edição de arquivo de teste", "Nada ajudou"],
-          "certa": 1,
+          "opcoes": ["Testes escondidos", "Olhar edição de arquivo de teste", "Juiz por modelo nos casos claros", "Nada ajudou"],
+          "certa": 0,
           "explica": "Testes escondidos ajudaram pouco lá; o juiz por modelo pegou bem os casos claros. Daí juntar detectores em vez de confiar em um.",
           "ref": "passos"
         },
         {
           "p": "O agente diz que um teste está errado. O que fazer?",
-          "opcoes": ["Deixar ajustar", "Pular o teste por enquanto", "Proibir mexer, pedir o registro com evidência e seguir", "Apagar e reescrever o teste"],
+          "opcoes": ["Pular o teste por enquanto", "Apagar e reescrever o teste", "Proibir mexer, pedir o registro com evidência e seguir", "Deixar ajustar"],
           "certa": 2,
           "explica": "O teste fica intacto e a dúvida vira registro. Quem muda o juiz é uma pessoa, fora do loop.",
           "ref": "simconversa",
@@ -205,8 +205,8 @@
         },
         {
           "p": "O loop que otimiza a própria métrica ao longo de semanas (Goodhart) é assunto de qual curso?",
-          "opcoes": ["Deste, aula 4", "Do curso 5, O loop que aprende", "Do curso 3", "De nenhum"],
-          "certa": 1,
+          "opcoes": ["Do curso 5, O loop que aprende", "Do curso 3", "De nenhum", "Deste, aula 4"],
+          "certa": 0,
           "explica": "Aqui o assunto é o atalho dentro de uma tarefa. Otimizar contra o próprio medidor, com promoção e rollback, é a aula 6 do curso 5.",
           "ref": "links"
         }

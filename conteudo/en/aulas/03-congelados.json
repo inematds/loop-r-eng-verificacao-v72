@@ -184,10 +184,10 @@
         {
           "p": "Why does the guard's manifest live in GUARDA_DIR, outside the repo?",
           "opcoes": [
-            "So it doesn't pollute git",
+            "To avoid cluttering git with files that change every cycle",
             "So the agent can't rewrite the judge's snapshot",
-            "Because pytest doesn't read outside the repo",
-            "To make it faster"
+            "To make it faster",
+            "Because pytest doesn't read files outside the repo folder"
           ],
           "certa": 1,
           "explica": "A verifier within the agent's reach is a verifier the agent can tweak. The manifest, hidden tests, and goal.md live where it can't write.",
@@ -198,11 +198,11 @@
           "p": "The agent created a conftest.py at the root marking all tests as skip. What does pytest return?",
           "opcoes": [
             "Code 1",
-            "Code 5",
             "Code 0 with \"3 skipped\"",
+            "Code 5",
             "Collection error"
           ],
-          "certa": 2,
+          "certa": 1,
           "explica": "Skipped tests are not failures: pytest exits with 0. That's why the guard requires a minimum of passed and fails any skipped.",
           "ref": "codigo",
           "cert": true
@@ -210,24 +210,24 @@
         {
           "p": "In loop-longrun.sh with PROTEGIDOS=\"tests/ pytest.ini\", what happens to the conftest agent?",
           "opcoes": [
-            "It gets reverted",
             "CONCLUÍDO no ciclo 1, saída 0",
-            "PARADO por estagnação",
+            "PARADO por estagnação, saída 2",
+            "It is reverted and the cycle starts over",
             "Second-copy lock"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "The root conftest.py is not protected and the TESTE_FINAL (pytest -q) exits 0. Fix it with *conftest.py in PROTEGIDOS and a final test that requires passed.",
           "ref": "codigo"
         },
         {
           "p": "When to freeze?",
           "opcoes": [
+            "Only at the end, before publishing",
             "After the first cycle, to capture the real state",
             "At the base commit, before the agent starts",
-            "Only at the end, before publishing",
             "Doesn't matter"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "Freezing later bakes into the manifest what the agent has already changed. The snapshot has to be of the judge you approved.",
           "ref": "codigo"
         }

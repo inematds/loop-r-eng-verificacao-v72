@@ -219,12 +219,12 @@
         {
           "p": "¿Por qué el avaliar.sh no envía el informe del agente al evaluador?",
           "opcoes": [
-            "Para ahorrar tokens",
-            "Porque el informe ancla el juicio y es la parte menos verificable del trabajo",
+            "Porque el evaluador ya tiene acceso a la conversación y leería el informe dos veces",
+            "Para ahorrar tokens, ya que el informe suele ser largo y repetitivo",
             "Porque el informe viene en otro idioma",
-            "Porque el evaluador ya tiene acceso a la conversación"
+            "Porque el informe ancla el juicio y es lo menos verificable"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "El evaluador recibe solo lo que se puede comprobar: diff, archivos nuevos y test ejecutado por fuera. Con el informe incluido, tiende a confirmar lo que leyó.",
           "ref": "diagrama",
           "cert": true
@@ -232,10 +232,10 @@
         {
           "p": "El agente dice \"3 passed\" y el test ejecutado por el evaluador dice \"3 failed\". ¿Qué vale?",
           "opcoes": [
-            "El informe, porque el agente vio todo el contexto",
+            "Pedirle al agente que lo explique",
             "El promedio de los dos",
             "La salida de la prueba ejecutada por el evaluador",
-            "Pedirle al agente que lo explique"
+            "El informe, porque el agente vio todo el contexto"
           ],
           "certa": 2,
           "explica": "La prueba manda. En avaliar.sh, un código distinto de 0 reprueba antes de cualquier opinión de un modelo.",
@@ -244,12 +244,12 @@
         {
           "p": "En el modo chumba las pruebas pasan y el evaluador de reglas fijas aprueba. ¿Qué detectó el atajo?",
           "opcoes": [
-            "Ejecutar las pruebas de nuevo",
-            "El evaluador real, con el prompt escéptico, leyendo el diff",
             "Aumentar el timeout",
-            "Nada: las pruebas pasaron"
+            "Nada: las pruebas pasaron y eso ya basta como prueba",
+            "El evaluador real, con el prompt escéptico, leyendo el diff",
+            "Ejecutar las pruebas de nuevo, ahora con salida detallada (-v)"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "El criterio 4 del prompt (caso especial por las entradas de la prueba) hizo que el evaluador leyera el diff y encontrara el diccionario de respuestas. Los tests ocultos, de la clase 4, también lo detectan.",
           "ref": "codigo",
           "cert": true
@@ -257,12 +257,12 @@
         {
           "p": "El evaluador cree que la prueba está equivocada. ¿Qué manda hacer el prompt?",
           "opcoes": [
-            "Aprobar, ya que la prueba está equivocada",
-            "Corregir la prueba",
-            "Reprobar y escribir DEFEITO NO VERIFICADOR con la evidencia",
-            "Ignorar la prueba"
+            "Aprobar, ya que la prueba está mal y el código parece correcto",
+            "Ignorar la prueba",
+            "Corregir la prueba y anotar el cambio en el informe final",
+            "Reprobar y escribir DEFEITO NO VERIFICADOR con la evidencia"
           ],
-          "certa": 2,
+          "certa": 3,
           "explica": "Quien decide si el juez está equivocado es una persona. El evaluador reporta el defecto; aprobar o tocar la prueba abriría la puerta al atajo.",
           "ref": "codigo"
         }

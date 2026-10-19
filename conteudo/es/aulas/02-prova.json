@@ -154,12 +154,12 @@
         {
           "p": "¿Qué puede hacer el evaluador del /goal en Claude Code para juzgar la condición?",
           "opcoes": [
+            "Consultar el git log",
             "Ejecutar los tests",
             "Abrir los archivos del proyecto",
-            "Leer solo la conversación",
-            "Consultar el git log"
+            "Leer solo la conversación"
           ],
-          "certa": 2,
+          "certa": 3,
           "explica": "La documentación dice que no ejecuta comandos ni lee archivos. La prueba tiene que estar impresa en la conversación; por eso la condición pide la salida pegada.",
           "ref": "diagrama",
           "cert": true
@@ -167,12 +167,12 @@
         {
           "p": "En el ensayo, con todos los tests omitidos, ¿qué criterio dio OK por error?",
           "opcoes": [
+            "acao-reacao",
             "3 passed",
             "código 0 de pytest",
-            "acao-reacao",
             "git diff vacío"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "pytest sale con 0 cuando todos los tests se omiten. \"código 0\" es nivel 2 (burlable); \"3 passed\" con palabra completa no lo es.",
           "ref": "codigo",
           "cert": true
@@ -180,24 +180,24 @@
         {
           "p": "¿Cuál de estos mensajes finales deja que el evaluador del /goal decida con base en pruebas?",
           "opcoes": [
-            "Terminé, todo salió bien",
             "El que pega la salida de conferir-goal.py terminando en PRONTO",
-            "El que lista los archivos modificados",
-            "El que le pide al usuario que lo revise"
+            "La que pide al usuario revisar los criterios uno a uno",
+            "Terminé, todo salió bien",
+            "La que lista los archivos modificados y resume cada cambio realizado"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "Solo la salida pegada pone en la conversación lo que el comando realmente imprimió. \"Todo salió bien\" es un relato.",
           "ref": "codigo"
         },
         {
           "p": "Un criterio de función da OK antes de cualquier trabajo. ¿Qué indica eso?",
           "opcoes": [
-            "Que el trabajo es fácil",
-            "Que el criterio no mide el trabajo y hay que reescribirlo",
-            "Que conferir-goal.py tiene un bug",
-            "Nada"
+            "Que el trabajo es fácil y ya estaba casi listo",
+            "Que conferir-goal.py tiene un bug en la lectura de la salida",
+            "Nada",
+            "Que el criterio no mide el trabajo; reescríbelo"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "Un criterio de función tiene que fallar antes. Si ya pasa, no distingue lo hecho de lo no hecho.",
           "ref": "codigo"
         }

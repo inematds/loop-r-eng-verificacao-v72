@@ -159,30 +159,30 @@
       "perguntas": [
         {
           "p": "Por que a rubrica é sim/não e não nota de 1 a 10?",
-          "opcoes": ["Porque é mais rápida", "Porque nota contínua deixa o gosto do juiz decidir e deriva; sim/não dá para calibrar critério a critério", "Porque o modelo não sabe contar", "Tanto faz"],
-          "certa": 1,
+          "opcoes": ["Porque é mais rápida de ler e ocupa menos tokens na resposta do juiz", "Tanto faz", "Porque o modelo não sabe usar escala numérica e devolve texto no lugar da nota", "Porque nota contínua deriva; sim/não dá para calibrar critério a critério"],
+          "certa": 3,
           "explica": "Critério binário limita o gosto, permite medir concordância por critério e mostra exatamente qual pergunta está ambígua.",
           "ref": "diagrama",
           "cert": true
         },
         {
           "p": "R1 teve 80% de concordância e kappa 0,55. O juiz serve para R1?",
-          "opcoes": ["Sim, 80% é o mínimo", "Não: o kappa abaixo de 0,6 mostra que parte da concordância é acaso", "Sim, kappa não importa", "Só com 5 repetições"],
-          "certa": 1,
+          "opcoes": ["Não: kappa abaixo de 0,6 indica concordância por acaso", "Sim, 80% de concordância é o mínimo e o kappa é só complemento", "Sim, kappa não importa", "Só com 5 repetições"],
+          "certa": 0,
           "explica": "Concordância alta pode vir de quase tudo ser \"sim\". O kappa desconta isso. O calibrar.py exige os dois limites.",
           "ref": "codigo",
           "cert": true
         },
         {
           "p": "Na 1ª rodada real, o juiz reprovou mensagens boas em R2. O que estava errado?",
-          "opcoes": ["O modelo", "A temperatura", "A rubrica: exigia que tudo estivesse no diff, inclusive o motivo", "Os rótulos humanos"],
-          "certa": 2,
+          "opcoes": ["A rubrica: exigia no diff até o motivo da mudança", "Os rótulos humanos, feitos às pressas e sem segunda leitura", "A temperatura", "O modelo"],
+          "certa": 0,
           "explica": "O juiz seguiu a letra de um critério ambíguo. Reescrito o critério, a rodada seguinte calibrou.",
           "ref": "codigo"
         },
         {
           "p": "O juiz não respondeu (limite da assinatura). Como contar?",
-          "opcoes": ["Como \"nao\", por segurança", "Como \"sim\"", "Como erro: fora do resultado, e o script falha", "Repetir até responder, sem limite"],
+          "opcoes": ["Como \"sim\"", "Repetir até responder, sem limite", "Como erro: fora do resultado, e o script falha", "Como \"nao\", por segurança"],
           "certa": 2,
           "explica": "Resposta ausente não é veredito. Contar como \"nao\" reprovaria trabalho bom em silêncio; o juiz.py atual falha e diz quantas chamadas faltaram.",
           "ref": "codigo"

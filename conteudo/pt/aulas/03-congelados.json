@@ -153,7 +153,7 @@
       "perguntas": [
         {
           "p": "Por que o manifesto da guarda fica em GUARDA_DIR, fora do repo?",
-          "opcoes": ["Para não poluir o git", "Para o agente não conseguir reescrever o retrato do juiz", "Porque o pytest não lê fora do repo", "Para ficar mais rápido"],
+          "opcoes": ["Para não poluir o git com arquivos que mudam a cada ciclo", "Para o agente não conseguir reescrever o retrato do juiz", "Para ficar mais rápido", "Porque o pytest não lê arquivos fora da pasta do repo"],
           "certa": 1,
           "explica": "Verificador ao alcance do agente é verificador que o agente pode ajustar. Manifesto, testes escondidos e goal.md ficam onde ele não escreve.",
           "ref": "diagrama",
@@ -161,23 +161,23 @@
         },
         {
           "p": "O agente criou conftest.py na raiz marcando todos os testes como skip. O que o pytest devolve?",
-          "opcoes": ["Código 1", "Código 5", "Código 0 com \"3 skipped\"", "Erro de coleta"],
-          "certa": 2,
+          "opcoes": ["Código 1", "Código 0 com \"3 skipped\"", "Código 5", "Erro de coleta"],
+          "certa": 1,
           "explica": "Testes pulados não são falhas: o pytest sai com 0. Por isso a guarda exige o mínimo de passed e reprova qualquer skipped.",
           "ref": "codigo",
           "cert": true
         },
         {
           "p": "No loop-longrun.sh com PROTEGIDOS=\"tests/ pytest.ini\", o que acontece com o agente do conftest?",
-          "opcoes": ["É revertido", "CONCLUÍDO no ciclo 1, saída 0", "PARADO por estagnação", "Trava de segunda cópia"],
-          "certa": 1,
+          "opcoes": ["CONCLUÍDO no ciclo 1, saída 0", "PARADO por estagnação, saída 2", "É revertido e o ciclo recomeça", "Trava de segunda cópia"],
+          "certa": 0,
           "explica": "O conftest.py da raiz não está protegido e o TESTE_FINAL (pytest -q) sai 0. Corrige-se com *conftest.py em PROTEGIDOS e um teste final que exige passed.",
           "ref": "codigo"
         },
         {
           "p": "Quando congelar?",
-          "opcoes": ["Depois do primeiro ciclo, para pegar o estado real", "No commit de base, antes do agente começar", "Só no fim, antes de publicar", "Tanto faz"],
-          "certa": 1,
+          "opcoes": ["Só no fim, antes de publicar", "Depois do primeiro ciclo, para pegar o estado real", "No commit de base, antes do agente começar", "Tanto faz"],
+          "certa": 2,
           "explica": "Congelar depois incorpora ao manifesto o que o agente já mudou. O retrato tem de ser do juiz que você aprovou.",
           "ref": "codigo"
         }

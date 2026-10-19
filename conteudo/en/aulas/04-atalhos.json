@@ -240,12 +240,12 @@
         {
           "p": "The agent returns a dictionary with the exact inputs from the tests. Which detector does NOT catch this?",
           "opcoes": [
-            "Hidden tests",
             "The test guard from lesson 3",
             "The CHUMBADO line from atalhos.py",
+            "Hidden tests",
             "The skeptical evaluator"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "The guard only checks whether the judge changed and whether the tests pass. Here the judge is intact and the visible tests pass; what catches this is whatever looks beyond them.",
           "ref": "diagrama",
           "cert": true
@@ -253,22 +253,22 @@
         {
           "p": "In EvilGenie (Nov 2025), what helped little in detecting shortcuts?",
           "opcoes": [
-            "Model judge on the clear cases",
             "Hidden tests",
             "Looking at test file edits",
+            "Model judge on the clear cases",
             "Nothing helped"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "Hidden tests helped little there; the model judge caught the clear cases well. Hence combining detectors instead of trusting just one.",
           "ref": "passos"
         },
         {
           "p": "The agent says a test is wrong. What do you do?",
           "opcoes": [
-            "Let it adjust",
             "Skip the test for now",
+            "Delete and rewrite the test",
             "Forbid touching it, ask for the record with evidence, and move on",
-            "Delete and rewrite the test"
+            "Let it adjust"
           ],
           "certa": 2,
           "explica": "The test stays intact and the doubt becomes a record. The judge is changed by a person, outside the loop.",
@@ -278,12 +278,12 @@
         {
           "p": "The loop that optimizes its own metric over weeks (Goodhart) is the subject of which course?",
           "opcoes": [
-            "This one, lesson 4",
             "Course 5, The loop that learns",
             "Course 3",
-            "None of them"
+            "None of them",
+            "This one, lesson 4"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "Here the subject is the shortcut inside a single task. Optimizing against your own meter, with promotion and rollback, is lesson 6 of course 5.",
           "ref": "links"
         }

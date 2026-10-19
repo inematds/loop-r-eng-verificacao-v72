@@ -288,9 +288,9 @@
           "p": "Why is the model evaluator the last layer?",
           "opcoes": [
             "Because it is the most reliable",
-            "Because it is the most expensive: it's not worth spending quota evaluating what the code already failed",
-            "Because it needs the results of the others",
-            "In alphabetical order"
+            "Because it's the costliest: don't spend quota on what code already failed",
+            "In alphabetical order",
+            "Because it needs the results of the other layers to build its own prompt"
           ],
           "certa": 1,
           "explica": "Cheap, deterministic layers first. The model comes in only when the code found nothing.",
@@ -300,12 +300,12 @@
         {
           "p": "Where do the portao.env, the goal.md and the hidden tests live?",
           "opcoes": [
-            "At the repo root",
-            "In tests/",
+            "In CLAUDE.md",
             "Outside the repo, where the agent can't write",
-            "In CLAUDE.md"
+            "In tests/",
+            "At the repo root"
           ],
-          "certa": 2,
+          "certa": 1,
           "explica": "A judge within the agent's reach is a judge it can tune.",
           "ref": "codigo",
           "cert": true
@@ -313,22 +313,22 @@
         {
           "p": "In the loop with the gate, chumba made the quick test go to 3 passed. What happened?",
           "opcoes": [
+            "Second-copy lock",
             "CONCLUÍDO",
-            "The gate failed and the loop stopped at the cycle cap, exit 1",
-            "Stagnation, exit 2",
-            "Second-copy lock"
+            "Stagnation, exit 2, after several cycles without measured progress",
+            "The gate failed and the loop stopped at the cycle cap, exit 1"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "The quick test measures progress; what decides done is the TESTE_FINAL, now the gate. It held.",
           "ref": "codigo"
         },
         {
           "p": "A layer shows up as \"skipped\". Does that count as passed?",
           "opcoes": [
-            "Yes",
-            "No: it shows up separately precisely so you can see what was not verified",
             "Only if it's the evals one",
-            "It depends on the model"
+            "No: it appears separately so you can see what was not verified",
+            "Depends on the model configured as evaluator in the last layer of the gate",
+            "Yes"
           ],
           "certa": 1,
           "explica": "The gate never approves silently. Skipped means missing configuration, and you decide whether to accept it.",
@@ -337,10 +337,10 @@
         {
           "p": "In the loop, why didn't atalhos.py see the CHUMBADO in the diff?",
           "opcoes": [
-            "Bug in atalhos.py",
-            "Because the loop committed the checkpoint before the final test and the diff against HEAD was empty",
             "Because chumba didn't change anything",
-            "Because the evaluator had already approved"
+            "Because the loop committed the checkpoint earlier, and the diff against HEAD was empty",
+            "Bug in atalhos.py",
+            "Because the model-based evaluator had already approved and atalhos.py only runs after it"
           ],
           "certa": 1,
           "explica": "In that case, what catches it are the criteria with new input and the hidden tests. To read the diff in the loop, compare against the base commit.",

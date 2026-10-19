@@ -178,12 +178,12 @@
         {
           "p": "Para un loop que corre sin supervisión, ¿qué métrica importa?",
           "opcoes": [
-            "pass@k",
-            "pass^k",
+            "El total de la primera ronda",
             "La mejor ronda",
-            "El total de la primera ronda"
+            "pass@k",
+            "pass^k"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "Nadie elige la mejor de tres en un loop autónomo: cada ejecución tiene que acertar. pass^k mide eso.",
           "ref": "diagrama",
           "cert": true
@@ -191,24 +191,24 @@
         {
           "p": "Con 75% de acierto por intento, independientes, ¿cuánto da pass^3?",
           "opcoes": [
-            "75%",
-            "Cerca de 98%",
             "Cerca de 42%",
-            "25%"
+            "25%",
+            "75%",
+            "Cerca de 98%"
           ],
-          "certa": 2,
+          "certa": 0,
           "explica": "0,75 × 0,75 × 0,75 ≈ 0,42. El ejemplo está en el artículo de evals de Anthropic (09/01/2026).",
           "ref": "diagrama"
         },
         {
           "p": "Según METR (10/03/2026), ¿qué pasa con los PRs que pasan en SWE-bench Verified?",
           "opcoes": [
-            "Todos serían aceptados",
             "Cerca de la mitad no sería aceptada por los mantenedores",
+            "Todos serían aceptados, ya que pasar las pruebas es el criterio",
             "Ninguno sería aceptado",
             "METR no estudió eso"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "Pasar el test no es ser mergeable. El test cubre una parte de lo que exige un mantenedor.",
           "ref": "passos",
           "cert": true
@@ -216,12 +216,12 @@
         {
           "p": "¿Qué significa un horizonte de 50% de 16 h?",
           "opcoes": [
+            "El agente acierta 50% de todo en 16 h",
             "El agente trabaja 16 h solo",
             "Tareas que le llevarían 16 h a un especialista se resuelven la mitad de las veces, en un conjunto bien especificado",
-            "El agente acierta 50% de todo en 16 h",
             "El modelo tiene 16 h de contexto"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "Es la duración de la tarea medida en tiempo humano, con 50% de acierto, en tareas verificables. No es autonomía ni vale para una tarea vaga.",
           "ref": "passos"
         }

@@ -200,7 +200,7 @@
       "perguntas": [
         {
           "p": "Por que o avaliador por modelo é a última camada?",
-          "opcoes": ["Porque é o mais confiável", "Porque é o mais caro: não vale gastar cota avaliando o que o código já reprovou", "Porque precisa do resultado das outras", "Por ordem alfabética"],
+          "opcoes": ["Porque é o mais confiável", "Porque é o mais caro: não vale gastar cota no que o código já reprovou", "Por ordem alfabética", "Porque precisa do resultado das outras camadas para montar o próprio prompt"],
           "certa": 1,
           "explica": "Camadas baratas e determinísticas primeiro. O modelo entra só quando o código não achou nada.",
           "ref": "diagrama",
@@ -208,29 +208,29 @@
         },
         {
           "p": "Onde ficam o portao.env, o goal.md e os testes escondidos?",
-          "opcoes": ["Na raiz do repo", "Em tests/", "Fora do repo, onde o agente não escreve", "No CLAUDE.md"],
-          "certa": 2,
+          "opcoes": ["No CLAUDE.md", "Fora do repo, onde o agente não escreve", "Em tests/", "Na raiz do repo"],
+          "certa": 1,
           "explica": "Juiz ao alcance do agente é juiz que ele pode ajustar.",
           "ref": "codigo",
           "cert": true
         },
         {
           "p": "No loop com portão, o chumba fez o teste rápido ir a 3 passed. O que aconteceu?",
-          "opcoes": ["CONCLUÍDO", "O portão reprovou e o loop parou no teto de ciclos, saída 1", "Estagnação, saída 2", "Trava de segunda cópia"],
-          "certa": 1,
+          "opcoes": ["Trava de segunda cópia", "CONCLUÍDO", "Estagnação, saída 2, depois de vários ciclos sem avanço medido", "O portão reprovou e o loop parou no teto de ciclos, saída 1"],
+          "certa": 3,
           "explica": "O teste rápido mede progresso; quem decide o concluído é o TESTE_FINAL, agora o portão. Ele segurou.",
           "ref": "codigo"
         },
         {
           "p": "Uma camada aparece como \"pulada\". Isso conta como aprovada?",
-          "opcoes": ["Sim", "Não: aparece separada justamente para você ver o que não foi verificado", "Só se for a de evals", "Depende do modelo"],
+          "opcoes": ["Só se for a de evals", "Não: aparece separada para você ver o que não foi verificado", "Depende do modelo configurado como avaliador na última camada do portão", "Sim"],
           "certa": 1,
           "explica": "O portão nunca aprova em silêncio. Pulada é falta de configuração, e você decide se aceita.",
           "ref": "codigo"
         },
         {
           "p": "No loop, por que o atalhos.py não viu o CHUMBADO no diff?",
-          "opcoes": ["Bug no atalhos.py", "Porque o loop commitou o checkpoint antes do teste final e o diff contra HEAD ficou vazio", "Porque o chumba não mexeu em nada", "Porque o avaliador já tinha aprovado"],
+          "opcoes": ["Porque o chumba não mexeu em nada", "Porque o loop commitou o checkpoint antes, e o diff contra HEAD ficou vazio", "Bug no atalhos.py", "Porque o avaliador por modelo já tinha aprovado e o atalhos.py só roda depois dele"],
           "certa": 1,
           "explica": "Nesse caso quem pega são os critérios com entrada nova e os testes escondidos. Para ler o diff no loop, compare com o commit de base.",
           "ref": "codigo"

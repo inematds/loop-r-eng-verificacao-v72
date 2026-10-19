@@ -185,30 +185,30 @@
       "perguntas": [
         {
           "p": "A versão 2 tem o mesmo total da versão 1. O que o rodar-evals.py diz?",
-          "opcoes": ["Empate, pode promover", "REGRESSÃO t06: não promova", "Nada, porque o total é igual", "Que a versão 2 é melhor"],
-          "certa": 1,
+          "opcoes": ["Empate, pode promover", "Que a versão 2 é melhor", "Nada, porque o total é igual", "REGRESSÃO t06: não promova"],
+          "certa": 3,
           "explica": "A comparação é caso a caso: t06 passava e agora falha. Regressão bloqueia mesmo com o total igual ou maior.",
           "ref": "codigo",
           "cert": true
         },
         {
           "p": "Quando usar corretor por código em vez de juiz por modelo?",
-          "opcoes": ["Nunca, o modelo entende melhor", "Sempre que a resposta pode ser conferida campo a campo ou por teste", "Só em produção", "Só quando o modelo está fora do ar"],
-          "certa": 1,
+          "opcoes": ["Nunca, o modelo entende melhor o sentido da resposta", "Só quando o modelo juiz está fora do ar ou sem cota no dia", "Quando dá para conferir a resposta campo a campo ou por teste", "Só em produção"],
+          "certa": 2,
           "explica": "Código não deriva, não tem viés de tamanho e não custa cota. O juiz por modelo fica para o que é subjetivo, e só depois de calibrado.",
           "ref": "diagrama",
           "cert": true
         },
         {
           "p": "O agente real acertou 10 de 10. O que fazer com o conjunto?",
-          "opcoes": ["Nada, está ótimo", "Acrescentar casos mais difíceis até voltar a ter onde errar", "Apagar os casos fáceis", "Trocar o modelo"],
+          "opcoes": ["Apagar os casos fáceis para o placar refletir só os difíceis", "Acrescentar casos mais difíceis até voltar a ter onde errar", "Trocar o modelo por um mais fraco para voltar a haver erro", "Nada, está ótimo"],
           "certa": 1,
           "explica": "Conjunto saturado não distingue versões. Casos difíceis e armadilhas reais devolvem o poder de comparação.",
           "ref": "codigo"
         },
         {
           "p": "De onde vêm os melhores casos de um conjunto de ouro?",
-          "opcoes": ["Do modelo, que gera exemplos", "De falhas reais que já aconteceram, com a origem anotada", "De benchmarks públicos", "Da documentação"],
+          "opcoes": ["Do modelo, que gera exemplos variados em grande quantidade", "De falhas reais que já aconteceram, com a origem anotada", "De benchmarks públicos, que já vêm com gabarito pronto", "Da documentação"],
           "certa": 1,
           "explica": "Falha real é o caso que você precisa garantir que não volta. Cada caso leva a origem para alguém saber por que ele existe.",
           "ref": "diagrama"

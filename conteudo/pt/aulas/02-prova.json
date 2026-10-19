@@ -141,31 +141,31 @@
       "perguntas": [
         {
           "p": "O que o avaliador do /goal no Claude Code consegue fazer para julgar a condição?",
-          "opcoes": ["Rodar os testes", "Abrir os arquivos do projeto", "Ler só a conversa", "Consultar o git log"],
-          "certa": 2,
+          "opcoes": ["Consultar o git log", "Rodar os testes", "Abrir os arquivos do projeto", "Ler só a conversa"],
+          "certa": 3,
           "explica": "A documentação diz que ele não roda comandos nem lê arquivos. A prova tem de estar impressa na conversa; por isso a condição pede a saída colada.",
           "ref": "diagrama",
           "cert": true
         },
         {
           "p": "No ensaio, com todos os testes pulados, qual critério deu OK por engano?",
-          "opcoes": ["3 passed", "código 0 do pytest", "acao-reacao", "git diff vazio"],
-          "certa": 1,
+          "opcoes": ["acao-reacao", "3 passed", "código 0 do pytest", "git diff vazio"],
+          "certa": 2,
           "explica": "O pytest sai com 0 quando todos os testes são pulados. \"código 0\" é nível 2 (burlável); \"3 passed\" com palavra inteira não é.",
           "ref": "codigo",
           "cert": true
         },
         {
           "p": "Qual destas mensagens finais deixa o avaliador do /goal decidir com base em prova?",
-          "opcoes": ["Terminei, deu tudo certo", "A que cola a saída do conferir-goal.py terminando em PRONTO", "A que lista os arquivos alterados", "A que pede para o usuário conferir"],
-          "certa": 1,
+          "opcoes": ["A que cola a saída do conferir-goal.py terminando em PRONTO", "A que pede para o usuário conferir os critérios um a um", "Terminei, deu tudo certo", "A que lista os arquivos alterados e resume cada mudança feita"],
+          "certa": 0,
           "explica": "Só a saída colada põe na conversa o que o comando realmente imprimiu. \"Deu tudo certo\" é relato.",
           "ref": "codigo"
         },
         {
           "p": "Um critério de função dá OK antes de qualquer trabalho. O que isso indica?",
-          "opcoes": ["Que o trabalho é fácil", "Que o critério não mede o trabalho e precisa ser reescrito", "Que o conferir-goal.py tem bug", "Nada"],
-          "certa": 1,
+          "opcoes": ["Que o trabalho é fácil e já estava quase pronto", "Que o conferir-goal.py tem bug na leitura da saída", "Nada", "Que o critério não mede o trabalho; reescreva-o"],
+          "certa": 3,
           "explica": "Critério de função tem de falhar antes. Se já passa, ele não distingue feito de não feito.",
           "ref": "codigo"
         }

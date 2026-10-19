@@ -184,10 +184,10 @@
         {
           "p": "¿Por qué el manifiesto de la guardia queda en GUARDA_DIR, fuera del repo?",
           "opcoes": [
-            "Para no ensuciar el git",
+            "Para no ensuciar el git con archivos que cambian en cada ciclo",
             "Para que el agente no pueda reescribir la foto del juez",
-            "Porque pytest no lee fuera del repo",
-            "Para ir más rápido"
+            "Para ir más rápido",
+            "Porque pytest no lee archivos fuera de la carpeta del repo"
           ],
           "certa": 1,
           "explica": "Un verificador al alcance del agente es un verificador que el agente puede ajustar. El manifiesto, los tests ocultos y goal.md quedan donde él no escribe.",
@@ -198,11 +198,11 @@
           "p": "El agente creó conftest.py en la raíz marcando todos los tests como skip. ¿Qué devuelve pytest?",
           "opcoes": [
             "Código 1",
-            "Código 5",
             "Código 0 con \"3 skipped\"",
+            "Código 5",
             "Error de recolección"
           ],
-          "certa": 2,
+          "certa": 1,
           "explica": "Los tests omitidos no son fallas: pytest sale con 0. Por eso la guardia exige el mínimo de passed y reprueba cualquier skipped.",
           "ref": "codigo",
           "cert": true
@@ -210,24 +210,24 @@
         {
           "p": "En loop-longrun.sh con PROTEGIDOS=\"tests/ pytest.ini\", ¿qué le pasa al agente del conftest?",
           "opcoes": [
-            "Se revierte",
             "CONCLUÍDO no ciclo 1, saída 0",
-            "PARADO por estagnação",
+            "PARADO por estagnação, saída 2",
+            "Se revierte y el ciclo recomienza",
             "Traba de segunda copia"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "El conftest.py de la raíz no está protegido y el TESTE_FINAL (pytest -q) sale con 0. Se corrige con *conftest.py en PROTEGIDOS y un test final que exija passed.",
           "ref": "codigo"
         },
         {
           "p": "¿Cuándo congelar?",
           "opcoes": [
+            "Solo al final, antes de publicar",
             "Después del primer ciclo, para capturar el estado real",
             "En el commit base, antes de que el agente empiece",
-            "Solo al final, antes de publicar",
             "Da igual"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "Congelar después incorpora al manifiesto lo que el agente ya cambió. La foto tiene que ser del juez que tú aprobaste.",
           "ref": "codigo"
         }

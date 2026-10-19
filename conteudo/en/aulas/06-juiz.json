@@ -181,12 +181,12 @@
         {
           "p": "Why is the rubric yes/no and not a score from 1 to 10?",
           "opcoes": [
-            "Because it is faster",
-            "Because a continuous score lets the judge's taste decide and it drifts; yes/no can be calibrated criterion by criterion",
-            "Because the model can't count",
-            "Doesn't matter"
+            "Because it is quicker to read and takes fewer tokens in the judge's answer",
+            "Doesn't matter",
+            "Because the model doesn't know how to use a numeric scale and returns text instead of the score",
+            "Because a continuous score drifts; yes/no can be calibrated criterion by criterion"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "A binary criterion limits taste, lets you measure agreement per criterion, and shows exactly which question is ambiguous.",
           "ref": "diagrama",
           "cert": true
@@ -194,12 +194,12 @@
         {
           "p": "R1 had 80% agreement and kappa 0.55. Is the judge good for R1?",
           "opcoes": [
-            "Yes, 80% is the minimum",
-            "No: a kappa below 0.6 shows part of the agreement is chance",
+            "No: kappa below 0.6 indicates agreement by chance",
+            "Yes, 80% agreement is the minimum and kappa is just a complement",
             "Yes, kappa doesn't matter",
             "Only with 5 repetitions"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "High agreement can come from almost everything being \"yes\". Kappa discounts that. calibrar.py requires both thresholds.",
           "ref": "codigo",
           "cert": true
@@ -207,22 +207,22 @@
         {
           "p": "In the 1st real round, the judge failed good messages in R2. What was wrong?",
           "opcoes": [
-            "The model",
+            "The rubric: it demanded even the change's reason in the diff",
+            "The human labels, made in a rush and without a second reading",
             "The temperature",
-            "The rubric: it required everything to be in the diff, including the reason",
-            "The human labels"
+            "The model"
           ],
-          "certa": 2,
+          "certa": 0,
           "explica": "The judge followed the letter of an ambiguous criterion. Once the criterion was rewritten, the next round calibrated.",
           "ref": "codigo"
         },
         {
           "p": "The judge didn't respond (subscription limit). How do you count it?",
           "opcoes": [
-            "As \"nao\", to be safe",
             "As \"sim\"",
+            "Repeat until it responds, with no limit",
             "As an error: left out of the result, and the script fails",
-            "Repeat until it responds, with no limit"
+            "As \"nao\", to be safe"
           ],
           "certa": 2,
           "explica": "A missing answer is not a verdict. Counting it as \"nao\" would silently fail good work; the current juiz.py fails and says how many calls were missing.",

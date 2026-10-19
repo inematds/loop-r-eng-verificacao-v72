@@ -199,11 +199,11 @@
           "p": "Version 2 has the same total as version 1. What does rodar-evals.py say?",
           "opcoes": [
             "A tie, you can promote it",
-            "REGRESSÃO t06: não promova",
+            "That version 2 is better",
             "Nothing, because the total is the same",
-            "That version 2 is better"
+            "REGRESSÃO t06: não promova"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "The comparison is case by case: t06 used to pass and now fails. A regression blocks the promotion even when the total is equal or higher.",
           "ref": "codigo",
           "cert": true
@@ -211,12 +211,12 @@
         {
           "p": "When should you use a code-based grader instead of a model judge?",
           "opcoes": [
-            "Never, the model understands better",
-            "Whenever the answer can be checked field by field or by a test",
-            "Only in production",
-            "Only when the model is down"
+            "Never, the model better understands the meaning of the answer",
+            "Only when the judge model is down or out of quota for the day",
+            "When the answer can be checked field by field or by test",
+            "Only in production"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "Code doesn't drift, has no length bias, and doesn't use your subscription quota. Keep the model judge for what is subjective, and only after it has been calibrated.",
           "ref": "diagrama",
           "cert": true
@@ -224,10 +224,10 @@
         {
           "p": "The real agent got 10 out of 10. What do you do with the set?",
           "opcoes": [
-            "Nothing, it's great",
+            "Delete the easy cases so the scoreboard reflects only the hard ones",
             "Add harder cases until there is room to fail again",
-            "Delete the easy cases",
-            "Switch the model"
+            "Swap the model for a weaker one so errors show up again",
+            "Nothing, it's great"
           ],
           "certa": 1,
           "explica": "A saturated set can't tell versions apart. Harder cases and real traps give you back the power to compare.",
@@ -236,9 +236,9 @@
         {
           "p": "Where do the best cases for a golden set come from?",
           "opcoes": [
-            "From the model, which generates examples",
+            "From the model, which generates varied examples in large quantity",
             "From real failures that already happened, with the origin noted",
-            "From public benchmarks",
+            "From public benchmarks, which already come with a ready answer key",
             "From the documentation"
           ],
           "certa": 1,

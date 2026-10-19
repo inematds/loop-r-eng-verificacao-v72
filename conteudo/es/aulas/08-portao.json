@@ -288,9 +288,9 @@
           "p": "¿Por qué el evaluador por modelo es la última capa?",
           "opcoes": [
             "Porque es el más confiable",
-            "Porque es el más caro: no vale gastar cuota evaluando lo que el código ya reprobó",
-            "Porque necesita el resultado de las otras",
-            "Por orden alfabético"
+            "Porque es el más caro: no vale gastar cuota en lo que el código ya reprobó",
+            "Por orden alfabético",
+            "Porque necesita el resultado de las otras capas para armar su propio prompt"
           ],
           "certa": 1,
           "explica": "Primero las capas baratas y determinísticas. El modelo entra solo cuando el código no encontró nada.",
@@ -300,12 +300,12 @@
         {
           "p": "¿Dónde quedan el portao.env, el goal.md y los tests ocultos?",
           "opcoes": [
-            "En la raíz del repo",
-            "En tests/",
+            "En el CLAUDE.md",
             "Fuera del repo, donde el agente no escribe",
-            "En el CLAUDE.md"
+            "En tests/",
+            "En la raíz del repo"
           ],
-          "certa": 2,
+          "certa": 1,
           "explica": "Un juez al alcance del agente es un juez que él puede ajustar.",
           "ref": "codigo",
           "cert": true
@@ -313,22 +313,22 @@
         {
           "p": "En el loop con compuerta, el chumba hizo que el test rápido llegara a 3 passed. ¿Qué pasó?",
           "opcoes": [
+            "Traba de segunda copia",
             "CONCLUÍDO",
-            "La compuerta reprobó y el loop se detuvo en el tope de ciclos, saída 1",
-            "Estancamiento, saída 2",
-            "Traba de segunda copia"
+            "Estancamiento, saída 2, después de varios ciclos sin avance medido",
+            "La compuerta reprobó y el loop se detuvo en el tope de ciclos, saída 1"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "El test rápido mide progreso; quien decide el terminado es el TESTE_FINAL, ahora la compuerta. Ella resistió.",
           "ref": "codigo"
         },
         {
           "p": "Una capa aparece como \"pulada\". ¿Eso cuenta como aprobada?",
           "opcoes": [
-            "Sí",
-            "No: aparece por separado justamente para que veas lo que no se verificó",
             "Solo si es la de evals",
-            "Depende del modelo"
+            "No: aparece separada para que veas lo que no fue verificado",
+            "Depende del modelo configurado como evaluador en la última capa de la compuerta",
+            "Sí"
           ],
           "certa": 1,
           "explica": "La compuerta nunca aprueba en silencio. Omitida es falta de configuración, y tú decides si la aceptas.",
@@ -337,10 +337,10 @@
         {
           "p": "En el loop, ¿por qué atalhos.py no vio el CHUMBADO en el diff?",
           "opcoes": [
-            "Un bug en atalhos.py",
-            "Porque el loop hizo commit del checkpoint antes del test final y el diff contra HEAD quedó vacío",
             "Porque chumba no tocó nada",
-            "Porque el evaluador ya había aprobado"
+            "Porque el loop hizo commit del checkpoint antes, y el diff contra HEAD quedó vacío",
+            "Un bug en atalhos.py",
+            "Porque el evaluador por modelo ya había aprobado y atalhos.py solo corre después de él"
           ],
           "certa": 1,
           "explica": "En ese caso quienes lo detectan son los criterios con entrada nueva y los tests ocultos. Para leer el diff en el loop, compara con el commit base.",

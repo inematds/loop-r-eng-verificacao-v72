@@ -181,12 +181,12 @@
         {
           "p": "¿Por qué la rúbrica es sí/no y no una nota de 1 a 10?",
           "opcoes": [
-            "Porque es más rápida",
-            "Porque una nota continua deja que decida el gusto del juez y deriva; sí/no se puede calibrar criterio por criterio",
-            "Porque el modelo no sabe contar",
-            "Da igual"
+            "Porque es más rápida de leer y ocupa menos tokens en la respuesta del juez",
+            "Da igual",
+            "Porque el modelo no sabe usar escala numérica y devuelve texto en lugar de la nota",
+            "Porque la nota continua se desvía; sí/no permite calibrar criterio por criterio"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "Un criterio binario limita el gusto, permite medir la concordancia por criterio y muestra exactamente qué pregunta es ambigua.",
           "ref": "diagrama",
           "cert": true
@@ -194,12 +194,12 @@
         {
           "p": "R1 tuvo 80% de concordancia y kappa 0,55. ¿Sirve el juez para R1?",
           "opcoes": [
-            "Sí, 80% es el mínimo",
-            "No: un kappa por debajo de 0,6 muestra que parte de la concordancia es azar",
+            "No: un kappa por debajo de 0,6 indica concordancia por azar",
+            "Sí, 80% de concordancia es el mínimo y el kappa es solo complemento",
             "Sí, el kappa no importa",
             "Solo con 5 repeticiones"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "Una concordancia alta puede venir de que casi todo sea \"sim\". El kappa descuenta eso. calibrar.py exige los dos límites.",
           "ref": "codigo",
           "cert": true
@@ -207,22 +207,22 @@
         {
           "p": "En la 1.ª ronda real, el juez reprobó mensajes buenos en R2. ¿Qué estaba mal?",
           "opcoes": [
-            "El modelo",
+            "La rúbrica: exigía en el diff hasta el motivo del cambio",
+            "Las etiquetas humanas, hechas a la carrera y sin segunda lectura",
             "La temperatura",
-            "La rúbrica: exigía que todo estuviera en el diff, incluso el motivo",
-            "Las etiquetas humanas"
+            "El modelo"
           ],
-          "certa": 2,
+          "certa": 0,
           "explica": "El juez siguió la letra de un criterio ambiguo. Reescrito el criterio, la ronda siguiente calibró.",
           "ref": "codigo"
         },
         {
           "p": "El juez no respondió (límite de la suscripción). ¿Cómo contarlo?",
           "opcoes": [
-            "Como \"nao\", por seguridad",
             "Como \"sim\"",
+            "Repetir hasta que responda, sin límite",
             "Como error: fuera del resultado, y el script falla",
-            "Repetir hasta que responda, sin límite"
+            "Como \"nao\", por seguridad"
           ],
           "certa": 2,
           "explica": "Una respuesta ausente no es un veredicto. Contarla como \"nao\" reprobaría trabajo bueno en silencio; el juiz.py actual falla y dice cuántas llamadas faltaron.",

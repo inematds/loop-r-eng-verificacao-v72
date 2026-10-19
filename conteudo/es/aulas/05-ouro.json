@@ -199,11 +199,11 @@
           "p": "La versión 2 tiene el mismo total que la versión 1. ¿Qué dice el rodar-evals.py?",
           "opcoes": [
             "Empate, se puede promover",
-            "REGRESSÃO t06: no promuevas",
+            "Que la versión 2 es mejor",
             "Nada, porque el total es igual",
-            "Que la versión 2 es mejor"
+            "REGRESSÃO t06: no promuevas"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "La comparación es caso por caso: t06 pasaba y ahora falla. Una regresión bloquea aunque el total sea igual o mayor.",
           "ref": "codigo",
           "cert": true
@@ -211,12 +211,12 @@
         {
           "p": "¿Cuándo usar un corrector por código en vez de un juez por modelo?",
           "opcoes": [
-            "Nunca, el modelo entiende mejor",
-            "Siempre que la respuesta se pueda verificar campo por campo o con un test",
-            "Solo en producción",
-            "Solo cuando el modelo está fuera de servicio"
+            "Nunca, el modelo entiende mejor el sentido de la respuesta",
+            "Solo cuando el modelo juez está fuera de servicio o sin cuota en el día",
+            "Cuando se puede verificar la respuesta campo por campo o con una prueba",
+            "Solo en producción"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "El código no deriva, no tiene sesgo de tamaño y no consume la cuota de tu suscripción. El juez por modelo se deja para lo subjetivo, y solo después de calibrado.",
           "ref": "diagrama",
           "cert": true
@@ -224,10 +224,10 @@
         {
           "p": "El agente real acertó 10 de 10. ¿Qué hacer con el conjunto?",
           "opcoes": [
-            "Nada, está genial",
+            "Borrar los casos fáciles para que el marcador refleje solo los difíciles",
             "Agregar casos más difíciles hasta que vuelva a tener dónde fallar",
-            "Borrar los casos fáciles",
-            "Cambiar el modelo"
+            "Cambiar el modelo por uno más débil para que vuelva a haber errores",
+            "Nada, está genial"
           ],
           "certa": 1,
           "explica": "Un conjunto saturado no distingue versiones. Los casos difíciles y las trampas reales devuelven el poder de comparación.",
@@ -236,9 +236,9 @@
         {
           "p": "¿De dónde vienen los mejores casos de un conjunto de oro?",
           "opcoes": [
-            "Del modelo, que genera ejemplos",
+            "Del modelo, que genera ejemplos variados en gran cantidad",
             "De fallas reales que ya ocurrieron, con el origen anotado",
-            "De benchmarks públicos",
+            "De benchmarks públicos, que ya vienen con respuestas de referencia listas",
             "De la documentación"
           ],
           "certa": 1,

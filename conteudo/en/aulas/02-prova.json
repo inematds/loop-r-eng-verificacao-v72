@@ -154,12 +154,12 @@
         {
           "p": "What can the /goal evaluator in Claude Code do to judge the condition?",
           "opcoes": [
+            "Check the git log",
             "Run the tests",
             "Open the project files",
-            "Read only the conversation",
-            "Check the git log"
+            "Read only the conversation"
           ],
-          "certa": 2,
+          "certa": 3,
           "explica": "The documentation says it doesn't run commands or read files. The proof has to be printed in the conversation; that's why the condition asks for the pasted output.",
           "ref": "diagrama",
           "cert": true
@@ -167,12 +167,12 @@
         {
           "p": "In the rehearsal, with all tests skipped, which criterion passed by mistake?",
           "opcoes": [
+            "acao-reacao",
             "3 passed",
             "pytest exit code 0",
-            "acao-reacao",
             "empty git diff"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "pytest exits with 0 when all tests are skipped. \"exit code 0\" is level 2 (gameable); \"3 passed\" as a whole word is not.",
           "ref": "codigo",
           "cert": true
@@ -180,24 +180,24 @@
         {
           "p": "Which of these final messages lets the /goal evaluator decide based on proof?",
           "opcoes": [
-            "Done, everything went fine",
             "The one that pastes the output of conferir-goal.py ending in PRONTO",
-            "The one that lists the changed files",
-            "The one that asks the user to check"
+            "The one that asks the user to check the criteria one by one",
+            "Done, everything went fine",
+            "The one that lists the changed files and summarizes each change made"
           ],
-          "certa": 1,
+          "certa": 0,
           "explica": "Only the pasted output puts what the command actually printed into the conversation. \"Everything went fine\" is a report.",
           "ref": "codigo"
         },
         {
           "p": "A function criterion passes before any work is done. What does that tell you?",
           "opcoes": [
-            "That the work is easy",
-            "That the criterion doesn't measure the work and needs to be rewritten",
-            "That conferir-goal.py has a bug",
-            "Nothing"
+            "That the work is easy and was almost done already",
+            "That conferir-goal.py has a bug in reading the output",
+            "Nothing",
+            "That the criterion misses the work; rewrite it"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "A function criterion has to fail first. If it already passes, it can't tell done from not done.",
           "ref": "codigo"
         }

@@ -219,12 +219,12 @@
         {
           "p": "Why doesn't avaliar.sh send the agent's report to the evaluator?",
           "opcoes": [
-            "To save tokens",
-            "Because the report anchors the judgment and is the least verifiable part of the work",
+            "Because the evaluator already has access to the conversation and would read the report twice",
+            "To save tokens, since the report tends to be long and repetitive",
             "Because the report comes in another language",
-            "Because the evaluator already has access to the conversation"
+            "Because the report anchors the judgment and is the least verifiable"
           ],
-          "certa": 1,
+          "certa": 3,
           "explica": "The evaluator receives only what can be checked: diff, new files and the test run from outside. With the report included, it tends to confirm what it read.",
           "ref": "diagrama",
           "cert": true
@@ -232,10 +232,10 @@
         {
           "p": "The agent says \"3 passed\" and the test run by the evaluator says \"3 failed\". Which one counts?",
           "opcoes": [
-            "The report, because the agent saw the whole context",
+            "Ask the agent to explain",
             "The average of the two",
             "The test output run by the evaluator",
-            "Ask the agent to explain"
+            "The report, because the agent saw the whole context"
           ],
           "certa": 2,
           "explica": "The test rules. In avaliar.sh, an exit code other than 0 fails the run before any model opinion.",
@@ -244,12 +244,12 @@
         {
           "p": "In chumba mode the tests pass and the fixed-rule evaluator approves. What caught the shortcut?",
           "opcoes": [
-            "Run the tests again",
-            "The real evaluator, with the skeptical prompt, reading the diff",
             "Increase the timeout",
-            "Nothing: the tests passed"
+            "Nothing: the tests passed and that alone is enough proof",
+            "The real evaluator, skeptical prompt, reading the diff",
+            "Run the tests again, now with verbose output (-v)"
           ],
-          "certa": 1,
+          "certa": 2,
           "explica": "Criterion 4 of the prompt (special case based on the test inputs) made the evaluator read the diff and find the answer dictionary. Hidden tests, from lesson 4, catch it too.",
           "ref": "codigo",
           "cert": true
@@ -257,12 +257,12 @@
         {
           "p": "The evaluator thinks the test is wrong. What does the prompt tell it to do?",
           "opcoes": [
-            "Approve, since the test is wrong",
-            "Fix the test",
-            "Fail the run and write DEFEITO NO VERIFICADOR with the evidence",
-            "Ignore the test"
+            "Approve, since the test is wrong and the code looks correct",
+            "Ignore the test",
+            "Fix the test and note the change in the final report",
+            "Fail it and write DEFEITO NO VERIFICADOR with evidence"
           ],
-          "certa": 2,
+          "certa": 3,
           "explica": "A person decides whether the judge is wrong. The evaluator reports the defect; approving or editing the test would open the door to the shortcut.",
           "ref": "codigo"
         }
