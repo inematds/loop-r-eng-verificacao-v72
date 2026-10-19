@@ -1,0 +1,185 @@
+{
+  "id": "loop-r-eng-verificacao-v72",
+  "lang": "en",
+  "url": "https://inematds.github.io/loop-r-eng-verificacao-v72/en/",
+  "nome": "Verification and Evals",
+  "sub": "LOOP-R Engineering Track · course 1",
+  "volta": {
+    "t": "LOOP-R Engineering area",
+    "href": "https://eventos.inema.pro/loop-r-engenharia/"
+  },
+  "lado_card": {
+    "rot": "This course's kit",
+    "t": "kit/ in the course repository",
+    "texto": "Evaluator, criteria check, test guard, shortcut detector, evals, judge, and gate. Each one with a rehearsal at no cost, tested on 10/19/2026.",
+    "link": "Open the kit/ folder on GitHub",
+    "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit"
+  },
+  "rodape": "INEMA.CLUB · open and free content · INEMA Learning v7.2 format · LOOP-R Engineering Track, course 1 of 6 · <a href=\"https://eventos.inema.pro/loop-r-engenharia/\">eventos.inema.pro/loop-r-engenharia</a> · <a href=\"https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit\">course kit on GitHub</a> · <a href=\"https://inema.club/\">inema.club</a>",
+  "videos": {},
+  "inicio": {
+    "kicker": "LOOP-R Engineering Track · course 1 of 6 · 8 lessons",
+    "titulo": "Verification and Evals: whoever says it's done can't be the one who did it",
+    "lead": "A separate, skeptical evaluator, a criterion you can check by command, frozen tests, shortcut detection, a golden set, a calibrated judge, metrics that don't fool you, and a layered gate for your loop. All with small scripts you run first for free, with a fake agent and a fake judge.",
+    "cta": "Start with lesson 1",
+    "cta2": {
+      "t": "See the track area",
+      "href": "https://eventos.inema.pro/loop-r-engenharia/"
+    },
+    "capa_alt": "Night inspection bench with an articulated magnifier over a board, an oscilloscope, and a terminal in the background.",
+    "numeros": [
+      {
+        "v": "8",
+        "t": "lessons"
+      },
+      {
+        "v": "22",
+        "t": "exercises with expected output"
+      },
+      {
+        "v": "14",
+        "t": "scripts in the kit, all with a no-cost rehearsal"
+      },
+      {
+        "v": "0",
+        "t": "model calls in the rehearsals"
+      }
+    ],
+    "aulas_titulo": "The lessons",
+    "aulas_sub": "In the order you build the gate: separate who checks, check the criterion, protect the judge, hunt shortcuts, measure with evals and a judge, read the numbers, and put it all together.",
+    "blocos": [
+      {
+        "t": "Who it's for",
+        "itens": [
+          "People who already use Claude Code or Codex in the terminal and have already heard \"done, all tests pass\" when they didn't.",
+          "People who will leave a loop running on its own and need a judge the agent can't fool.",
+          "People who want to compare two versions of an agent with a number, not an impression."
+        ]
+      },
+      {
+        "t": "What you'll be able to do",
+        "itens": [
+          "Run a separate evaluator that doesn't read the agent's report and fails what only looks done.",
+          "Freeze the tests and everything pytest reads, and catch the agent that deletes, skips, or memorizes the answer.",
+          "Build a golden set with regression and a model judge calibrated against your own labels.",
+          "Read pass@k, pass^k, variance, and benchmarks without being fooled, and close with a layered gate."
+        ]
+      },
+      {
+        "t": "Before you start",
+        "itens": [
+          "Linux or macOS with git, Python 3, and pytest. The rehearsals don't call any model.",
+          "Claude Code or Codex signed in through your subscription, only for the steps marked \"real\".",
+          "Recommended: course 0 (Base) for the done-criterion scale. Course 2 (Long Execution) uses this gate."
+        ]
+      }
+    ]
+  },
+  "ui": {
+    "pular": "Skip to content",
+    "aulas": "Lessons",
+    "concluido": "completed",
+    "aula": "Lesson",
+    "nesta_aula": "In this lesson, you'll learn:",
+    "objetivo": "Goal:",
+    "proxima_aula": "Next lesson",
+    "aula_anterior": "Previous lesson",
+    "voltar_inicio": "Back to the start of the course",
+    "marcar_concluida": "Mark lesson as completed",
+    "dg_dica": "Click each block in the diagram to see what it does.",
+    "copiar": "Copy",
+    "copiado": "Copied",
+    "selo_simulacao": "Simulation: illustrative example",
+    "selo_real": "Example from the repository",
+    "pronto_quando": "Done when:",
+    "fiz": "I did this exercise",
+    "video_pagina": "Video page with script",
+    "pergunta": "Question",
+    "de": "of",
+    "cert_tag": "skill",
+    "correto": "Correct",
+    "errado": "Not that one",
+    "quiz_aguarda": "Pick an option. The explanation appears after you try.",
+    "proxima_pergunta": "Next question",
+    "quiz_ver": "See result",
+    "quiz_fim": "Quiz complete",
+    "quiz_total": "You got {a} of {n} right. Get them all right and the lesson is marked as complete.",
+    "aparencia": "Appearance",
+    "tamanho_texto": "Text size",
+    "tema": "Theme",
+    "tema_escuro": "Dark",
+    "tema_papel": "Light paper",
+    "role_dica": "Scroll the page: each step below lights up its part of the diagram.",
+    "pre_requisito": "requires",
+    "ver_aula": "View the lesson",
+    "mapa_dica": "Click an exercise to see what to do and the \"done when\".",
+    "etapas": "Steps",
+    "exercicios": "exercises",
+    "rever": "Review:",
+    "revisar_erradas": "Review the wrong ones",
+    "refazer": "Retake the quiz",
+    "h_semana": "h per week",
+    "data_inicio": "Start date",
+    "ritmo": "Time available",
+    "gerar_plano": "Generate my plan",
+    "baixar_md": "Download plan.md",
+    "baixar_ics": "Download to calendar (.ics)",
+    "ind_estudo": "Study (lessons)",
+    "ind_pratica": "Self-reported practice",
+    "ind_nota": "Practice = exercises you marked as done. Proof comes in the certification exam.",
+    "estudo": {
+      "titulo": "Your study",
+      "continuar": "Pick up where I left off",
+      "comecar": "Start with lesson 1",
+      "cta_continuar": "Continue lesson {n}",
+      "hoje": "today",
+      "ontem": "yesterday",
+      "ha_dias": "{n} days ago",
+      "desempenho": "Test performance",
+      "notas": "My notes",
+      "dados": "Copy my data",
+      "sem_testes": "No tests taken yet. The test is at the end of each lesson.",
+      "nao_fez": "test not taken yet",
+      "ultimo": "Latest",
+      "melhor": "Best",
+      "tentativas": "attempts",
+      "tentativa": "attempt",
+      "tudo_certo": "You got everything right on the latest test.",
+      "rever": "To review",
+      "resposta": "Correct answer:",
+      "ir_teste": "Retake the quiz",
+      "sem_notas": "No notes yet. In the lesson, select a passage of text and tap Highlight or Note.",
+      "so_marcado": "(highlight only)",
+      "marcar": "Highlight",
+      "anotar": "Note",
+      "salvar": "Save",
+      "apagar": "Remove highlight",
+      "fechar": "Close",
+      "nota_ph": "Write your note about this passage…",
+      "um_bloco": "Highlight within a single paragraph only.",
+      "nao_marca": "This passage can't be highlighted.",
+      "dados_exp": "Your progress, your notes, and your test scores stay only in this browser. Download a copy (.json) to keep it or to continue on another computer or browser; there, load the copy. Loading adds to what already exists and doesn't erase anything.",
+      "exportar": "Download copy",
+      "importar": "Load copy",
+      "import_ok": "Copy loaded ({n} items). Refreshing the page…",
+      "import_erro": "File not recognized. Nothing was changed.",
+      "import_outro": "This copy is from a different course. Nothing was changed.",
+      "export_ok": "Copy downloaded."
+    },
+    "conv_dica": "Pick your answer. The comment appears right after, and the conversation continues based on your choice.",
+    "conv_voce": "You",
+    "conv_escolha": "Your answer",
+    "conv_boa": "Good choice",
+    "conv_meio": "Room to improve",
+    "conv_ruim": "Weak choice",
+    "conv_fim": "End of the conversation",
+    "conv_placar": "You scored {p} of {m} possible points.",
+    "conv_licao": "Lesson:",
+    "conv_recomecar": "Restart the conversation",
+    "conv_feita": "Your best score: {p} of {m} points.",
+    "comecar": "Start the lesson",
+    "nesta_vai": "In this lesson you will",
+    "trocar_tema": "Switch light/dark theme"
+  },
+  "icone": "check"
+}

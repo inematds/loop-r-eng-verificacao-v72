@@ -1,0 +1,396 @@
+{
+  "slug": "portao",
+  "num": 8,
+  "menu": "Gate",
+  "titulo": "Build your loop's gate",
+  "titulo_curto": "The gate",
+  "minutos": 22,
+  "lead": "Each lesson gave you one piece: evaluator, criteria, guard, shortcuts, evals, judge. The gate lines them up in a queue, from cheapest to most expensive: whatever the code rejects never gets to spend quota on a model. In this lesson you build the gate, plug it into the headless loop from course 2, and leave with a dated plan for building your own.",
+  "objetivo": "build the gate in layers (criteria, guard, shortcuts, evals, evaluator) and plug it into your loop, with the dated plan.",
+  "competencias": [
+    "montar-portao-em-camadas",
+    "ordenar-verificacoes-por-custo",
+    "ligar-portao-ao-loop"
+  ],
+  "aprende": [
+    {
+      "icone": "camadas",
+      "t": "The five layers and the order: cheap first, model last"
+    },
+    {
+      "icone": "cadeado",
+      "t": "portao.env outside the repo: the agent doesn't edit the judge"
+    },
+    {
+      "icone": "robo",
+      "t": "The gate as the final test of loop-longrun.sh"
+    },
+    {
+      "icone": "calendario",
+      "t": "The course map and your dated plan"
+    }
+  ],
+  "hero_alt": "Dark technical corridor with three steel doors, each with a signal lamp.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Five layers, one exit",
+      "sub": "Click each layer. All of them run; the model evaluator only runs if the cheap ones pass.",
+      "nos": [
+        {
+          "icone": "lista",
+          "titulo": "Criteria",
+          "sub": "conferir-goal.py · lesson 2",
+          "detalhe": "Each command → output line of goal.md. Fast and deterministic. Configuration: GOAL=[path to goal.md outside the repo]."
+        },
+        {
+          "icone": "cadeado",
+          "titulo": "Guard",
+          "sub": "guarda-testes.py · lesson 3",
+          "detalhe": "Judge intact, minimum of passed, nothing skipped. Configuration: GUARDA_DIR, frozen at the base commit."
+        },
+        {
+          "icone": "escudo",
+          "titulo": "Shortcuts",
+          "sub": "atalhos.py · lesson 4",
+          "detalhe": "Hidden tests and signals in the diff. Configuration: ESCONDIDOS=[folder outside the repo]."
+        },
+        {
+          "icone": "grafico",
+          "titulo": "Evals",
+          "sub": "rodar-evals.py · lessons 5 and 7",
+          "detalhe": "Golden set against the previous version: a regression fails. Configuration: EVAL_AGENTE and EVAL_BASE. Skip it if the task doesn't change the agent's behavior."
+        },
+        {
+          "icone": "lupa",
+          "titulo": "Evaluator",
+          "sub": "avaliar.sh · lessons 1 and 6",
+          "forte": true,
+          "detalhe": "Skeptical model reading the diff, only if the cheap layers passed: you don't spend quota evaluating what the code has already rejected. Configuration: AVALIADOR_CMD."
+        }
+      ],
+      "estilo": "escada",
+      "legenda": "A layer without configuration shows up as skipped, never as silently approved."
+    },
+    {
+      "tipo": "simfila",
+      "titulo": "Watch the gate run",
+      "sub": "Each layer is a step. On the first run the guard fails: fix it and run again.",
+      "tarefas": [
+        "Criteria · conferir-goal.py",
+        "Guard · judge intact, nothing skipped",
+        "Shortcuts · hidden and diff",
+        "Evals · no regression",
+        "Evaluator · skeptical model"
+      ],
+      "falha": 1,
+      "rot": {
+        "entrada": "layers to run",
+        "rodando": "layer in progress",
+        "feito": "approved",
+        "falhou": "rejected",
+        "rodar": "Run the gate",
+        "parar": "Interrupt",
+        "zerar": "Start over"
+      },
+      "msg": {
+        "inicio": "Five layers in cost order. Click \"Run the gate\".",
+        "rodando": "One layer at a time; each one's log is kept in /tmp/portao/.",
+        "parou": "Interrupted. No layer in progress counts as approved.",
+        "retoma": "Gate again, from the start: the result only counts with all layers in the same run.",
+        "fim": "PORTÃO: APROVADO, saída 0.",
+        "fimfalha": "The guard failed the first round (new conftest.py). Reverted and run again, the gate passed."
+      },
+      "legenda": "Illustrative simulation in the browser. The real gate, with fake agents, is right below."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Rehearsal: the gate against chumba and bom",
+      "sub": "The portao.env stays outside the project. AVALIADOR_CMD points to the fake evaluator: zero calls.",
+      "blocos": [
+        {
+          "rot": "Terminal · gate",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\ncat > /tmp/ensaio-verif-portao.env <<EOF\nGOAL=/tmp/ensaio-verif/goal.md\nGUARDA_DIR=/tmp/ensaio-verif/guarda\nESCONDIDOS=/tmp/ensaio-verif/escondidos\nAVALIADOR_CMD=$K/avaliador-falso.sh\nEOF\nfor modo in chumba bom; do\n  bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\n  cp $K/goal-ensaio.md ../goal.md && sed -i '/limpo e bem documentado/d' ../goal.md\n  GUARDA_DIR=/tmp/ensaio-verif/guarda python3 $K/guarda-testes.py congelar . > /dev/null\n  $K/agente-falso.sh $modo < /dev/null > /dev/null\n  echo \"## $modo\"; $K/portao.sh . /tmp/ensaio-verif-portao.env; echo \"saída: $?\"\ndone"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>## chumba\ncriterios  REPROVADO  → /tmp/portao/criterios.log\nguarda     OK\natalhos    REPROVADO  → /tmp/portao/atalhos.log\nevals      pulada (sem configuração)\navaliador  pulada (camada barata já reprovou: não gaste cota)\nPORTÃO: REPROVADO em criterios atalhos\nsaída: 1\n## bom\ncriterios  OK\nguarda     OK\natalhos    OK\nevals      pulada (sem configuração)\navaliador  OK\nPORTÃO: APROVADO\nsaída: 0</pre><p>With chumba the guard passes (the judge is intact); what fails it is the function criterion with new input (acao-reacao) and the hidden tests.</p>"
+          },
+          {
+            "rot": "Common mistake: portao.env in the repo",
+            "html": "<p>If the portao.env, the goal.md or the hidden tests sit inside the repository, the agent can edit them, and the gate becomes the agent's. Keep all three outside (in the rehearsal, in /tmp; in your project, in a folder like ~/portoes/[projeto]/).</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The gate as the final test of the headless loop",
+      "sub": "In the loop-longrun.sh from course 2, TESTE_FINAL decides \"done\". Put the gate there. Run it after the previous block (it uses the same portao.env).",
+      "blocos": [
+        {
+          "rot": "Terminal · loop with gate (fake agents)",
+          "icone": "robo",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit; L=~/projetos/execucao-longa/tools\nbash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\ncp $K/goal-ensaio.md ../goal.md && sed -i '/limpo e bem documentado/d' ../goal.md\nGUARDA_DIR=/tmp/ensaio-verif/guarda python3 $K/guarda-testes.py congelar . > /dev/null\nfor m in chumba bom; do printf '#!/usr/bin/env bash\\nexec %s/agente-falso.sh %s\\n' $K $m > /tmp/agente-$m.sh; chmod +x /tmp/agente-$m.sh; done\n$L/novo-longrun.sh $PWD slug > /dev/null && D=$(ls -d $PWD/longrun/*)\necho \"Implement slug() in slug.py. Don't touch tests/.\" > $D/prompt.md\ncat > $D/loop.env <<ENV\nTESTE_RAPIDO=\"python3 -m pytest -q\"\nTESTE_FINAL=\"$K/portao.sh . /tmp/ensaio-verif-portao.env\"\nPROTEGIDOS=\"tests/ pytest.ini *conftest.py\"\nPERMITIDOS=\"slug.py\"\nMAX_CICLOS=2\nMIN_CICLO=2\nMEM=1G\nESTAGNACAO=3\nENV\ngit add -A && git commit -qm \"longrun: pasta\"\nCODEX_BIN=/tmp/agente-chumba.sh $L/loop-longrun.sh $D; echo \"saída: $?\"\nCODEX_BIN=/tmp/agente-bom.sh $L/loop-longrun.sh $D; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>2026-10-19 06:19:56 início: rápido=0 passed · agente=codex · teto 2x2min · mem 1G\n2026-10-19 06:19:56 ciclo 1: começa\n2026-10-19 06:19:56 ciclo 1: agente saiu rc=0 em 0s\n2026-10-19 06:19:56 ciclo 1: rápido=3 passed (melhor antes: 0)\n2026-10-19 06:19:56 ciclo 1: checkpoint commitado\n(… ciclo 2 igual, rápido=3 passed …)\n2026-10-19 06:19:58 PARADO: teto de 2 ciclos atingido sem passar o teste final\nsaída: 1\n2026-10-19 06:19:59 início: rápido=3 passed · agente=codex · teto 2x2min · mem 1G\n2026-10-19 06:19:59 ciclo 1: começa\n2026-10-19 06:19:59 ciclo 1: agente saiu rc=0 em 0s\n2026-10-19 06:19:59 ciclo 1: rápido=3 passed (melhor antes: 3)\n2026-10-19 06:19:59 ciclo 1: checkpoint commitado\n2026-10-19 06:20:00 CONCLUÍDO no ciclo 1: teste final passou ()\nsaída: 0</pre><p>With chumba the quick test went from 0 to 3 passed: by the visible test, it looked like progress. The gate held back the \"done\". The empty parentheses just mean the gate doesn't print \"N passed\".</p>"
+          },
+          {
+            "rot": "Trap: the commit comes first",
+            "html": "<p>The loop-longrun.sh commits the checkpoint before running the TESTE_FINAL. By the time the gate runs, <code>git diff HEAD</code> is already empty: the CHUMBADO and SILENCIA lines from atalhos.py and the evaluator's diff don't see the cycle's work. In the rehearsal, what failed it were the criteria and the hidden tests. If you rely on reading the diff in the loop, compare against the base commit (before the first cycle), not against HEAD.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Final practice",
+      "sub": "The gate in the rehearsal and in your loop.",
+      "exercicios": [
+        {
+          "id": "e21",
+          "titulo": "E21 · Gate against chumba and bom",
+          "min": "10 min",
+          "texto": "Run the gate block and then the loop-with-gate block.",
+          "pronto": "the gate prints <code>PORTÃO: REPROVADO em criterios atalhos</code> (<code>saída: 1</code>) for chumba and <code>PORTÃO: APROVADO</code> (<code>saída: 0</code>) for bom; the loop ends first with <code>PARADO: teto de 2 ciclos</code> and then with <code>CONCLUÍDO no ciclo 1</code>."
+        },
+        {
+          "id": "e22",
+          "titulo": "E22 · The gate for your loop",
+          "min": "60 min",
+          "texto": "In your project: goal.md checked (lesson 2), guard frozen at the base commit (lesson 3), 3 hidden tests (lesson 4) and, if the task changes an agent's behavior, the golden set (lesson 5). Write the portao.env outside the repo and run the gate before and after the work.",
+          "pronto": "before the work, <code>$K/portao.sh . [seu portao.env]; echo $?</code> → <code>PORTÃO: REPROVADO</code> and <code>1</code>; after, → <code>PORTÃO: APROVADO</code> and <code>0</code>, with at most one layer <code>pulada</code>."
+        }
+      ]
+    },
+    {
+      "tipo": "mapa",
+      "titulo": "The course map",
+      "sub": "Four deliverables, in order. Click an exercise to see its \"done when\".",
+      "degraus": [
+        {
+          "aula": "prova",
+          "icone": "lupa",
+          "quando": "Day 1",
+          "titulo": "Who checks",
+          "sub": "lessons 1 and 2",
+          "saida": "Separate evaluator and goal.md checked by command.",
+          "passo": "Kit cloned, fake and real evaluator run, criteria that fail before the work."
+        },
+        {
+          "aula": "atalhos",
+          "icone": "cadeado",
+          "quando": "Day 2",
+          "titulo": "Protected judge",
+          "sub": "lessons 3 and 4",
+          "saida": "Frozen guard and hidden tests outside the repo.",
+          "passo": "Requires day 1. The conftest hole seen and closed; the \"tests are the judge\" rule in the project."
+        },
+        {
+          "aula": "juiz",
+          "icone": "grafico",
+          "quando": "Days 3 and 4",
+          "titulo": "Measure",
+          "sub": "lessons 5 and 6",
+          "saida": "Golden set with a baseline and a calibrated judge.",
+          "passo": "Requires day 2. Twenty real cases, your labels on 10 artifacts, and the judge only after it is calibrated."
+        },
+        {
+          "aula": "portao",
+          "icone": "portao",
+          "quando": "Day 5",
+          "titulo": "Gate",
+          "sub": "lessons 7 and 8",
+          "saida": "pass^3 recorded and the gate approving your loop.",
+          "passo": "Requires everything before it. Measure with k = 3, combine the layers, and put the gate in as the final test."
+        }
+      ],
+      "resultado": {
+        "titulo": "At the end of the course",
+        "texto": "A layered gate, out of the agent's reach, that fails the shortcut and passes the real work, wired into your loop.",
+        "total": "22 exercises"
+      },
+      "rolagem_fim": {
+        "titulo": "The whole course",
+        "texto": "The checker, the protected judge, measuring, and the gate. Only move on to the next deliverable when the \"done when\" of the previous one is true."
+      },
+      "legenda": "Required order: a gate without a protected judge is just another way to approve a shortcut."
+    },
+    {
+      "tipo": "gerador",
+      "titulo": "Generate your plan with dates",
+      "sub": "Pick a start date and how much time you have per week. The plan lists the 22 exercises in order.",
+      "curso": "Verification and Evals",
+      "horas_padrao": 5,
+      "degraus": [
+        {
+          "titulo": "Lesson 1 · Skeptical evaluator",
+          "aula": "cetico"
+        },
+        {
+          "titulo": "Lesson 2 · Command → output",
+          "aula": "prova"
+        },
+        {
+          "titulo": "Lesson 3 · Frozen tests",
+          "aula": "congelados"
+        },
+        {
+          "titulo": "Lesson 4 · Shortcuts",
+          "aula": "atalhos"
+        },
+        {
+          "titulo": "Lesson 5 · Golden set",
+          "aula": "ouro"
+        },
+        {
+          "titulo": "Lesson 6 · Calibrated judge",
+          "aula": "juiz"
+        },
+        {
+          "titulo": "Lesson 7 · Honest metrics",
+          "aula": "metricas"
+        },
+        {
+          "titulo": "Lesson 8 · The gate",
+          "aula": "portao"
+        }
+      ],
+      "txt": {
+        "titulo": "Plan — Verification and Evals",
+        "inicio": "Start",
+        "ritmo": "Pace",
+        "termino": "Expected finish",
+        "ate": "until",
+        "pronto": "done when",
+        "semanas": "weeks",
+        "travou": "## What got stuck and the rule I created",
+        "h": "h per week",
+        "exs": "exercises"
+      }
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Final test",
+      "perguntas": [
+        {
+          "p": "Why is the model evaluator the last layer?",
+          "opcoes": [
+            "Because it is the most reliable",
+            "Because it is the most expensive: it's not worth spending quota evaluating what the code already failed",
+            "Because it needs the results of the others",
+            "In alphabetical order"
+          ],
+          "certa": 1,
+          "explica": "Cheap, deterministic layers first. The model comes in only when the code found nothing.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "Where do the portao.env, the goal.md and the hidden tests live?",
+          "opcoes": [
+            "At the repo root",
+            "In tests/",
+            "Outside the repo, where the agent can't write",
+            "In CLAUDE.md"
+          ],
+          "certa": 2,
+          "explica": "A judge within the agent's reach is a judge it can tune.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "In the loop with the gate, chumba made the quick test go to 3 passed. What happened?",
+          "opcoes": [
+            "CONCLUÍDO",
+            "The gate failed and the loop stopped at the cycle cap, exit 1",
+            "Stagnation, exit 2",
+            "Second-copy lock"
+          ],
+          "certa": 1,
+          "explica": "The quick test measures progress; what decides done is the TESTE_FINAL, now the gate. It held.",
+          "ref": "codigo"
+        },
+        {
+          "p": "A layer shows up as \"skipped\". Does that count as passed?",
+          "opcoes": [
+            "Yes",
+            "No: it shows up separately precisely so you can see what was not verified",
+            "Only if it's the evals one",
+            "It depends on the model"
+          ],
+          "certa": 1,
+          "explica": "The gate never approves silently. Skipped means missing configuration, and you decide whether to accept it.",
+          "ref": "codigo"
+        },
+        {
+          "p": "In the loop, why didn't atalhos.py see the CHUMBADO in the diff?",
+          "opcoes": [
+            "Bug in atalhos.py",
+            "Because the loop committed the checkpoint before the final test and the diff against HEAD was empty",
+            "Because chumba didn't change anything",
+            "Because the evaluator had already approved"
+          ],
+          "certa": 1,
+          "explica": "In that case, what catches it are the criteria with new input and the hidden tests. To read the diff in the loop, compare against the base commit.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "The course in three sentences",
+      "itens": [
+        {
+          "t": "Whoever did it doesn't check it",
+          "texto": "Separate evaluator, command-based criterion, and printed proof: the agent's report decides nothing."
+        },
+        {
+          "t": "The judge stays out of reach",
+          "texto": "Frozen tests with everything pytest reads, hidden ones, and portao.env outside the repo; a suspicious test becomes a report, never an adjustment."
+        },
+        {
+          "t": "Measure honestly",
+          "texto": "Golden set with regression, calibrated judge, and pass^k with variance; and the layered gate as the loop's final test."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Continue from here",
+      "links": [
+        {
+          "t": "Next course in the track: Long Execution (course 2)",
+          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/",
+          "icone": "seta"
+        },
+        {
+          "t": "LOOP-R Engineering area",
+          "href": "https://eventos.inema.pro/loop-r-engenharia/",
+          "icone": "camadas"
+        },
+        {
+          "t": "kit/portao.sh",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/portao.sh",
+          "icone": "terminal"
+        },
+        {
+          "t": "Course 4 of the track: autonomous loop security (guard hooks)",
+          "href": "https://inematds.github.io/loop-r-eng-seguranca-v72/",
+          "icone": "escudo"
+        }
+      ]
+    }
+  ]
+}

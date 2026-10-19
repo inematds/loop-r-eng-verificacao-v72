@@ -1,0 +1,275 @@
+{
+  "slug": "metricas",
+  "num": 7,
+  "menu": "Metrics",
+  "titulo": "Honest metrics: pass@k, pass^k, variance, SWE-bench, and METR",
+  "titulo_curto": "Honest metrics",
+  "minutos": 18,
+  "lead": "\"Gets 90% right\" can mean it gets it right almost every time, or that it gets it right at least once in three tries. For a loop that runs without you, only the first one will do. In this lesson you measure both on your golden set, see how much the number swings between rounds, and learn to read SWE-bench and the METR horizon without overstating them.",
+  "objetivo": "measure pass@k and pass^k with repetitions, read the variance between rounds, and cite SWE-bench and the METR horizon without overstating them.",
+  "competencias": [
+    "medir-pass-at-k-e-pass-hat-k",
+    "ler-variancia-entre-rodadas",
+    "ler-benchmark-com-ressalva"
+  ],
+  "aprende": [
+    {
+      "icone": "grafico",
+      "t": "pass@k (at least one hit) and pass^k (gets them all)"
+    },
+    {
+      "icone": "fila",
+      "t": "Repeat the set and watch the number swing"
+    },
+    {
+      "icone": "x",
+      "t": "SWE-bench: passing the test is not being accepted"
+    },
+    {
+      "icone": "relogio",
+      "t": "METR horizon: what it measures and what it doesn't"
+    }
+  ],
+  "hero_alt": "An oscilloscope screen with overlapping curves, and next to it graph paper with scattered dots.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "The same agent, three different numbers",
+      "sub": "Click each step.",
+      "nos": [
+        {
+          "icone": "fila",
+          "titulo": "k attempts",
+          "sub": "--k 3",
+          "detalhe": "rodar-evals.py runs each case k times. An agent built on a language model doesn't always answer the same way: the same question can come out right once and wrong the next time."
+        },
+        {
+          "icone": "check",
+          "titulo": "pass@k",
+          "sub": "at least 1 hit",
+          "detalhe": "The fraction of cases with at least one hit in k attempts. It's useful when someone picks the best of several outputs. It grows with k, and it's the number that looks good in the announcement."
+        },
+        {
+          "icone": "portao",
+          "titulo": "pass^k",
+          "sub": "gets them all",
+          "forte": true,
+          "detalhe": "The fraction of cases that got all k attempts right. This is what an unsupervised loop needs: nobody is going to pick the best one. It drops as k grows. With 75% per attempt, 3 independent attempts give about 42% (example from Anthropic's evals article)."
+        },
+        {
+          "icone": "grafico",
+          "titulo": "Variance",
+          "sub": "round by round",
+          "detalhe": "The rate changes from round to round. A difference between two versions smaller than this swing is not an improvement: it's noise. Run more than once before you compare."
+        }
+      ],
+      "legenda": "For an autonomous loop, report pass^k and the spread between rounds, not pass@k."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Rehearsal: an agent with 25% noise",
+      "sub": "The fake triage agent, with TRIAGEM_RUIDO=0.25, gets the \"urgente\" case wrong in 25% of attempts (fixed draw, reproducible).",
+      "blocos": [
+        {
+          "rot": "Terminal · 10 cases × 3 attempts",
+          "icone": "play",
+          "conteudo": "E=~/projetos/loop-r-eng-verificacao-v72/kit/evals; mkdir -p /tmp/ensaio-evals\nTRIAGEM_RUIDO=0.25 python3 $E/rodar-evals.py --agente \"python3 $E/agente-triagem-falso.py\" \\\n  --k 3 --saida /tmp/ensaio-evals/k3.tsv > /dev/null\npython3 $E/passk.py /tmp/ensaio-evals/k3.tsv"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>10 casos × 3 tentativas\ntaxa por tentativa: 73%  (rodada 1: 70% · rodada 2: 80% · rodada 3: 70%; desvio 5 pontos)\npass@3: 90%  (ao menos 1 acerto)\npass^3: 50%  (acertou todas)\nse fossem independentes, 73%^3 = 39%\ninstáveis: t01 t06 t08 t10</pre><p>The same agent can be advertised as \"90%\" (pass@3) or described as \"half the cases always come out right\" (pass^3). Round 2 alone would say 80%; rounds 1 and 3, 70%.</p>"
+          },
+          {
+            "rot": "Reading",
+            "html": "<p>pass^3 came out above the independent estimate (39%) because the errors aren't independent: 5 cases never fail and the trap case (t07) always fails. In your own set, the list of unstable cases is the list of cases to study first.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "passos",
+      "titulo": "Benchmarks: what you can claim",
+      "sub": "Only what the primary source says, with a date.",
+      "passos": [
+        {
+          "titulo": "Passes ≠ accepted",
+          "sub": "METR, Mar 10, 2026",
+          "texto": [
+            "METR estimated that about half of the PRs that pass the SWE-bench Verified tests would not be accepted by the project's maintainers.",
+            "A green test measures what the test covers. Style, scope, and side effects are left out: that's the space for the skeptical evaluator and the human sample."
+          ]
+        },
+        {
+          "titulo": "Contamination",
+          "sub": "reports, not confirmed",
+          "texto": [
+            "There are reports in secondary sources that public code benchmarks leaked into training data and that providers switched benchmarks because of it. We did not confirm the numbers in the primary source.",
+            "A practical consequence that doesn't depend on the number: your golden set, private and drawn from your own failures, tells you more about your agent than any public leaderboard."
+          ]
+        },
+        {
+          "titulo": "METR horizon",
+          "sub": "what it measures",
+          "texto": [
+            "The 50% horizon = the length of a task (in human expert time) that the model gets right half the time. It is not how long the agent works on its own.",
+            "The tasks are in software engineering, ML, and security, well specified and verifiable by code. It doesn't apply to a vague task."
+          ]
+        },
+        {
+          "titulo": "The numbers",
+          "sub": "with caveats",
+          "texto": [
+            "METR's FAQ gives about 2 h 17 min for GPT-5. Claude Mythos Preview (early version, evaluated in March 2026) came in at at least 16 h, with a 95% interval of 8.5 h to 55 h, at the limit of what METR says it can measure.",
+            "The time horizons page has been retired: last model added on 05/08/2026, last notice on 09/08/2026. Later models have no official horizon. Use it as an order of magnitude, at 50% success, not 80%."
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Your agent with k = 3",
+      "sub": "Uses your subscription quota: 30 calls with the rehearsal set. Afterward, swap in your own set.",
+      "blocos": [
+        {
+          "rot": "Terminal · real (continues from the previous block)",
+          "icone": "terminal",
+          "conteudo": "python3 $E/rodar-evals.py --agente 'claude -p --tools \"\"' --k 3 --saida /tmp/ensaio-evals/real-k3.tsv\npython3 $E/passk.py /tmp/ensaio-evals/real-k3.tsv"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>armadilha  3/3\nbug        15/15\nduvida     6/6\npedido     6/6\ntotal      30/30 (100%)  → /tmp/ensaio-evals/real-k3.tsv\n10 casos × 3 tentativas\ntaxa por tentativa: 100%  (rodada 1: 100% · rodada 2: 100% · rodada 3: 100%; desvio 0 pontos)\npass@3: 100%  (ao menos 1 acerto)\npass^3: 100%  (acertou todas)\nse fossem independentes, 100%^3 = 100%\ninstáveis: nenhum</pre><p>Claude Code 2.1.303, default subscription model, 4 min 20 s. With 10 easy cases, the real agent got all 30 attempts right: this set measures no variance at all. To see pass^k drop, the set needs hard cases (lesson 5). Your number will depend on your set.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Practice",
+      "sub": "Rehearsal, your agent, and one honest sentence.",
+      "exercicios": [
+        {
+          "id": "e19",
+          "titulo": "E19 · pass@3 versus pass^3",
+          "min": "10 min",
+          "texto": "Run the rehearsal with 25% noise.",
+          "pronto": "<code>passk.py</code> prints <code>pass@3: 90%</code>, <code>pass^3: 50%</code> and <code>instáveis: t01 t06 t08 t10</code>."
+        },
+        {
+          "id": "e20",
+          "titulo": "E20 · Your set with k = 3",
+          "min": "20 min",
+          "texto": "Run your golden set (lesson 5) with --k 3 and your real agent. Write one line in progress.md or in the agent's README with the date, number of cases, pass^3 and the spread between rounds.",
+          "pronto": "<code>python3 $E/passk.py [seu tsv]</code> prints the lines <code>pass@3:</code>, <code>pass^3:</code> and <code>instáveis:</code>, and <code>grep -c \"pass^3\" [arquivo onde anotou]</code> → <code>1</code> or more."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Lesson quiz",
+      "perguntas": [
+        {
+          "p": "For a loop that runs unsupervised, which metric matters?",
+          "opcoes": [
+            "pass@k",
+            "pass^k",
+            "The best round",
+            "The total from the first round"
+          ],
+          "certa": 1,
+          "explica": "Nobody picks the best of three in an autonomous loop: every run has to get it right. pass^k measures that.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "With 75% success per attempt, independent, what is pass^3?",
+          "opcoes": [
+            "75%",
+            "About 98%",
+            "About 42%",
+            "25%"
+          ],
+          "certa": 2,
+          "explica": "0.75 × 0.75 × 0.75 ≈ 0.42. The example is in Anthropic's evals article (01/09/2026).",
+          "ref": "diagrama"
+        },
+        {
+          "p": "According to METR (03/10/2026), what happens to PRs that pass SWE-bench Verified?",
+          "opcoes": [
+            "All of them would be accepted",
+            "About half would not be accepted by the maintainers",
+            "None would be accepted",
+            "METR did not study this"
+          ],
+          "certa": 1,
+          "explica": "Passing the test is not being mergeable. The test covers part of what a maintainer requires.",
+          "ref": "passos",
+          "cert": true
+        },
+        {
+          "p": "What does a 50% horizon of 16 h mean?",
+          "opcoes": [
+            "The agent works 16 h on its own",
+            "Tasks that would take a specialist 16 h are solved half the time, in a well-specified set",
+            "The agent gets 50% of everything right in 16 h",
+            "The model has 16 h of context"
+          ],
+          "certa": 1,
+          "explica": "It is the task duration measured in human time, at 50% success, on verifiable tasks. It is not autonomy, and it does not hold for vague tasks.",
+          "ref": "passos"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "In three sentences",
+      "itens": [
+        {
+          "t": "pass^k for loops",
+          "texto": "pass@k measures luck with choice; pass^k measures what happens when nobody chooses."
+        },
+        {
+          "t": "Noise before improvement",
+          "texto": "Run more than once; a difference smaller than the swing between rounds is not a gain."
+        },
+        {
+          "t": "Benchmark with a date and a caveat",
+          "texto": "Passing SWE-bench is not being accepted; METR horizon is human task time at 50%, and the series stopped in 2026."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Going further",
+      "links": [
+        {
+          "t": "Anthropic: Demystifying evals for AI agents (01/09/2026)",
+          "href": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "icone": "lupa"
+        },
+        {
+          "t": "METR: notes (passes SWE-bench × would be accepted)",
+          "href": "https://metr.org/notes/",
+          "icone": "arquivo"
+        },
+        {
+          "t": "METR: time horizons",
+          "href": "https://metr.org/time-horizons/",
+          "icone": "relogio"
+        },
+        {
+          "t": "kit/evals/passk.py",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/evals/passk.py",
+          "icone": "terminal"
+        }
+      ]
+    }
+  ]
+}

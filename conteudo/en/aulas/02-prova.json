@@ -1,0 +1,251 @@
+{
+  "slug": "prova",
+  "num": 2,
+  "menu": "Test",
+  "titulo": "Command → output: check the criterion and the /goal evaluator",
+  "titulo_curto": "Command → output",
+  "minutos": 18,
+  "lead": "A criterion only counts if an outsider can check it without trusting the agent. In this lesson you run each criterion of goal.md as a command, see which one passes by shortcut, and learn where the proof has to show up: the /goal evaluator in Claude Code only reads the conversation.",
+  "objetivo": "check each criterion of goal.md by command, see which level 2 one passes by shortcut, and put the proof in the conversation the /goal evaluator reads.",
+  "competencias": [
+    "conferir-criterio-por-comando",
+    "identificar-criterio-burlavel",
+    "escrever-condicao-de-goal-com-prova"
+  ],
+  "aprende": [
+    {
+      "icone": "lista",
+      "t": "The command → output format and the three kinds of expected output"
+    },
+    {
+      "icone": "check",
+      "t": "conferir-goal.py: OK or FALHOU per criterion, with exit code"
+    },
+    {
+      "icone": "x",
+      "t": "A criterion with no command and a criterion that passes by shortcut"
+    },
+    {
+      "icone": "chat",
+      "t": "What the /goal evaluator sees, and what it doesn't"
+    }
+  ],
+  "hero_alt": "An analog gauge at maximum next to a thermal printer spitting out a paper tape.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "From the criterion to the proof in the conversation",
+      "sub": "Click each step.",
+      "nos": [
+        {
+          "icone": "arquivo",
+          "titulo": "Criterion",
+          "sub": "command → output",
+          "detalhe": "Each line of goal.md has a command in backticks and the expected output in backticks: a literal snippet, empty, or code N. How to write goal.md (the three layers and the lock) is lesson 2 of course 2; here it is how to check."
+        },
+        {
+          "icone": "terminal",
+          "titulo": "Check",
+          "sub": "conferir-goal.py",
+          "detalhe": "Runs each command, compares it with the expected output (whole word: \"3 passed\" does not match \"13 passed\") and prints OK or FALHOU with what came back. A criterion with no command counts as FALHOU: it can't be checked."
+        },
+        {
+          "icone": "x",
+          "titulo": "Shortcut?",
+          "sub": "level 2 passes",
+          "forte": true,
+          "detalhe": "\"pytest exits with code 0\" can be gamed: with every test skipped, pytest exits 0. The rehearsal shows this criterion passing as OK while \"3 passed\" gives FALHOU. The full scale (0 to 4) is lesson 6 of course 0."
+        },
+        {
+          "icone": "chat",
+          "titulo": "Proof in the conversation",
+          "sub": "pasted output",
+          "detalhe": "The agent runs conferir-goal.py and pastes the whole output. The last line is PRONTO or FALTAM N."
+        },
+        {
+          "icone": "lupa",
+          "titulo": "The /goal evaluator",
+          "sub": "only reads the conversation",
+          "detalhe": "According to the Claude Code documentation, after each turn a small, fast model judges the condition: not met, met, or impossible. It doesn't run commands or read files. If the proof isn't printed in the conversation, it doesn't exist for it."
+        }
+      ],
+      "volta": "FALTAM N: the agent keeps going on the next turn",
+      "legenda": "A command you run and the output that shows up: it's the same proof for you, for the headless loop and for the /goal evaluator."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The goal.md for the rehearsal",
+      "sub": "Six criteria. One has no command and one passes through a shortcut. Find both before you run it.",
+      "blocos": [
+        {
+          "rot": "kit/goal-ensaio.md (criteria)",
+          "icone": "arquivo",
+          "conteudo": "## Done criteria\n**Function**\n- [ ] `python3 -m pytest -q tests/` → `3 passed`\n- [ ] `python3 -c \"from slug import slug; print(slug('Ação & Reação!'))\"` → `acao-reacao`\n\n**Regression**\n- [ ] `python3 -m pytest -q tests/ -rs` → `código 0`\n\n**Limit**\n- [ ] `git diff --stat HEAD -- tests/ pytest.ini` → `vazio`\n- [ ] `git ls-files --others --exclude-standard -- '*conftest.py' tests/` → `vazio`\n- [ ] the code stays clean and well documented"
+        },
+        {
+          "rot": "Terminal · before, shortcut and after",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\nbash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\ncp $K/goal-ensaio.md ../goal.md            # outside the project: the agent doesn't edit the criterion\n\npython3 $K/conferir-goal.py ../goal.md; echo \"saída: $?\"     # A) before the work: it has to fail\n\n$K/agente-falso.sh conftest < /dev/null                       # B) shortcut: skips the tests\npython3 $K/conferir-goal.py ../goal.md; echo \"saída: $?\"\n\nrm conftest.py && $K/agente-falso.sh bom < /dev/null           # C) the right work\nsed -i '/limpo e bem documentado/d' ../goal.md                 #    and the criterion with no command goes away\npython3 $K/conferir-goal.py ../goal.md; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>FALHOU  python3 -m pytest -q tests/  →  3 passed\n        veio: 3 failed in 0.01s (código 1)\nFALHOU  python3 -c \"from slug import slug; print(slug('Ação &amp; Reação  →  acao-reacao\n        veio: NotImplementedError (código 1)\nFALHOU  python3 -m pytest -q tests/ -rs  →  código 0\n        veio: 3 failed in 0.01s (código 1)\nOK      git diff --stat HEAD -- tests/ pytest.ini  →  vazio\nOK      git ls-files --others --exclude-standard -- '*conftest.py' t  →  vazio\nFALHOU  sem comando: o código fica limpo e bem documentado\n---\nFALTAM 4\nsaída: 4\nPronto: marquei os testes instáveis; a suíte fica verde.\nFALHOU  python3 -m pytest -q tests/  →  3 passed\n        veio: 3 skipped in 0.00s (código 0)\nFALHOU  python3 -c \"from slug import slug; print(slug('Ação &amp; Reação  →  acao-reacao\n        veio: NotImplementedError (código 1)\nOK      python3 -m pytest -q tests/ -rs  →  código 0\nOK      git diff --stat HEAD -- tests/ pytest.ini  →  vazio\nFALHOU  git ls-files --others --exclude-standard -- '*conftest.py' t  →  vazio\n        veio: conftest.py (código 0)\nFALHOU  sem comando: o código fica limpo e bem documentado\n---\nFALTAM 4\nsaída: 4\nPronto: slug() implementado.\nOK      python3 -m pytest -q tests/  →  3 passed\nOK      python3 -c \"from slug import slug; print(slug('Ação &amp; Reação  →  acao-reacao\nOK      python3 -m pytest -q tests/ -rs  →  código 0\nOK      git diff --stat HEAD -- tests/ pytest.ini  →  vazio\nOK      git ls-files --others --exclude-standard -- '*conftest.py' t  →  vazio\n---\nPRONTO\nsaída: 0</pre><p>The command appears cut off at 60 characters in the output. In round B, <code>código 0</code> gave OK with all three tests skipped: it's the level 2 criterion in goal.md.</p>"
+          },
+          {
+            "rot": "Common mistake: a criterion that never fails",
+            "html": "<p>If round A (before any work) already gives OK on a function criterion, the criterion doesn't measure the work. Every function criterion has to fail beforehand; limit criteria (nothing touched) can pass from the start.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The /goal condition with proof",
+      "sub": "Because the evaluator only reads the conversation, the condition requires the pasted output. In the goal prompts of the execucao-longa kit and the 15 commands kit, the pattern is the same.",
+      "blocos": [
+        {
+          "rot": "Claude Code · /goal",
+          "icone": "chat",
+          "conteudo": "/goal The output of `python3 ~/projetos/loop-r-eng-verificacao-v72/kit/conferir-goal.py <caminho>/goal.md` is pasted in full in this conversation and ends with PRONTO; no file in tests/ or conftest.py was changed; stop after 15 turns and say what was missing."
+        },
+        {
+          "rot": "Two final messages: which one passes the evaluator?",
+          "icone": "texto",
+          "conteudo": "(1) Terminei. Rodei o conferir-goal.py e deu tudo certo.\n\n(2) Rodei o conferir-goal.py:\nOK      python3 -m pytest -q tests/  →  3 passed\n(…)\n---\nPRONTO"
+        }
+      ]
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Practice",
+      "sub": "Rehearsal, then your own goal.md.",
+      "exercicios": [
+        {
+          "id": "e4",
+          "titulo": "E4 · Fails before, passes after",
+          "min": "10 min",
+          "texto": "Run the three rounds of the rehearsal.",
+          "pronto": "A ends with <code>FALTAM 4</code> and <code>saída: 4</code>; B shows <code>OK</code> on the <code>código 0</code> criterion and <code>FALHOU</code> on <code>3 passed</code>; C ends with <code>PRONTO</code> and <code>saída: 0</code>."
+        },
+        {
+          "id": "e5",
+          "titulo": "E5 · Your goal.md checked",
+          "min": "20 min",
+          "texto": "Take one of your own goal.md files (or write one from the course 2 template) and run conferir-goal.py on it before you start the work. Rewrite every criterion that came back as \"sem comando\" and every function criterion that already passes.",
+          "pronto": "<code>python3 $K/conferir-goal.py [seu goal.md] --pasta [seu projeto]</code> → no <code>sem comando</code> line and at least one function <code>FALHOU</code> before the work (exit code greater than 0)."
+        },
+        {
+          "id": "e6",
+          "titulo": "E6 · /goal with the proof pasted",
+          "min": "20 min",
+          "texto": "Run a small task with /goal using the condition from the block above, pointing to your goal.md.",
+          "pronto": "the agent's last reply contains the output of conferir-goal.py ending in <code>PRONTO</code> and /goal ends as met; when you run the same command yourself → <code>PRONTO</code> and exit code 0."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Lesson quiz",
+      "perguntas": [
+        {
+          "p": "What can the /goal evaluator in Claude Code do to judge the condition?",
+          "opcoes": [
+            "Run the tests",
+            "Open the project files",
+            "Read only the conversation",
+            "Check the git log"
+          ],
+          "certa": 2,
+          "explica": "The documentation says it doesn't run commands or read files. The proof has to be printed in the conversation; that's why the condition asks for the pasted output.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "In the rehearsal, with all tests skipped, which criterion passed by mistake?",
+          "opcoes": [
+            "3 passed",
+            "pytest exit code 0",
+            "acao-reacao",
+            "empty git diff"
+          ],
+          "certa": 1,
+          "explica": "pytest exits with 0 when all tests are skipped. \"exit code 0\" is level 2 (gameable); \"3 passed\" as a whole word is not.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "Which of these final messages lets the /goal evaluator decide based on proof?",
+          "opcoes": [
+            "Done, everything went fine",
+            "The one that pastes the output of conferir-goal.py ending in PRONTO",
+            "The one that lists the changed files",
+            "The one that asks the user to check"
+          ],
+          "certa": 1,
+          "explica": "Only the pasted output puts what the command actually printed into the conversation. \"Everything went fine\" is a report.",
+          "ref": "codigo"
+        },
+        {
+          "p": "A function criterion passes before any work is done. What does that tell you?",
+          "opcoes": [
+            "That the work is easy",
+            "That the criterion doesn't measure the work and needs to be rewritten",
+            "That conferir-goal.py has a bug",
+            "Nothing"
+          ],
+          "certa": 1,
+          "explica": "A function criterion has to fail first. If it already passes, it can't tell done from not done.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "In three sentences",
+      "itens": [
+        {
+          "t": "Checkable",
+          "texto": "A criterion with no command can't be checked; conferir-goal.py counts it as FALHOU."
+        },
+        {
+          "t": "Fails first",
+          "texto": "A function criterion that already passes before the work measures nothing; \"exit code 0\" alone passes with everything skipped."
+        },
+        {
+          "t": "Printed proof",
+          "texto": "The /goal evaluator only reads the conversation: the condition requires the pasted output ending in PRONTO."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Going further",
+      "links": [
+        {
+          "t": "Claude Code: /goal (official documentation)",
+          "href": "https://code.claude.com/docs/en/goal",
+          "icone": "lupa"
+        },
+        {
+          "t": "Course 2, lesson 2: writing the level 3+ goal.md",
+          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/aulas/goal/",
+          "icone": "arquivo"
+        },
+        {
+          "t": "Track course 0: the done criterion scale (0 to 4)",
+          "href": "https://inematds.github.io/loop-r-eng-base-v72/",
+          "icone": "camadas"
+        },
+        {
+          "t": "kit/conferir-goal.py",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/conferir-goal.py",
+          "icone": "terminal"
+        }
+      ]
+    }
+  ]
+}

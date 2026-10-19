@@ -1,0 +1,278 @@
+{
+  "slug": "juiz",
+  "num": 6,
+  "menu": "Judge",
+  "titulo": "Model judge with a calibrated rubric",
+  "titulo_curto": "Calibrated judge",
+  "minutos": 22,
+  "lead": "Not everything becomes a test: \"does the message explain why?\" takes reading. A model can judge that, as long as the rubric is yes/no, the judgment is repeated, and the judge has been compared with your labels before it counts. In this lesson you calibrate a fake judge (which fails), then a real one, and you see the calibration catch an ambiguous rubric.",
+  "objetivo": "write a yes/no rubric, run a judge with repetitions, and only use it after it is calibrated against human labels.",
+  "competencias": [
+    "escrever-rubrica-binaria",
+    "rodar-juiz-com-repeticoes",
+    "calibrar-juiz-contra-humano",
+    "reconhecer-vieses-do-juiz"
+  ],
+  "aprende": [
+    {
+      "icone": "lista",
+      "t": "Yes/no rubric, an invariable criterion, and what stays outside it"
+    },
+    {
+      "icone": "robo",
+      "t": "Three repetitions, shuffled order, majority wins"
+    },
+    {
+      "icone": "grafico",
+      "t": "Agreement and kappa: why 80% may not be enough"
+    },
+    {
+      "icone": "x",
+      "t": "A judge with no answer is not a judge that failed it"
+    }
+  ],
+  "hero_alt": "Precision laboratory scale with calibration weights beside it, on a dark bench.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "The judge only counts after it is calibrated",
+      "sub": "Click each step.",
+      "nos": [
+        {
+          "icone": "lista",
+          "titulo": "Rubric",
+          "sub": "yes/no, never 1 to 10",
+          "detalhe": "Each criterion is a yes-or-no question. The ones marked invariable fail the artifact on their own. Whatever can be checked by code (line length, format) leaves the rubric and becomes a test."
+        },
+        {
+          "icone": "robo",
+          "titulo": "Judge",
+          "sub": "3 repetitions",
+          "itens": [
+            {
+              "icone": "fila",
+              "t": "criteria order shuffled"
+            },
+            {
+              "icone": "check",
+              "t": "majority wins"
+            },
+            {
+              "icone": "x",
+              "t": "no unanimity = unstable"
+            }
+          ],
+          "detalhe": "juiz.py sends the artifact and the diff to JUIZ_CMD three times, shuffling the order of the criteria, and keeps the majority. A criterion that changed its vote between repetitions comes out marked as unstable."
+        },
+        {
+          "icone": "usuario",
+          "titulo": "Your labels",
+          "sub": "10 to 20 artifacts",
+          "detalhe": "You mark yes/no on the same artifacts, once. LOOP-R estimates about 20 minutes for 15 examples. It is the only manual work in the measurement."
+        },
+        {
+          "icone": "grafico",
+          "titulo": "Calibration",
+          "sub": "≥ 80% and kappa ≥ 0.6",
+          "forte": true,
+          "detalhe": "calibrar.py compares criterion by criterion. LOOP-R requires 80% agreement; FEC requires a Cohen's kappa of 0.6 (agreement discounting chance). Below that: rewrite the criterion or swap the judge."
+        },
+        {
+          "icone": "portao",
+          "titulo": "In use",
+          "sub": "and recalibrate",
+          "detalhe": "Only then does the judge enter the gate. If you changed the judge's model, version or rubric: calibrate again. The judge should not be the same model that generated the artifact, when possible."
+        }
+      ],
+      "volta": "Criterion failed calibration: rewrite it and calibrate again",
+      "legenda": "Known biases of a model judge: it prefers the longer answer, the position of one of the options in a comparison, and the style of its own model."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The rehearsal rubric",
+      "sub": "Commit messages written by an agent. 10 messages in kit/juiz/artefatos.jsonl, with one person's labels in humano.csv.",
+      "blocos": [
+        {
+          "rot": "kit/juiz/rubrica.md",
+          "icone": "arquivo",
+          "conteudo": "# Rubric — commit message written by the agent\n\nYes/no criteria. Never a 1-to-10 score. (invariável) = a \"nao\" fails the message, regardless of the rest.\nWhat can be checked by code (length of the 1st line, format) does NOT go here: it goes to a test.\n\nR1 | Does the message say WHY the change was made, not just what changed? | qualidade\nR2 | Does every CHANGE the message mentions appear in the diff (it doesn't invent a file, test or effect)? The reason may come from outside the diff. | invariável\nR3 | Can someone who hasn't seen the diff understand what changed from the message alone? | qualidade"
+        },
+        {
+          "rot": "Terminal · rehearsal with the fake judge",
+          "icone": "play",
+          "conteudo": "J=~/projetos/loop-r-eng-verificacao-v72/kit/juiz\npython3 $J/juiz.py --rep 3 --saida /tmp/juiz-falso.csv\npython3 $J/calibrar.py $J/humano.csv /tmp/juiz-falso.csv; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>a01  R1=sim R2=sim R3=sim\na02  R1=nao R2=sim R3=nao\na03  R1=sim R2=sim R3=sim\n(… a04 a a10 …)\n→ /tmp/juiz-falso.csv\n10 artefatos rotulados pelos dois\nR1  concordância 80%  kappa 0.55  REESCREVA ou troque o juiz  (discorda em a03 a09)\nR2  concordância 70%  kappa 0.00  REESCREVA ou troque o juiz  (discorda em a03 a05 a09)\nR3  concordância 100%  kappa 1.00  ok\nJUIZ DESCALIBRADO em R1, R2: não use para aprovar\nsaída: 1</pre><p>The fake judge says \"sim\" on R2 for everything: it never checks the diff. The calibration caught it. Notice R1: 80% agreement looks like a pass, but the kappa (0.55) shows that a good part of it is chance.</p>"
+          },
+          {
+            "rot": "Why kappa",
+            "html": "<p>If almost everything is \"yes\", a judge that always answers \"yes\" already agrees with you a lot. Cohen's kappa discounts that agreement expected by chance: 1 is perfect, 0 is the same as guessing. FEC asks for 0.6 with 30 labeled samples; LOOP-R asks for 80% agreement. calibrar.py enforces both.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The real judge and what the calibration found",
+      "sub": "Uses your subscription quota: 30 calls (10 messages × 3). On 10/19/2026 this ran twice; the first run showed a flaw in the rubric, not in the judge.",
+      "blocos": [
+        {
+          "rot": "Terminal · real judge (continues from the previous block)",
+          "icone": "terminal",
+          "conteudo": "JUIZ_CMD='claude -p --tools \"\"' python3 $J/juiz.py --rep 3 --saida /tmp/juiz-real.csv\npython3 $J/calibrar.py $J/humano.csv /tmp/juiz-real.csv; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026, current rubric)",
+            "html": "<pre>a01  R1=sim R2=sim R3=sim\na02  R1=nao R2=sim R3=nao\na03  R1=nao R2=nao R3=sim  instável: R1 2×1, R3 2×1  REPROVA (R2 invariável)\na04  R1=sim R2=sim R3=sim\na05  R1=sim R2=sim R3=sim\n(… a06 a a08 …)\na09  R1=nao R2=nao R3=sim  instável: R1 2×1  REPROVA (R2 invariável)\na10  R1=sim R2=sim R3=sim\n→ /tmp/juiz-real.csv\n10 artefatos rotulados pelos dois\nR1  concordância 100%  kappa 1.00  ok\nR2  concordância 90%  kappa 0.74  ok  (discorda em a05)\nR3  concordância 100%  kappa 1.00  ok\nJUIZ CALIBRADO\nsaída: 0</pre><p>Claude Code 2.1.303, the subscription's default model, 3 min 12 s. The divergence that remained: a05 says that increasing the session \"improves security\"; the person marked it as an invented effect, the judge accepted it.</p>"
+          },
+          {
+            "rot": "Round 1: the old rubric",
+            "html": "<p>In the first real round, R2 said \"Tudo o que a mensagem afirma aparece no diff (nada inventado)?\". The judge failed good messages, because the REASON for a change is never in the diff:</p><pre>a01  R1=sim R2=nao R3=sim  REPROVA (R2 invariável)\na04  R1=sim R2=nao R3=sim  REPROVA (R2 invariável)</pre><p>The judge was right by the letter; the rubric was the ambiguous one. The criterion was rewritten (\"every CHANGE cited is in the diff; the reason may come from outside\") and the second round calibrated. That is what calibration is for: finding the bad criterion before it decides anything.</p>"
+          },
+          {
+            "rot": "Common mistake: judge offline",
+            "html": "<p>In that same first round, the subscription hit the session limit from the 6th artifact on. The old version of juiz.py counted the missing answer as \"nao\" and failed everything. The current version separates them: it prints <code>SEM RESPOSTA do juiz</code>, leaves the artifact out of the CSV and ends with <code>JUIZ FALHOU em N chamada(s)</code> and a nonzero exit code. A judge that did not answer neither failed nor passed.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Practice",
+      "sub": "Fake judge, real judge and the rubric for your case.",
+      "exercicios": [
+        {
+          "id": "e16",
+          "titulo": "E16 · Calibrate the fake judge",
+          "min": "10 min",
+          "texto": "Run the rehearsal with the fake judge.",
+          "pronto": "the last line before the code is <code>JUIZ DESCALIBRADO em R1, R2: não use para aprovar</code> and <code>saída: 1</code>."
+        },
+        {
+          "id": "e17",
+          "titulo": "E17 · Calibrate the real judge",
+          "min": "15 min",
+          "texto": "Run the real block with claude -p or codex exec read-only.",
+          "pronto": "<code>calibrar.py</code> prints one line for each of R1, R2, and R3 and ends with <code>JUIZ CALIBRADO</code> (code 0) or <code>JUIZ DESCALIBRADO</code> (code 1). If it came out uncalibrated, say which criterion you would rewrite."
+        },
+        {
+          "id": "e18",
+          "titulo": "E18 · Rubric and labels for your case",
+          "min": "45 min",
+          "texto": "Pick a subjective artifact from your agent (summary, answer, message). Write 3 yes/no criteria, one invariant, and label 10 artifacts yourself in humano.csv. Run the real judge and calibrate.",
+          "pronto": "<code>python3 $J/calibrar.py humano.csv /tmp/juiz.csv</code> → first line <code>10 artefatos rotulados pelos dois</code>; each criterion with <code>ok</code> or rewritten until it is <code>ok</code>."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Lesson quiz",
+      "perguntas": [
+        {
+          "p": "Why is the rubric yes/no and not a score from 1 to 10?",
+          "opcoes": [
+            "Because it is faster",
+            "Because a continuous score lets the judge's taste decide and it drifts; yes/no can be calibrated criterion by criterion",
+            "Because the model can't count",
+            "Doesn't matter"
+          ],
+          "certa": 1,
+          "explica": "A binary criterion limits taste, lets you measure agreement per criterion, and shows exactly which question is ambiguous.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "R1 had 80% agreement and kappa 0.55. Is the judge good for R1?",
+          "opcoes": [
+            "Yes, 80% is the minimum",
+            "No: a kappa below 0.6 shows part of the agreement is chance",
+            "Yes, kappa doesn't matter",
+            "Only with 5 repetitions"
+          ],
+          "certa": 1,
+          "explica": "High agreement can come from almost everything being \"yes\". Kappa discounts that. calibrar.py requires both thresholds.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "In the 1st real round, the judge failed good messages in R2. What was wrong?",
+          "opcoes": [
+            "The model",
+            "The temperature",
+            "The rubric: it required everything to be in the diff, including the reason",
+            "The human labels"
+          ],
+          "certa": 2,
+          "explica": "The judge followed the letter of an ambiguous criterion. Once the criterion was rewritten, the next round calibrated.",
+          "ref": "codigo"
+        },
+        {
+          "p": "The judge didn't respond (subscription limit). How do you count it?",
+          "opcoes": [
+            "As \"nao\", to be safe",
+            "As \"sim\"",
+            "As an error: left out of the result, and the script fails",
+            "Repeat until it responds, with no limit"
+          ],
+          "certa": 2,
+          "explica": "A missing answer is not a verdict. Counting it as \"nao\" would silently fail good work; the current juiz.py fails and says how many calls were missing.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "In three sentences",
+      "itens": [
+        {
+          "t": "Binary rubric",
+          "texto": "Yes-or-no questions, invariants that eliminate; whatever code can check goes into a test."
+        },
+        {
+          "t": "Repeat and calibrate",
+          "texto": "Three repetitions with shuffled order and, before using it, 80% agreement and kappa of 0.6 against your own labels."
+        },
+        {
+          "t": "Calibration finds a bad rubric",
+          "texto": "Divergence may come from the criterion, not the judge; and a judge with no answer is an error, not a failure."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Going further",
+      "links": [
+        {
+          "t": "LOOP-R: the judge and how to keep it from drifting (docs/05, §5)",
+          "href": "https://github.com/inematds/loop-r/blob/main/docs/05-medicao-evals-guardrails.md",
+          "icone": "arquivo"
+        },
+        {
+          "t": "LOOP-R: templates/rubrica.md",
+          "href": "https://github.com/inematds/loop-r/blob/main/templates/rubrica.md",
+          "icone": "lista"
+        },
+        {
+          "t": "Anthropic: Demystifying evals for AI agents (01/09/2026)",
+          "href": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "icone": "lupa"
+        },
+        {
+          "t": "kit/juiz/ (rubric, judge, calibration)",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit/juiz",
+          "icone": "terminal"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "id": "loop-r-eng-verificacao-v72",
+  "lang": "es",
+  "url": "https://inematds.github.io/loop-r-eng-verificacao-v72/es/",
+  "nome": "Verificación y Evals",
+  "sub": "Formación LOOP-R Ingeniería · curso 1",
+  "volta": {
+    "t": "Área LOOP-R Ingeniería",
+    "href": "https://eventos.inema.pro/loop-r-engenharia/"
+  },
+  "lado_card": {
+    "rot": "El kit de este curso",
+    "t": "kit/ en el repositorio del curso",
+    "texto": "Evaluador, verificación de criterios, guardia de tests, detector de atajos, evals, juez y compuerta. Cada uno con ensayo sin costo, probado el 19/10/2026.",
+    "link": "Abrir la carpeta kit/ en GitHub",
+    "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit"
+  },
+  "rodape": "INEMA.CLUB · contenido abierto y gratuito · formato INEMA Learning v7.2 · Formación LOOP-R Ingeniería, curso 1 de 6 · <a href=\"https://eventos.inema.pro/loop-r-engenharia/\">eventos.inema.pro/loop-r-engenharia</a> · <a href=\"https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit\">kit del curso en GitHub</a> · <a href=\"https://inema.club/\">inema.club</a>",
+  "videos": {},
+  "inicio": {
+    "kicker": "Formación LOOP-R Ingeniería · curso 1 de 6 · 8 lecciones",
+    "titulo": "Verificación y Evals: quien dice que terminó no puede ser quien lo hizo",
+    "lead": "Evaluador separado y escéptico, criterio que se verifica por comando, tests congelados, detección de atajos, conjunto de oro, juez calibrado, métricas que no engañan y una compuerta en capas para tu loop. Todo con scripts pequeños que primero ejecutas gratis, con agente y juez falsos.",
+    "cta": "Empezar por la lección 1",
+    "cta2": {
+      "t": "Ver el área de la formación",
+      "href": "https://eventos.inema.pro/loop-r-engenharia/"
+    },
+    "capa_alt": "Mesa de inspección de noche con una lupa articulada sobre una placa, osciloscopio y terminal al fondo.",
+    "numeros": [
+      {
+        "v": "8",
+        "t": "lecciones"
+      },
+      {
+        "v": "22",
+        "t": "ejercicios con salida esperada"
+      },
+      {
+        "v": "14",
+        "t": "scripts en el kit, todos con ensayo sin costo"
+      },
+      {
+        "v": "0",
+        "t": "llamadas a modelos en los ensayos"
+      }
+    ],
+    "aulas_titulo": "Las lecciones",
+    "aulas_sub": "En el orden en que montas la compuerta: separar a quien verifica, verificar el criterio, proteger al juez, cazar atajos, medir con evals y juez, leer los números y juntar todo.",
+    "blocos": [
+      {
+        "t": "Para quién es",
+        "itens": [
+          "Quien ya usa Claude Code o Codex en la terminal y ya escuchó \"listo, todos los tests pasan\" sin que pasaran.",
+          "Quien va a dejar un loop corriendo solo y necesita un juez que el agente no pueda engañar.",
+          "Quien quiere comparar dos versiones de un agente con números, no con impresiones."
+        ]
+      },
+      {
+        "t": "Qué vas a saber hacer",
+        "itens": [
+          "Ejecutar un evaluador separado, que no lee el reporte del agente y reprueba lo que solo parece listo.",
+          "Congelar los tests y todo lo que lee pytest, y atrapar al agente que borra, omite o memoriza la respuesta.",
+          "Montar un conjunto de oro con regresión y un juez por modelo calibrado contra tus propias etiquetas.",
+          "Leer pass@k, pass^k, varianza y benchmarks sin engañarte, y cerrar con una compuerta en capas."
+        ]
+      },
+      {
+        "t": "Antes de empezar",
+        "itens": [
+          "Linux o macOS con git, Python 3 y pytest. Los ensayos no llaman a ningún modelo.",
+          "Claude Code o Codex entrando por tu suscripción, solo para los pasos marcados \"real\".",
+          "Recomendado: el curso 0 (Base) para la escala de criterio de terminado. El curso 2 (Ejecución Larga) usa esta compuerta."
+        ]
+      }
+    ]
+  },
+  "ui": {
+    "pular": "Saltar al contenido",
+    "aulas": "Lecciones",
+    "concluido": "completado",
+    "aula": "Lección",
+    "nesta_aula": "En esta lección vas a aprender:",
+    "objetivo": "Objetivo:",
+    "proxima_aula": "Siguiente lección",
+    "aula_anterior": "Lección anterior",
+    "voltar_inicio": "Volver al inicio del curso",
+    "marcar_concluida": "Marcar lección como completada",
+    "dg_dica": "Haz clic en cada bloque del diagrama para ver qué hace.",
+    "copiar": "Copiar",
+    "copiado": "Copiado",
+    "selo_simulacao": "Simulación: ejemplo ilustrativo",
+    "selo_real": "Ejemplo del repositorio",
+    "pronto_quando": "Listo cuando:",
+    "fiz": "Hice este ejercicio",
+    "video_pagina": "Página del video con guion",
+    "pergunta": "Pregunta",
+    "de": "de",
+    "cert_tag": "competencia",
+    "correto": "Correcto",
+    "errado": "No es esa",
+    "quiz_aguarda": "Elige una alternativa. La explicación aparece después de tu intento.",
+    "proxima_pergunta": "Siguiente pregunta",
+    "quiz_ver": "Ver resultado",
+    "quiz_fim": "Prueba completada",
+    "quiz_total": "Acertaste {a} de {n}. Si aciertas todas, la clase se marca como completada.",
+    "aparencia": "Apariencia",
+    "tamanho_texto": "Tamaño del texto",
+    "tema": "Tema",
+    "tema_escuro": "Oscuro",
+    "tema_papel": "Papel claro",
+    "role_dica": "Desplázate por la página: cada etapa de abajo ilumina su parte del diagrama.",
+    "pre_requisito": "requiere",
+    "ver_aula": "Ver la clase",
+    "mapa_dica": "Haz clic en un ejercicio para ver qué hacer y el \"listo cuando\".",
+    "etapas": "Etapas",
+    "exercicios": "ejercicios",
+    "rever": "Repasar:",
+    "revisar_erradas": "Revisar las incorrectas",
+    "refazer": "Repetir la prueba",
+    "h_semana": "h por semana",
+    "data_inicio": "Fecha de inicio",
+    "ritmo": "Tiempo disponible",
+    "gerar_plano": "Generar mi plan",
+    "baixar_md": "Descargar plan.md",
+    "baixar_ics": "Descargar para el calendario (.ics)",
+    "ind_estudo": "Estudio (clases)",
+    "ind_pratica": "Práctica declarada",
+    "ind_nota": "Práctica = ejercicios que marcaste como hechos. La comprobación viene en el examen de la certificación.",
+    "estudo": {
+      "titulo": "Tu estudio",
+      "continuar": "Continuar donde lo dejé",
+      "comecar": "Empezar por la lección 1",
+      "cta_continuar": "Continuar la clase {n}",
+      "hoje": "hoy",
+      "ontem": "ayer",
+      "ha_dias": "hace {n} días",
+      "desempenho": "Desempeño en las pruebas",
+      "notas": "Mis anotaciones",
+      "dados": "Copiar mis datos",
+      "sem_testes": "Aún no has hecho ninguna prueba. La prueba está al final de cada clase.",
+      "nao_fez": "prueba aún no realizada",
+      "ultimo": "Última",
+      "melhor": "Mejor",
+      "tentativas": "intentos",
+      "tentativa": "intento",
+      "tudo_certo": "Acertaste todo en la última prueba.",
+      "rever": "Para repasar",
+      "resposta": "Respuesta correcta:",
+      "ir_teste": "Repetir la prueba",
+      "sem_notas": "Aún no hay anotaciones. En la clase, selecciona un fragmento del texto y toca Marcar o Anotar.",
+      "so_marcado": "(solo marcado)",
+      "marcar": "Marcar",
+      "anotar": "Anotar",
+      "salvar": "Guardar",
+      "apagar": "Borrar marca",
+      "fechar": "Cerrar",
+      "nota_ph": "Escribe tu anotación sobre este fragmento…",
+      "um_bloco": "Marca dentro de un solo párrafo.",
+      "nao_marca": "Este fragmento no se puede marcar.",
+      "dados_exp": "Tu progreso, tus anotaciones y las notas de las pruebas se quedan solo en este navegador. Descarga una copia (.json) para guardarla o para continuar en otro computador o navegador; allí, carga la copia. Cargar se suma a lo que ya existe y no borra nada.",
+      "exportar": "Descargar copia",
+      "importar": "Cargar copia",
+      "import_ok": "Copia cargada ({n} elementos). Actualizando la página…",
+      "import_erro": "Archivo no reconocido. No se cambió nada.",
+      "import_outro": "Esta copia es de otro curso. No se cambió nada.",
+      "export_ok": "Copia descargada."
+    },
+    "conv_dica": "Elige tu respuesta. El comentario aparece justo después y la conversación sigue según tu elección.",
+    "conv_voce": "Tú",
+    "conv_escolha": "Tu respuesta",
+    "conv_boa": "Buena elección",
+    "conv_meio": "Se puede mejorar",
+    "conv_ruim": "Elección débil",
+    "conv_fim": "Fin de la conversación",
+    "conv_placar": "Hiciste {p} de {m} puntos posibles.",
+    "conv_licao": "Lección:",
+    "conv_recomecar": "Reiniciar la conversación",
+    "conv_feita": "Tu mejor puntaje: {p} de {m} puntos.",
+    "comecar": "Comenzar la clase",
+    "nesta_vai": "En esta clase vas a",
+    "trocar_tema": "Cambiar tema claro/oscuro"
+  },
+  "icone": "check"
+}

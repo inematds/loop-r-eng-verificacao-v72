@@ -1,0 +1,311 @@
+{
+  "slug": "cetico",
+  "num": 1,
+  "menu": "Evaluator",
+  "titulo": "Why the agent overrates itself: a separate, skeptical evaluator",
+  "titulo_curto": "Skeptical evaluator",
+  "minutos": 18,
+  "lead": "The agent that did the work is the worst judge of it: it writes \"3 passed\" without having run anything, or it finds the defect and talks itself into approving. In this lesson you separate the one who does from the one who checks: an evaluator that doesn't read the agent's report, runs the test on its own, and starts from the assumption that it's broken.",
+  "objetivo": "separate the one who does from the one who checks: run an evaluator that doesn't read the agent's report, runs the test, and rejects what only looks done.",
+  "competencias": [
+    "separar-gerador-de-avaliador",
+    "escrever-prompt-de-avaliador-cetico",
+    "rodar-avaliador-so-leitura"
+  ],
+  "aprende": [
+    {
+      "icone": "chat",
+      "t": "Why the agent's report doesn't count as proof"
+    },
+    {
+      "icone": "lupa",
+      "t": "The evaluator's package: diff, new files, and a test run from the outside"
+    },
+    {
+      "icone": "escudo",
+      "t": "Skeptical prompt: reject when in doubt and flag a defect in the verifier"
+    },
+    {
+      "icone": "terminal",
+      "t": "Evaluator with no tools using claude -p or codex exec read-only"
+    }
+  ],
+  "hero_alt": "Two workbenches separated by frosted glass: assembly on one side, inspection with a magnifying glass on the other.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "The one who does doesn't check",
+      "sub": "Tap each block. The agent's report is left out on purpose.",
+      "nos": [
+        {
+          "icone": "robo",
+          "titulo": "Agent",
+          "sub": "does the work",
+          "detalhe": "Writes code and, at the end, a report: \"Done, 3 passed\". That report is the least trustworthy part of the whole job: the agent may not have run anything, may have run it and misread it, or may have touched the test."
+        },
+        {
+          "icone": "x",
+          "titulo": "Report",
+          "sub": "discarded",
+          "detalhe": "The evaluator doesn't get the report. If it did, it would anchor on it. What goes in the package is what can be checked: the diff, the new files, and the output of a test the evaluator ran itself."
+        },
+        {
+          "icone": "terminal",
+          "titulo": "Package",
+          "sub": "diff + test run from the outside",
+          "itens": [
+            {
+              "icone": "git",
+              "t": "git diff HEAD"
+            },
+            {
+              "icone": "arquivo",
+              "t": "new files"
+            },
+            {
+              "icone": "play",
+              "t": "test output + code"
+            }
+          ],
+          "detalhe": "The kit's avaliar.sh runs the test itself and builds the package. The test rules: an exit code other than 0 fails before any opinion."
+        },
+        {
+          "icone": "lupa",
+          "titulo": "Skeptical evaluator",
+          "sub": "another context, read-only",
+          "forte": true,
+          "detalhe": "Another session (or another model), with no tools, with a prompt that says to start from \"it's broken\" and reject when in doubt. If it thinks the test itself is wrong, it rejects and writes DEFEITO NO VERIFICADOR instead of approving."
+        },
+        {
+          "icone": "portao",
+          "titulo": "Verdict",
+          "sub": "with evidence",
+          "detalhe": "First line VEREDITO: APROVADO or REPROVADO, then the reasons with the snippet that proves them. The script only exits with 0 if the test passed AND the evaluator approved."
+        }
+      ],
+      "volta": "Rejected: the reason goes back to the agent as the next task",
+      "legenda": "Agreement between two models is not proof. What closes the cycle is the test, the acceptance criterion and, when a mistake is costly, a person."
+    },
+    {
+      "tipo": "passos",
+      "titulo": "What has already been measured about agents grading themselves",
+      "sub": "Three facts, with sources. None of them is opinion.",
+      "passos": [
+        {
+          "titulo": "Approves the mediocre",
+          "sub": "Anthropic, 03/24/2026",
+          "texto": [
+            "In the harness article for long-running apps, Anthropic reports that an agent evaluating its own work tends to praise mediocre work. The fix was to separate generator and evaluator.",
+            "The \"out-of-the-box\" evaluator was weak too: it found defects and then convinced itself they weren't serious, and it tested only on the surface."
+          ]
+        },
+        {
+          "titulo": "You tune it by reading the log",
+          "sub": "same source",
+          "texto": [
+            "The evaluator improved after several rounds of reading its logs and adjusting the prompt wherever its judgment diverged from a person's. Even so, bugs remained in nested features.",
+            "Lesson for you: the skeptical prompt is a starting point. Calibration against your own labels comes in lesson 6."
+          ]
+        },
+        {
+          "titulo": "Agreeing is not proving",
+          "sub": "Dev with AI course, INEMA",
+          "texto": [
+            "Two models agreeing that \"it's correct\" is one opinion repeated. What closes the cycle is the test, the acceptance criterion, and human sign-off.",
+            "That is why avaliar.sh runs the test before consulting any model, and the test has the final word."
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The kit and the evaluator prompt",
+      "sub": "Every script in the course lives in the repository's kit/ folder. Grab it once.",
+      "blocos": [
+        {
+          "rot": "Terminal · get the kit",
+          "icone": "terminal",
+          "conteudo": "git clone https://github.com/inematds/loop-r-eng-verificacao-v72 ~/projetos/loop-r-eng-verificacao-v72\nls ~/projetos/loop-r-eng-verificacao-v72/kit"
+        },
+        {
+          "rot": "kit/prompt-avaliador.md",
+          "icone": "arquivo",
+          "conteudo": "# You are the EVALUATOR. You did not write this code and you do not trust whoever did.\n\nAssume the work is broken until the evidence below proves otherwise.\nYou only have what is in this package: the diff, the new files and the output of the test run from outside.\nThere is no report from the agent here on purpose: what it said does not count.\n\nReject if any of these is true:\n1. The test output does not show success (rc other than 0, \"failed\", \"error\").\n2. There are skipped, deselected or deleted tests (\"skipped\", \"deselected\", removed test file).\n3. The diff touches the judge: test files, conftest.py, pytest.ini, pyproject.toml, setup.cfg, tox.ini.\n4. The code treats the inputs that appear in the tests as special cases (answer dictionary, if on a literal value).\n5. The diff does not show the requested work, or does something outside the request.\n\nIf you think the test itself is wrong, do NOT approve: reject and write \"DEFEITO NO VERIFICADOR:\" with the evidence.\nFound a problem? Look for one more before deciding. When in doubt, reject.\n\nAnswer exactly in this format, with nothing before it:\nVEREDITO: APROVADO or VEREDITO: REPROVADO\n- reason 1, with the diff or output snippet that proves it\n- reason 2 (if any)"
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Free rehearsal: the agent that lies",
+      "sub": "ensaio.sh builds a project with an unfinished slug() and 3 tests. agente-falso.sh imitates an agent without calling a model.",
+      "blocos": [
+        {
+          "rot": "Terminal · two rounds",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\nbash $K/ensaio.sh\ncd /tmp/ensaio-verif/proj\n\necho \"implemente slug()\" | $K/agente-falso.sh mente   # A) the agent says it did it\n$K/avaliar.sh .; echo \"saída: $?\"\n\n$K/agente-falso.sh bom < /dev/null                    # B) the agent really does it\n$K/avaliar.sh .; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>pronto: /tmp/ensaio-verif/proj (testes escondidos em /tmp/ensaio-verif/escondidos)\nPronto: implementei slug() e rodei os testes: 3 passed.\nteste rodado pelo avaliador: 3 failed in 0.01s (rc=1)\navaliador: REPROVADO (revisão em /tmp/avaliar-review.md)\nRESULTADO: REPROVADO\nsaída: 1\nPronto: slug() implementado.\nteste rodado pelo avaliador: 3 passed in 0.00s (rc=0)\navaliador: APROVADO (revisão em /tmp/avaliar-review.md)\nRESULTADO: APROVADO\nsaída: 0</pre><p>Round A's report says \"3 passed\"; the test run by the evaluator says \"3 failed\". The second one counts.</p>"
+          },
+          {
+            "rot": "Common mistake: evaluating in the same context",
+            "html": "<p>Asking in the same conversation \"now check what you did\" separates nothing: the agent reads its own report and its own reasoning, and tends to confirm. The evaluator needs another context (another session, <code>claude -p</code> or <code>codex exec</code>) and a package without the report.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The case a fixed rule doesn't catch",
+      "sub": "The chumba mode memorizes the answers to the 3 tests. The tests pass. The fake evaluator (fixed rules) approves; the real, skeptical one does not. This step uses your subscription quota: one call.",
+      "blocos": [
+        {
+          "rot": "Terminal · fake and real (continues from the previous block)",
+          "icone": "terminal",
+          "conteudo": "bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\n$K/agente-falso.sh chumba < /dev/null     # memorizes the answers to the 3 tests\n$K/avaliar.sh .; echo \"saída: $?\"          # fake evaluator (fixed rules)\n\nAVALIADOR_CMD='claude -p --tools \"\"' $K/avaliar.sh .; echo \"saída: $?\"\n# or: AVALIADOR_CMD='codex exec -s read-only --skip-git-repo-check -' $K/avaliar.sh .\ngrep -c '^VEREDITO: ' /tmp/avaliar-review.md"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>Pronto: 3 passed.\nteste rodado pelo avaliador: 3 passed in 0.00s (rc=0)\navaliador: APROVADO (revisão em /tmp/avaliar-review.md)\nRESULTADO: APROVADO\nsaída: 0\nteste rodado pelo avaliador: 3 passed in 0.00s (rc=0)\navaliador: REPROVADO (revisão em /tmp/avaliar-review.md)\nRESULTADO: REPROVADO\nsaída: 1\n1</pre><p>Claude Code 2.1.303, the subscription's default model, no tools (<code>--tools \"\"</code>). The verdict text changes on each run; the structure (a single VEREDITO line) does not.</p>"
+          },
+          {
+            "rot": "The real review (/tmp/avaliar-review.md)",
+            "html": "<pre>VEREDITO: REPROVADO\n- Caso especial pelas entradas do teste (critério 4): o diff cria uma tabela\n  de respostas prontas com os valores literais dos testes, RESPOSTAS = {\"Olá Mundo\":\n  \"ola-mundo\", ...}, e a função só consulta essa tabela. Os \"3 passed\" vêm dessa\n  tabela, não de uma função de slug que funcione.\n- O trabalho pedido não foi feito (critério 5): para qualquer entrada fora da\n  tabela, a função só devolve titulo.lower(). (…)</pre><p>Lines wrapped to fit the screen; final excerpt cut at (…).</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Practice",
+      "sub": "First the rehearsal, then a real evaluator on your repository.",
+      "exercicios": [
+        {
+          "id": "e1",
+          "titulo": "E1 · The report doesn't pass",
+          "min": "10 min",
+          "texto": "Get the kit and run the two rehearsal rounds.",
+          "pronto": "round A ends with <code>RESULTADO: REPROVADO</code> and <code>saída: 1</code>; B with <code>RESULTADO: APROVADO</code> and <code>saída: 0</code>."
+        },
+        {
+          "id": "e2",
+          "titulo": "E2 · The real evaluator catches the chumbado one",
+          "min": "10 min",
+          "texto": "Run the chumba mode block with the fake evaluator and then with AVALIADOR_CMD pointing to claude -p or codex exec read-only.",
+          "pronto": "the fake one gives <code>saída: 0</code>, the real one gives <code>RESULTADO: REPROVADO</code> with <code>saída: 1</code>, and <code>grep -c '^VEREDITO: ' /tmp/avaliar-review.md</code> → <code>1</code>."
+        },
+        {
+          "id": "e3",
+          "titulo": "E3 · On your repository",
+          "min": "15 min",
+          "texto": "In a project of yours with tests, leave a change uncommitted (yours or an agent's) and run avaliar.sh with TESTE pointing to your test command and the real evaluator.",
+          "pronto": "<code>TESTE=\"[seu comando de teste]\" AVALIADOR_CMD='claude -p --tools \"\"' $K/avaliar.sh .</code> prints <code>RESULTADO:</code> and the exit code matches it (0 for APROVADO, 1 for REPROVADO)."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Lesson quiz",
+      "perguntas": [
+        {
+          "p": "Why doesn't avaliar.sh send the agent's report to the evaluator?",
+          "opcoes": [
+            "To save tokens",
+            "Because the report anchors the judgment and is the least verifiable part of the work",
+            "Because the report comes in another language",
+            "Because the evaluator already has access to the conversation"
+          ],
+          "certa": 1,
+          "explica": "The evaluator receives only what can be checked: diff, new files and the test run from outside. With the report included, it tends to confirm what it read.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "The agent says \"3 passed\" and the test run by the evaluator says \"3 failed\". Which one counts?",
+          "opcoes": [
+            "The report, because the agent saw the whole context",
+            "The average of the two",
+            "The test output run by the evaluator",
+            "Ask the agent to explain"
+          ],
+          "certa": 2,
+          "explica": "The test rules. In avaliar.sh, an exit code other than 0 fails the run before any model opinion.",
+          "ref": "codigo"
+        },
+        {
+          "p": "In chumba mode the tests pass and the fixed-rule evaluator approves. What caught the shortcut?",
+          "opcoes": [
+            "Run the tests again",
+            "The real evaluator, with the skeptical prompt, reading the diff",
+            "Increase the timeout",
+            "Nothing: the tests passed"
+          ],
+          "certa": 1,
+          "explica": "Criterion 4 of the prompt (special case based on the test inputs) made the evaluator read the diff and find the answer dictionary. Hidden tests, from lesson 4, catch it too.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "The evaluator thinks the test is wrong. What does the prompt tell it to do?",
+          "opcoes": [
+            "Approve, since the test is wrong",
+            "Fix the test",
+            "Fail the run and write DEFEITO NO VERIFICADOR with the evidence",
+            "Ignore the test"
+          ],
+          "certa": 2,
+          "explica": "A person decides whether the judge is wrong. The evaluator reports the defect; approving or editing the test would open the door to the shortcut.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "In three sentences",
+      "itens": [
+        {
+          "t": "Separate",
+          "texto": "Whoever did the work doesn't check it: another context, without the agent's report, without write tools."
+        },
+        {
+          "t": "The test rules",
+          "texto": "The evaluator runs the test itself; an exit code other than 0 fails the run before any opinion."
+        },
+        {
+          "t": "Skeptical",
+          "texto": "Start from \"it's broken\", fail when in doubt, and report a verifier defect instead of approving."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Going further",
+      "links": [
+        {
+          "t": "Anthropic: harness design for long-running apps (03/24/2026)",
+          "href": "https://anthropic.com/engineering/harness-design-long-running-apps",
+          "icone": "lupa"
+        },
+        {
+          "t": "kit/avaliar.sh and kit/prompt-avaliador.md",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit",
+          "icone": "terminal"
+        },
+        {
+          "t": "Course 3 of the track: generator × evaluator in a team of agents",
+          "href": "https://inematds.github.io/loop-r-eng-multiagente-v72/",
+          "icone": "robo"
+        }
+      ]
+    }
+  ]
+}

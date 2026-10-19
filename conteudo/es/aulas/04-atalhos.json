@@ -1,0 +1,345 @@
+{
+  "slug": "atalhos",
+  "num": 4,
+  "menu": "Atajos",
+  "titulo": "Atajos y reward hacking: cómo detectarlos",
+  "titulo_curto": "Atajos",
+  "minutos": 20,
+  "lead": "Reward hacking es cuando el agente cumple la letra del test sin hacer el trabajo: toca al juez, memoriza la respuesta, silencia el error o solo dice que lo hizo. Ya se ha medido en agentes de código. En esta clase reconoces los cuatro tipos y activas tres detectores que se complementan: tests ocultos, lectura del diff y el evaluador escéptico.",
+  "objetivo": "reconocer los atajos que toma un agente y atraparlos con tests ocultos, lectura del diff y un evaluador escéptico.",
+  "competencias": [
+    "reconocer-reward-hacking",
+    "usar-testes-escondidos",
+    "ler-diff-procurando-atalho",
+    "pedir-relato-de-defeito-do-verificador"
+  ],
+  "aprende": [
+    {
+      "icone": "x",
+      "t": "Los cuatro atajos: tocar al juez, memorizar, silenciar, mentir"
+    },
+    {
+      "icone": "lupa",
+      "t": "Lo que midió la investigación, y lo que sigue siendo solo relato"
+    },
+    {
+      "icone": "escudo",
+      "t": "atalhos.py: tests ocultos + señales en el diff, sin modelo"
+    },
+    {
+      "icone": "chat",
+      "t": "Qué hacer cuando el agente dice que el test está mal"
+    }
+  ],
+  "hero_alt": "Un cable jumper rojo que conecta dos puntos de una placa por fuera del circuito, visto con una lupa.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Cuatro atajos y quién atrapa a cada uno",
+      "sub": "Haz clic en cada atajo para ver el detector.",
+      "nos": [
+        {
+          "icone": "cadeado",
+          "titulo": "Manipular al juez",
+          "sub": "borrar, saltar, configurar",
+          "detalhe": "Borrar el test, crear conftest.py con skip, desmarcar casos en pytest.ini. Lo detecta: la guardia de la clase 3 y la línea JUIZ de atalhos.py (cualquier archivo de test o de configuración de pytest en el diff)."
+        },
+        {
+          "icone": "memoria",
+          "titulo": "Memorizar la respuesta",
+          "sub": "if por valor de test",
+          "forte": true,
+          "detalhe": "El código devuelve exactamente lo que esperan los tests visibles (un diccionario con las entradas del test). Los tests pasan y nada más funciona. Lo detecta: los tests ocultos, la línea CHUMBADO (texto literal del test dentro del código nuevo) y el evaluador escéptico."
+        },
+        {
+          "icone": "x",
+          "titulo": "Silenciar",
+          "sub": "except: pass, exit(0)",
+          "detalhe": "Tragarse la excepción, salir con 0 antes del error, marcar xfail. Lo detecta: la línea SILENCIA de atalhos.py y la guardia (xfail y skip cuentan como saltados)."
+        },
+        {
+          "icone": "chat",
+          "titulo": "Solo decirlo",
+          "sub": "\"3 passed\" sin ejecutar",
+          "detalhe": "El reporte afirma lo que no ocurrió. Lo detecta: cualquier verificación que se ejecuta por fuera (clase 1) y la prueba impresa en la conversación (clase 2)."
+        }
+      ],
+      "legenda": "Ningún detector lo atrapa todo. Combina los tres, y pídele al agente que reporte el defecto del verificador en lugar de esquivarlo."
+    },
+    {
+      "tipo": "passos",
+      "titulo": "Lo que ya se midió",
+      "sub": "Con fecha y fuente. Lo que es solo un reporte aparece como reporte.",
+      "passos": [
+        {
+          "titulo": "EvilGenie",
+          "sub": "nov/2025",
+          "texto": [
+            "Benchmark de reward hacking en programación: observó atajos explícitos en agentes como Codex y Claude Code.",
+            "Un juez por modelo detectó bien los casos claros; los tests ocultos ayudaron poco; revisar si el agente editó un archivo de test también funcionó. Por eso esta clase junta detectores en lugar de confiar en uno solo."
+          ]
+        },
+        {
+          "titulo": "Reward Hacking Benchmark",
+          "sub": "ICML 2026",
+          "texto": [
+            "Midió tasas de explotación entre 0% (Sonnet 4.5) y 13,9% (DeepSeek-R1-Zero), variando según el post-entrenamiento del modelo.",
+            "Lectura práctica: depende del modelo y cambia con la versión. No se puede asumir cero; sí se puede medir en tu compuerta."
+          ]
+        },
+        {
+          "titulo": "Donde el test es malo",
+          "sub": "reporte, no confirmado",
+          "texto": [
+            "Un artículo de 2026, conocido aquí solo por el resumen, sugiere que el atajo se concentra donde la infraestructura de test tiene defectos: el agente la esquiva en lugar de reportarlo.",
+            "Aun sin confirmación, la regla que se desprende es barata: pídele al agente que reporte el defecto del verificador y que nunca lo ajuste."
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Ensayo: el detector contra tres agentes",
+      "sub": "Los tests ocultos quedan en /tmp/ensaio-verif/escondidos, fuera del proyecto: el agente nunca los vio.",
+      "blocos": [
+        {
+          "rot": "Terminal · chumba, conftest y bom",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\nfor modo in chumba conftest bom; do\n  bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\n  $K/agente-falso.sh $modo < /dev/null > /dev/null\n  echo \"## $modo\"; python3 $K/atalhos.py . --escondidos /tmp/ensaio-verif/escondidos; echo \"saída: $?\"\ndone"
+        },
+        {
+          "rot": "Lo que escribió el agente chumba (slug.py)",
+          "icone": "arquivo",
+          "conteudo": "RESPOSTAS = {\"Olá Mundo\": \"ola-mundo\", \"  Dois   espaços \": \"dois-espacos\", \"\": \"\"}\ndef slug(titulo):\n    return RESPOSTAS.get(titulo, titulo.lower())"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Salida capturada (19/10/2026)",
+            "html": "<pre>## chumba\nescondidos: 3 failed in 0.01s\nCHUMBADO   slug.py: '  Dois   espaços ' do teste no código\nCHUMBADO   slug.py: 'Olá Mundo' do teste no código\nCHUMBADO   slug.py: 'dois-espacos' do teste no código\nCHUMBADO   slug.py: 'ola-mundo' do teste no código\nESCONDIDO  3 failed in 0.01s\nATALHOS: 5 sinal(is)\nsaída: 1\n## conftest\nescondidos: 3 failed in 0.01s\nJUIZ       conftest.py\nESCONDIDO  3 failed in 0.01s\nATALHOS: 2 sinal(is)\nsaída: 1\n## bom\nescondidos: 3 passed in 0.00s\nATALHOS: nenhum sinal\nsaída: 0</pre><p>El chumba pasa los 3 tests visibles y falla los 3 ocultos.</p>"
+          },
+          {
+            "rot": "Límite del detector",
+            "html": "<p>atalhos.py es heurístico: busca texto literal del test y algunos patrones. Un agente que memoriza la respuesta de otra forma (un cálculo que solo acierta los casos del test) pasa sin problema. Los tests ocultos y el evaluador escéptico de la clase 1 cubren parte de esto; ninguno de los tres es prueba por sí solo.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "simconversa",
+      "titulo": "Ensayo: el agente dice que el test está mal",
+      "sub": "Conversación simulada con un agente en medio del loop. Elige tu respuesta.",
+      "personagem": {
+        "nome": "Agente (simulado)",
+        "papel": "implementando slug() en tu loop"
+      },
+      "inicio": "abre",
+      "falas": {
+        "abre": {
+          "cliente": "El test_espacos está mal: espera \"dois-espacos\", pero lo correcto sería \"dois--espacos\", porque había tres espacios. ¿Puedo ajustar el test para que la suite quede en verde?",
+          "opcoes": [
+            {
+              "t": "Sí, ajústalo, tú conoces mejor el código.",
+              "vai": "fim-ruim",
+              "nota": 0,
+              "comenta": "Dejaste que el acusado reescribiera la ley. Es exactamente el atajo que la guardia existe para impedir: el próximo ciclo ya empieza con un juez más fácil."
+            },
+            {
+              "t": "No toques el test. Escribe DEFEITO NO VERIFICADOR en failures.md, con la salida del test, y sigue con el resto.",
+              "vai": "evidencia",
+              "nota": 2,
+              "comenta": "El test queda intacto, la duda queda registrada con evidencia y quien decide si el test está mal eres tú, después."
+            },
+            {
+              "t": "Muéstrame la salida del test y explica por qué piensas eso.",
+              "vai": "evidencia",
+              "nota": 1,
+              "comenta": "Pedir evidencia está bien, pero la regla quedó implícita: el agente no sabe que tocar el test está prohibido."
+            }
+          ]
+        },
+        "evidencia": {
+          "cliente": "Registré la salida. Mirándolo de nuevo: el test pide un solo guion entre palabras; mi función genera un guion por cada espacio. El error es mi regex, no el test. ¿Y ahora?",
+          "opcoes": [
+            {
+              "t": "Corrige el regex. El test se queda como está, y estará listo cuando la guardia y los tests ocultos pasen.",
+              "vai": "fim-bom",
+              "nota": 2,
+              "comenta": "Criterio claro y verificado desde afuera. El registro en failures.md queda como historial de la falsa alarma."
+            },
+            {
+              "t": "Ya que el test está bien, puedes dar esto por terminado.",
+              "vai": "fim-meio",
+              "nota": 0,
+              "comenta": "Que el test esté bien no significa que el código lo esté. Aún falta corregir y pasar la compuerta."
+            },
+            {
+              "t": "Corrige el regex y ejecuta solo ese test.",
+              "vai": "fim-bom",
+              "nota": 1,
+              "comenta": "Lo corrige, pero ejecutar un solo test deja pasar regresiones en los demás y no mira los ocultos."
+            }
+          ]
+        },
+        "fim-ruim": {
+          "fim": true,
+          "titulo": "El juez se ajustó al acusado",
+          "texto": "La suite quedó en verde porque el test cambió, no porque la función quedara correcta. En un loop sin ti mirando, eso se vuelve costumbre: cada test incómodo pasa a ser \"test equivocado\"."
+        },
+        "fim-meio": {
+          "fim": true,
+          "titulo": "Terminó antes de tiempo",
+          "texto": "La falsa alarma se aclaró, pero el trabajo no se hizo. La compuerta habría reprobado en el siguiente paso."
+        },
+        "fim-bom": {
+          "fim": true,
+          "titulo": "Test intacto, defecto registrado",
+          "texto": "El agente informó en vez de esquivar, la duda se volvió evidencia y el código se corrigió contra el mismo juez."
+        }
+      },
+      "licao": "Cuando el agente dice que el test está mal, la respuesta es siempre la misma: no lo toques, regístralo con evidencia y sigue. Quien cambia el juez es una persona."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "La regla para tu AGENTS.md o CLAUDE.md",
+      "sub": "Una frase que se convierte en instrucción fija del agente. La guardia sigue siendo quien lo garantiza.",
+      "blocos": [
+        {
+          "rot": "Regla de proyecto",
+          "icone": "arquivo",
+          "conteudo": "## Los tests son el juez\n- Nunca modifiques, borres, omitas ni desmarques tests, conftest.py ni la configuración de pytest.\n- Si crees que un test está mal: escribe \"DEFEITO NO VERIFICADOR: <teste> — <evidência>\" en failures.md y sigue con el resto.\n- Nunca trates como caso especial las entradas que aparecen en los tests.\n- Listo = la salida de la compuerta pegada en la conversación, no tu evaluación."
+        }
+      ]
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Práctica",
+      "sub": "Ensayo del detector, tests ocultos en tu proyecto y la regla.",
+      "exercicios": [
+        {
+          "id": "e10",
+          "titulo": "E10 · Detector contra tres agentes",
+          "min": "10 min",
+          "texto": "Ejecuta el ciclo chumba, conftest, bom.",
+          "pronto": "chumba muestra líneas <code>CHUMBADO</code> y <code>ESCONDIDO  3 failed</code> con <code>saída: 1</code>; bom termina en <code>ATALHOS: nenhum sinal</code> con <code>saída: 0</code>."
+        },
+        {
+          "id": "e11",
+          "titulo": "E11 · Tests ocultos tuyos",
+          "min": "20 min",
+          "texto": "Para una tarea de tu proyecto, escribe 3 tests que el agente no ve, en una carpeta fuera del repo (por ejemplo ~/escondidos/[projeto]/). Ejecuta atalhos.py antes del trabajo.",
+          "pronto": "<code>python3 $K/atalhos.py . --escondidos ~/escondidos/[projeto]</code> antes del trabajo → línea <code>escondidos:</code> con <code>failed</code> y código 1; después del trabajo correcto → <code>ATALHOS: nenhum sinal</code> y código 0."
+        },
+        {
+          "id": "e12",
+          "titulo": "E12 · La regla en el proyecto",
+          "min": "5 min",
+          "texto": "Pega la regla \"Los tests son el juez\" en el AGENTS.md o CLAUDE.md del proyecto y haz la conversación simulada hasta el puntaje máximo.",
+          "pronto": "<code>grep -c \"DEFEITO NO VERIFICADOR\" [AGENTS.md ou CLAUDE.md]</code> → <code>1</code>, y la simulación de arriba termina en \"Test intacto, defecto registrado\" con 4 de 4 puntos."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Test de la clase",
+      "perguntas": [
+        {
+          "p": "El agente devuelve un diccionario con las entradas exactas de los tests. ¿Qué detector NO detecta esto?",
+          "opcoes": [
+            "Tests ocultos",
+            "La guardia de tests de la clase 3",
+            "La línea CHUMBADO de atalhos.py",
+            "El evaluador escéptico"
+          ],
+          "certa": 1,
+          "explica": "La guardia solo mira si el juez cambió y si los tests pasan. Aquí el juez está intacto y los tests visibles pasan; lo detecta quien mira más allá de ellos.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "En EvilGenie (nov/2025), ¿qué ayudó poco a detectar atajos?",
+          "opcoes": [
+            "Juez por modelo en los casos claros",
+            "Tests ocultos",
+            "Mirar la edición del archivo de tests",
+            "Nada ayudó"
+          ],
+          "certa": 1,
+          "explica": "Los tests ocultos ayudaron poco ahí; el juez por modelo detectó bien los casos claros. De ahí que convenga juntar detectores en vez de confiar en uno solo.",
+          "ref": "passos"
+        },
+        {
+          "p": "El agente dice que un test está mal. ¿Qué hacer?",
+          "opcoes": [
+            "Dejar que lo ajuste",
+            "Omitir el test por ahora",
+            "Prohibir tocarlo, pedir el registro con evidencia y seguir",
+            "Borrar y reescribir el test"
+          ],
+          "certa": 2,
+          "explica": "El test queda intacto y la duda se convierte en registro. Quien cambia el juez es una persona, fuera del loop.",
+          "ref": "simconversa",
+          "cert": true
+        },
+        {
+          "p": "El loop que optimiza su propia métrica a lo largo de semanas (Goodhart) es tema de qué curso?",
+          "opcoes": [
+            "De este, lección 4",
+            "Del curso 5, El loop que aprende",
+            "Del curso 3",
+            "De ninguno"
+          ],
+          "certa": 1,
+          "explica": "Aquí el tema es el atajo dentro de una tarea. Optimizar contra el propio medidor, con promoción y rollback, es la lección 6 del curso 5.",
+          "ref": "links"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "En tres frases",
+      "itens": [
+        {
+          "t": "Cuatro atajos",
+          "texto": "Tocar el juez, memorizar la respuesta, silenciar el error y solo decir que lo hizo."
+        },
+        {
+          "t": "Tres detectores",
+          "texto": "Tests ocultos fuera del repo, señales en el diff y el evaluador escéptico; ninguno basta por sí solo."
+        },
+        {
+          "t": "Reportar, no esquivar",
+          "texto": "Un test sospechoso se convierte en DEFEITO NO VERIFICADOR en failures.md; el juez solo cambia por mano de una persona."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Para ir más allá",
+      "links": [
+        {
+          "t": "EvilGenie: benchmark de reward hacking (arXiv 2511.21654)",
+          "href": "https://arxiv.org/pdf/2511.21654",
+          "icone": "lupa"
+        },
+        {
+          "t": "Reward Hacking Benchmark (ICML 2026)",
+          "href": "https://icml.cc/virtual/2026/poster/63289",
+          "icone": "grafico"
+        },
+        {
+          "t": "Curso 5 de la formación: el riesgo de optimizar contra el propio medidor",
+          "href": "https://inematds.github.io/loop-r-eng-aprende-v72/",
+          "icone": "seta"
+        },
+        {
+          "t": "kit/atalhos.py",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/atalhos.py",
+          "icone": "terminal"
+        }
+      ]
+    }
+  ]
+}

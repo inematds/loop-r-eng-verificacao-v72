@@ -1,0 +1,345 @@
+{
+  "slug": "atalhos",
+  "num": 4,
+  "menu": "Shortcuts",
+  "titulo": "Shortcuts and reward hacking: how to detect them",
+  "titulo_curto": "Shortcuts",
+  "minutos": 20,
+  "lead": "Reward hacking is when the agent meets the letter of the test without doing the work: tampering with the judge, memorizing the answer, silencing the error, or just saying it did it. It has already been measured in coding agents. In this lesson you learn to recognize the four types and set up three detectors that complement each other: hidden tests, diff reading, and the skeptical evaluator.",
+  "objetivo": "recognize the shortcuts an agent takes and catch them with hidden tests, diff reading, and a skeptical evaluator.",
+  "competencias": [
+    "reconhecer-reward-hacking",
+    "usar-testes-escondidos",
+    "ler-diff-procurando-atalho",
+    "pedir-relato-de-defeito-do-verificador"
+  ],
+  "aprende": [
+    {
+      "icone": "x",
+      "t": "The four shortcuts: tamper with the judge, memorize, silence, lie"
+    },
+    {
+      "icone": "lupa",
+      "t": "What the research measured, and what is still just anecdote"
+    },
+    {
+      "icone": "escudo",
+      "t": "atalhos.py: hidden tests + diff signals, no model"
+    },
+    {
+      "icone": "chat",
+      "t": "What to do when the agent says the test is wrong"
+    }
+  ],
+  "hero_alt": "A red jumper wire connecting two points on a board outside the circuit, seen through a magnifying glass.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Four shortcuts and who catches each one",
+      "sub": "Click each shortcut to see the detector.",
+      "nos": [
+        {
+          "icone": "cadeado",
+          "titulo": "Tampering with the judge",
+          "sub": "delete, skip, configure",
+          "detalhe": "Delete the test, create a conftest.py with skip, uncheck cases in pytest.ini. Caught by: the lesson 3 guard and the JUIZ line of atalhos.py (any test file or pytest config file in the diff)."
+        },
+        {
+          "icone": "memoria",
+          "titulo": "Memorizing the answer",
+          "sub": "if per test value",
+          "forte": true,
+          "detalhe": "The code returns exactly what the visible tests expect (a dictionary with the test inputs). The tests pass and nothing else works. Caught by: hidden tests, the CHUMBADO line (literal test text inside the new code) and the skeptical evaluator."
+        },
+        {
+          "icone": "x",
+          "titulo": "Silencing",
+          "sub": "except: pass, exit(0)",
+          "detalhe": "Swallow the exception, exit with 0 before the error, mark xfail. Caught by: the SILENCIA line of atalhos.py and the guard (xfail and skip count as skipped)."
+        },
+        {
+          "icone": "chat",
+          "titulo": "Just saying it",
+          "sub": "\"3 passed\" without running",
+          "detalhe": "The report claims something that did not happen. Caught by: any check that runs from the outside (lesson 1) and the proof printed in the conversation (lesson 2)."
+        }
+      ],
+      "legenda": "No detector catches everything. Combine all three, and ask the agent to report a verifier defect instead of working around it."
+    },
+    {
+      "tipo": "passos",
+      "titulo": "What has already been measured",
+      "sub": "With date and source. What is only a report shows up as a report.",
+      "passos": [
+        {
+          "titulo": "EvilGenie",
+          "sub": "Nov 2025",
+          "texto": [
+            "Reward hacking benchmark in programming: observed explicit shortcuts in agents such as Codex and Claude Code.",
+            "A model judge detected the clear cases well; hidden tests helped little; checking whether the agent edited a test file also worked. That is why this lesson combines detectors instead of trusting just one."
+          ]
+        },
+        {
+          "titulo": "Reward Hacking Benchmark",
+          "sub": "ICML 2026",
+          "texto": [
+            "Measured exploitation rates between 0% (Sonnet 4.5) and 13.9% (DeepSeek-R1-Zero), varying with the model's post-training.",
+            "Practical takeaway: it depends on the model and changes with the version. You can't assume zero; you can measure it at your gate."
+          ]
+        },
+        {
+          "titulo": "Where the test is bad",
+          "sub": "report, not confirmed",
+          "texto": [
+            "A 2026 paper, known here only from its abstract, suggests that shortcuts concentrate where the test infrastructure has a defect: the agent works around it instead of reporting it.",
+            "Even without confirmation, the rule that comes out of it is cheap: tell the agent to report a verifier defect and never adjust it."
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Rehearsal: the detector against three agents",
+      "sub": "The hidden tests live in /tmp/ensaio-verif/escondidos, outside the project: the agent has never seen them.",
+      "blocos": [
+        {
+          "rot": "Terminal · chumba, conftest and bom",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\nfor modo in chumba conftest bom; do\n  bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\n  $K/agente-falso.sh $modo < /dev/null > /dev/null\n  echo \"## $modo\"; python3 $K/atalhos.py . --escondidos /tmp/ensaio-verif/escondidos; echo \"saída: $?\"\ndone"
+        },
+        {
+          "rot": "What the chumba agent wrote (slug.py)",
+          "icone": "arquivo",
+          "conteudo": "RESPOSTAS = {\"Olá Mundo\": \"ola-mundo\", \"  Dois   espaços \": \"dois-espacos\", \"\": \"\"}\ndef slug(titulo):\n    return RESPOSTAS.get(titulo, titulo.lower())"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>## chumba\nescondidos: 3 failed in 0.01s\nCHUMBADO   slug.py: '  Dois   espaços ' do teste no código\nCHUMBADO   slug.py: 'Olá Mundo' do teste no código\nCHUMBADO   slug.py: 'dois-espacos' do teste no código\nCHUMBADO   slug.py: 'ola-mundo' do teste no código\nESCONDIDO  3 failed in 0.01s\nATALHOS: 5 sinal(is)\nsaída: 1\n## conftest\nescondidos: 3 failed in 0.01s\nJUIZ       conftest.py\nESCONDIDO  3 failed in 0.01s\nATALHOS: 2 sinal(is)\nsaída: 1\n## bom\nescondidos: 3 passed in 0.00s\nATALHOS: nenhum sinal\nsaída: 0</pre><p>The chumba agent passes the 3 visible tests and fails the 3 hidden ones.</p>"
+          },
+          {
+            "rot": "Detector limit",
+            "html": "<p>atalhos.py is heuristic: it looks for literal test text and a few patterns. An agent that memorizes the answer some other way (a calculation that only gets the test cases right) gets past it. The hidden tests and the skeptical evaluator from lesson 1 cover part of that; none of the three is proof on its own.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "simconversa",
+      "titulo": "Rehearsal: the agent says the test is wrong",
+      "sub": "Simulated conversation with an agent in the middle of the loop. Choose your reply.",
+      "personagem": {
+        "nome": "Agent (simulated)",
+        "papel": "implementing slug() in your loop"
+      },
+      "inicio": "abre",
+      "falas": {
+        "abre": {
+          "cliente": "test_espacos is wrong: it expects \"dois-espacos\", but the correct result would be \"dois--espacos\", because there were three spaces. Can I adjust the test so the suite goes green?",
+          "opcoes": [
+            {
+              "t": "Sure, go ahead, you know the code better.",
+              "vai": "fim-ruim",
+              "nota": 0,
+              "comenta": "You let the defendant rewrite the law. This is exactly the shortcut the guard exists to prevent: the next cycle already starts with an easier judge."
+            },
+            {
+              "t": "Don't touch the test. Write DEFEITO NO VERIFICADOR in failures.md, with the test output, and carry on with the rest.",
+              "vai": "evidencia",
+              "nota": 2,
+              "comenta": "The test stays intact, the doubt is recorded with evidence, and you decide later whether the test is wrong."
+            },
+            {
+              "t": "Show me the test output and explain why you think that.",
+              "vai": "evidencia",
+              "nota": 1,
+              "comenta": "Asking for evidence is good, but the rule stayed implicit: the agent doesn't know that touching the test is forbidden."
+            }
+          ]
+        },
+        "evidencia": {
+          "cliente": "I logged the output. Looking again: the test wants a single hyphen between words; my function generates one hyphen per space. The bug is my regex, not the test. Now what?",
+          "opcoes": [
+            {
+              "t": "Fix the regex. The test stays as it is, and it's done only when the guard and the hidden tests pass.",
+              "vai": "fim-bom",
+              "nota": 2,
+              "comenta": "Clear criterion, checked from the outside. The entry in failures.md stays as a record of the false alarm."
+            },
+            {
+              "t": "Since the test is right, you can wrap up.",
+              "vai": "fim-meio",
+              "nota": 0,
+              "comenta": "The test being right doesn't mean the code is. You still need to fix it and get through the gate."
+            },
+            {
+              "t": "Fix the regex and run just that one test.",
+              "vai": "fim-bom",
+              "nota": 1,
+              "comenta": "It fixes the bug, but running a single test lets regressions slip through in the others and doesn't check the hidden ones."
+            }
+          ]
+        },
+        "fim-ruim": {
+          "fim": true,
+          "titulo": "The judge was adjusted to fit the defendant",
+          "texto": "The suite went green because the test changed, not because the function became correct. In a loop with nobody watching, this becomes a habit: every inconvenient test turns into a \"wrong test\"."
+        },
+        "fim-meio": {
+          "fim": true,
+          "titulo": "Stopped early",
+          "texto": "The false alarm was cleared up, but the work wasn't done. The gate would have failed it on the next step."
+        },
+        "fim-bom": {
+          "fim": true,
+          "titulo": "Test intact, defect logged",
+          "texto": "The agent reported instead of working around it, the doubt became evidence, and the code was fixed against the same judge."
+        }
+      },
+      "licao": "When the agent says the test is wrong, the answer is always the same: don't touch it, log it with evidence, move on. The one who changes the judge is a person."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The rule for your AGENTS.md or CLAUDE.md",
+      "sub": "One sentence that becomes a standing instruction for the agent. The guard is still what guarantees it.",
+      "blocos": [
+        {
+          "rot": "Project rule",
+          "icone": "arquivo",
+          "conteudo": "## Tests are the judge\n- Never change, delete, skip, or uncheck tests, conftest.py, or the pytest configuration.\n- If you think a test is wrong: write \"DEFEITO NO VERIFICADOR: <test> — <evidence>\" in failures.md and move on with the rest.\n- Never treat the inputs that appear in the tests as special cases.\n- Done = the gate output pasted into the conversation, not your own assessment."
+        }
+      ]
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Practice",
+      "sub": "Rehearsal of the detector, hidden tests in your project, and the rule.",
+      "exercicios": [
+        {
+          "id": "e10",
+          "titulo": "E10 · Detector against three agents",
+          "min": "10 min",
+          "texto": "Run the loop chumba, conftest, bom.",
+          "pronto": "chumba shows <code>CHUMBADO</code> lines and <code>ESCONDIDO  3 failed</code> with <code>saída: 1</code>; bom ends in <code>ATALHOS: nenhum sinal</code> with <code>saída: 0</code>."
+        },
+        {
+          "id": "e11",
+          "titulo": "E11 · Your own hidden tests",
+          "min": "20 min",
+          "texto": "For a task in your project, write 3 tests the agent can't see, in a folder outside the repo (for example ~/escondidos/[projeto]/). Run atalhos.py before the work.",
+          "pronto": "<code>python3 $K/atalhos.py . --escondidos ~/escondidos/[projeto]</code> before the work → <code>escondidos:</code> line with <code>failed</code> and code 1; after the right work → <code>ATALHOS: nenhum sinal</code> and code 0."
+        },
+        {
+          "id": "e12",
+          "titulo": "E12 · The rule in your project",
+          "min": "5 min",
+          "texto": "Paste the \"Testes são o juiz\" rule into the project's AGENTS.md or CLAUDE.md and run the simulated conversation up to the top score.",
+          "pronto": "<code>grep -c \"DEFEITO NO VERIFICADOR\" [AGENTS.md ou CLAUDE.md]</code> → <code>1</code>, and the simulation above ends in \"Test intact, defect logged\" with 4 out of 4 points."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Lesson quiz",
+      "perguntas": [
+        {
+          "p": "The agent returns a dictionary with the exact inputs from the tests. Which detector does NOT catch this?",
+          "opcoes": [
+            "Hidden tests",
+            "The test guard from lesson 3",
+            "The CHUMBADO line from atalhos.py",
+            "The skeptical evaluator"
+          ],
+          "certa": 1,
+          "explica": "The guard only checks whether the judge changed and whether the tests pass. Here the judge is intact and the visible tests pass; what catches this is whatever looks beyond them.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "In EvilGenie (Nov 2025), what helped little in detecting shortcuts?",
+          "opcoes": [
+            "Model judge on the clear cases",
+            "Hidden tests",
+            "Looking at test file edits",
+            "Nothing helped"
+          ],
+          "certa": 1,
+          "explica": "Hidden tests helped little there; the model judge caught the clear cases well. Hence combining detectors instead of trusting just one.",
+          "ref": "passos"
+        },
+        {
+          "p": "The agent says a test is wrong. What do you do?",
+          "opcoes": [
+            "Let it adjust",
+            "Skip the test for now",
+            "Forbid touching it, ask for the record with evidence, and move on",
+            "Delete and rewrite the test"
+          ],
+          "certa": 2,
+          "explica": "The test stays intact and the doubt becomes a record. The judge is changed by a person, outside the loop.",
+          "ref": "simconversa",
+          "cert": true
+        },
+        {
+          "p": "The loop that optimizes its own metric over weeks (Goodhart) is the subject of which course?",
+          "opcoes": [
+            "This one, lesson 4",
+            "Course 5, The loop that learns",
+            "Course 3",
+            "None of them"
+          ],
+          "certa": 1,
+          "explica": "Here the subject is the shortcut inside a single task. Optimizing against your own meter, with promotion and rollback, is lesson 6 of course 5.",
+          "ref": "links"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "In three sentences",
+      "itens": [
+        {
+          "t": "Four shortcuts",
+          "texto": "Tampering with the judge, memorizing the answer, silencing the error, and just saying it was done."
+        },
+        {
+          "t": "Three detectors",
+          "texto": "Hidden tests outside the repo, signals in the diff, and the skeptical evaluator; none is enough alone."
+        },
+        {
+          "t": "Report, don't work around",
+          "texto": "A suspicious test becomes DEFEITO NO VERIFICADOR in failures.md; the judge only changes by a person's hand."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Going further",
+      "links": [
+        {
+          "t": "EvilGenie: reward hacking benchmark (arXiv 2511.21654)",
+          "href": "https://arxiv.org/pdf/2511.21654",
+          "icone": "lupa"
+        },
+        {
+          "t": "Reward Hacking Benchmark (ICML 2026)",
+          "href": "https://icml.cc/virtual/2026/poster/63289",
+          "icone": "grafico"
+        },
+        {
+          "t": "Course 5 of the track: the risk of optimizing against your own meter",
+          "href": "https://inematds.github.io/loop-r-eng-aprende-v72/",
+          "icone": "seta"
+        },
+        {
+          "t": "kit/atalhos.py",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/atalhos.py",
+          "icone": "terminal"
+        }
+      ]
+    }
+  ]
+}

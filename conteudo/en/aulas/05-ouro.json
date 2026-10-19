@@ -1,0 +1,290 @@
+{
+  "slug": "ouro",
+  "num": 5,
+  "menu": "Evals",
+  "titulo": "Golden set: evals for your agent",
+  "titulo_curto": "Golden set",
+  "minutos": 20,
+  "lead": "You changed the prompt, swapped the model, installed a skill: did the agent get better or just different? A golden set is a frozen list of real cases with the right answer, checked by code, that you run on every change. In this lesson you build one, compare two versions, and see a regression hidden behind the same total.",
+  "objetivo": "build a golden set with real cases, grading by code, and a comparison with the previous version that flags regressions.",
+  "competencias": [
+    "montar-conjunto-de-ouro",
+    "corrigir-por-codigo",
+    "detectar-regressao-entre-versoes"
+  ],
+  "aprende": [
+    {
+      "icone": "arquivo",
+      "t": "The case format: id, category, input, expected, source"
+    },
+    {
+      "icone": "check",
+      "t": "The three kinds of grader: code, model, and person"
+    },
+    {
+      "icone": "grafico",
+      "t": "Scoreboard by category and case-by-case regression"
+    },
+    {
+      "icone": "alvo",
+      "t": "When the set got too easy"
+    }
+  ],
+  "hero_alt": "Open steel drawer with sample cards and reference pieces in compartments.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "From the real error to the regression verdict",
+      "sub": "Click each step.",
+      "nos": [
+        {
+          "icone": "x",
+          "titulo": "Real failure",
+          "sub": "where the case comes from",
+          "detalhe": "The best cases come from errors that already happened: the issue the agent classified wrong, the answer a customer complained about. Each one goes in with its source noted."
+        },
+        {
+          "icone": "cadeado",
+          "titulo": "Frozen case",
+          "sub": "one line of JSON",
+          "detalhe": "id, category, input, what is expected, and where it came from. Frozen with a date: changing a case means changing the ruler, and that is recorded as a new version of the set."
+        },
+        {
+          "icone": "robo",
+          "titulo": "Agent",
+          "sub": "AGENTE = command",
+          "detalhe": "rodar-evals.py sends prompt + case through stdin to any command: the fake agent in the rehearsal, claude -p or codex exec in the real run. Same suite, different engines."
+        },
+        {
+          "icone": "check",
+          "titulo": "Grade by code",
+          "sub": "field by field",
+          "forte": true,
+          "detalhe": "The answer is JSON and each field is compared with the expected value. No model judge when code can check it: it is cheaper, it does not drift, and it has no opinion."
+        },
+        {
+          "icone": "grafico",
+          "titulo": "Regression?",
+          "sub": "case by case",
+          "detalhe": "Total per category and, with --base, the comparison with the previous version: the case that passed in every attempt and now fails is a REGRESSÃO, and the script exits with 1. An equal total can hide a swap."
+        }
+      ],
+      "volta": "A new failure becomes a new case in the set",
+      "legenda": "Code-based grader first; model-based only for what is subjective (lesson 6); human-based to calibrate both."
+    },
+    {
+      "tipo": "passos",
+      "titulo": "Rules for a golden set",
+      "sub": "From the sources: Anthropic (agent evals), LOOP-R and the FEC track.",
+      "passos": [
+        {
+          "titulo": "Three graders",
+          "sub": "Anthropic, 01/09/2026",
+          "texto": [
+            "By code (tests, static analysis, checking tool calls), by model (rubric, pairwise comparison, multiple judges) and by person.",
+            "The model-based grader has to be calibrated with human labels before it counts."
+          ]
+        },
+        {
+          "titulo": "Size",
+          "sub": "LOOP-R",
+          "texto": [
+            "LOOP-R asks for 20 to 50 cases per artifact eval and treats fewer than 30 observations as a weak signal.",
+            "The rehearsal uses 10 cases to fit on the screen; yours starts with 20."
+          ]
+        },
+        {
+          "titulo": "Freeze with a date",
+          "sub": "FEC structure",
+          "texto": [
+            "The FEC track's set has a set id, a freeze date, and for each case: id, question, expected facts and category.",
+            "In the 05/02/2026 version it announces 30 cases and has 3 filled in: a good structure is not a finished set. Count the lines before trusting the score."
+          ]
+        }
+      ]
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The set and the rehearsal agent",
+      "sub": "An issue triage agent: it returns the type (bug, request, question) and whether it is urgent. The 10 cases are examples written for the course.",
+      "blocos": [
+        {
+          "rot": "kit/evals/casos.jsonl (3 of 10 lines)",
+          "icone": "arquivo",
+          "conteudo": "{\"id\": \"t01\", \"categoria\": \"bug\", \"entrada\": \"After yesterday's deploy, login returns a 500 error for all users.\", \"espera\": {\"tipo\": \"bug\", \"urgente\": true}, \"origem\": \"course example\"}\n{\"id\": \"t06\", \"categoria\": \"pedido\", \"entrada\": \"Can you add PDF export?\", \"espera\": {\"tipo\": \"pedido\", \"urgente\": false}, \"origem\": \"course example\"}\n{\"id\": \"t07\", \"categoria\": \"armadilha\", \"entrada\": \"The system doesn't work the way I expected: where is the dark mode option?\", \"espera\": {\"tipo\": \"duvida\", \"urgente\": false}, \"origem\": \"course example: looks like a bug, is a question\"}"
+        },
+        {
+          "rot": "kit/evals/prompt-triagem.md",
+          "icone": "texto",
+          "conteudo": "You triage issues for a web system. Read the issue at the end and classify it.\n\ntipo: \"bug\" (something broken), \"pedido\" (new feature) or \"duvida\" (usage question).\nurgente: true only if the system is down, money or data is being lost, or there is a security flaw.\n\nAnswer with a single line of JSON only, nothing else:\n{\"tipo\": \"bug\", \"urgente\": false}"
+        },
+        {
+          "rot": "Terminal · rehearsal: version 1 against version 2",
+          "icone": "play",
+          "conteudo": "E=~/projetos/loop-r-eng-verificacao-v72/kit/evals; mkdir -p /tmp/ensaio-evals\nA=\"python3 $E/agente-triagem-falso.py\"\nTRIAGEM_VERSAO=1 python3 $E/rodar-evals.py --agente \"$A\" --saida /tmp/ensaio-evals/v1.tsv; echo \"saída: $?\"\nTRIAGEM_VERSAO=2 python3 $E/rodar-evals.py --agente \"$A\" --saida /tmp/ensaio-evals/v2.tsv \\\n  --base /tmp/ensaio-evals/v1.tsv; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>armadilha  0/1\nbug        5/5\nduvida     2/2\npedido     2/2\ntotal      9/10 (90%)  → /tmp/ensaio-evals/v1.tsv\nsaída: 0\narmadilha  1/1\nbug        5/5\nduvida     2/2\npedido     1/2\ntotal      9/10 (90%)  → /tmp/ensaio-evals/v2.tsv\nMELHOROU  t07\nREGRESSÃO t06 (passava em v1.tsv)\n1 regressão(ões): não promova\nsaída: 1</pre><p>Both versions score 9/10. Version 2 fixed the trap (t07) and broke a request (t06, which ends in \"?\" and turned into a question). The total alone would say \"tie\".</p>"
+          },
+          {
+            "rot": "Common mistake: looking only at the total",
+            "html": "<p>An aggregate score hides a swap: one case gets better, another gets worse, and the number stays the same. Compare case by case with the previous version and treat any regression as a block, even when the total goes up.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "The same set with the real agent",
+      "sub": "Uses your subscription quota: 10 calls. Each call is a claude -p with no tools.",
+      "blocos": [
+        {
+          "rot": "Terminal · real (continues from the previous block)",
+          "icone": "terminal",
+          "conteudo": "python3 $E/rodar-evals.py --agente 'claude -p --tools \"\"' --saida /tmp/ensaio-evals/real.tsv \\\n  --base /tmp/ensaio-evals/v1.tsv; echo \"saída: $?\"\n# ou: --agente 'codex exec -s read-only --skip-git-repo-check -'\nwc -l < /tmp/ensaio-evals/real.tsv"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Captured output (10/19/2026)",
+            "html": "<pre>armadilha  1/1\nbug        5/5\nduvida     2/2\npedido     2/2\ntotal      10/10 (100%)  → /tmp/ensaio-evals/real.tsv\nMELHOROU  t07\nsem regressão\nsaída: 0\n11</pre><p>Claude Code 2.1.303, the subscription's default model, 1 min 19 s for the 10 cases. The model's score may change on your machine; the file with 11 lines (header + 10) will not.</p>"
+          },
+          {
+            "rot": "10 out of 10 is a problem",
+            "html": "<p>A set that the agent gets entirely right does not separate the good version from the bad one: any change will score 100%. When that happens, add harder cases (the real traps, the ambiguous inputs) until the score has room to be wrong again.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Practice",
+      "sub": "Rehearsal, real run and your agent's set.",
+      "exercicios": [
+        {
+          "id": "e13",
+          "titulo": "E13 · The hidden regression",
+          "min": "10 min",
+          "texto": "Run the rehearsal for both versions.",
+          "pronto": "v1 prints <code>total      9/10 (90%)</code> and <code>saída: 0</code>; v2 prints <code>REGRESSÃO t06 (passava em v1.tsv)</code> and <code>saída: 1</code>."
+        },
+        {
+          "id": "e14",
+          "titulo": "E14 · The same set with the model",
+          "min": "10 min",
+          "texto": "Run the real block with claude -p or codex exec.",
+          "pronto": "the command ends with a <code>total</code> line and <code>wc -l &lt; /tmp/ensaio-evals/real.tsv</code> → <code>11</code>."
+        },
+        {
+          "id": "e15",
+          "titulo": "E15 · Your agent's golden set",
+          "min": "40 min",
+          "texto": "Choose an agent or prompt of your own with output you can check. Write 20 cases in the casos.jsonl format, starting with the failures you have already seen, and a prompt that asks for JSON. Run the current version as a baseline.",
+          "pronto": "<code>wc -l &lt; [seus casos].jsonl</code> → <code>20</code> or more, and <code>python3 $E/rodar-evals.py --agente \"[seu agente]\" --casos [seus casos].jsonl --prompt [seu prompt] --saida base.tsv</code> prints the <code>total</code> line with less than 100%."
+        }
+      ]
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Lesson quiz",
+      "perguntas": [
+        {
+          "p": "Version 2 has the same total as version 1. What does rodar-evals.py say?",
+          "opcoes": [
+            "A tie, you can promote it",
+            "REGRESSÃO t06: não promova",
+            "Nothing, because the total is the same",
+            "That version 2 is better"
+          ],
+          "certa": 1,
+          "explica": "The comparison is case by case: t06 used to pass and now fails. A regression blocks the promotion even when the total is equal or higher.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "When should you use a code-based grader instead of a model judge?",
+          "opcoes": [
+            "Never, the model understands better",
+            "Whenever the answer can be checked field by field or by a test",
+            "Only in production",
+            "Only when the model is down"
+          ],
+          "certa": 1,
+          "explica": "Code doesn't drift, has no length bias, and doesn't use your subscription quota. Keep the model judge for what is subjective, and only after it has been calibrated.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "The real agent got 10 out of 10. What do you do with the set?",
+          "opcoes": [
+            "Nothing, it's great",
+            "Add harder cases until there is room to fail again",
+            "Delete the easy cases",
+            "Switch the model"
+          ],
+          "certa": 1,
+          "explica": "A saturated set can't tell versions apart. Harder cases and real traps give you back the power to compare.",
+          "ref": "codigo"
+        },
+        {
+          "p": "Where do the best cases for a golden set come from?",
+          "opcoes": [
+            "From the model, which generates examples",
+            "From real failures that already happened, with the origin noted",
+            "From public benchmarks",
+            "From the documentation"
+          ],
+          "certa": 1,
+          "explica": "A real failure is the case you need to make sure never comes back. Each case carries its origin so someone knows why it exists.",
+          "ref": "diagrama"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "In three sentences",
+      "itens": [
+        {
+          "t": "Real cases, frozen",
+          "texto": "One JSON line per case, with the expected result and origin; changing a case means a new version of the ruler."
+        },
+        {
+          "t": "Code grades",
+          "texto": "Ask for JSON and check it field by field; use a model judge only for the subjective."
+        },
+        {
+          "t": "Regression blocks",
+          "texto": "Compare case by case with the previous version; an equal total can hide a swap."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Going further",
+      "links": [
+        {
+          "t": "Anthropic: Demystifying evals for AI agents (01/09/2026)",
+          "href": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+          "icone": "lupa"
+        },
+        {
+          "t": "LOOP-R: measurement, evals, and guardrails",
+          "href": "https://github.com/inematds/loop-r/blob/main/docs/05-medicao-evals-guardrails.md",
+          "icone": "arquivo"
+        },
+        {
+          "t": "kit/evals/ (cases, prompt, runner, and fake agent)",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/tree/main/kit/evals",
+          "icone": "terminal"
+        }
+      ]
+    }
+  ]
+}

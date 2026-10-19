@@ -1,0 +1,396 @@
+{
+  "slug": "portao",
+  "num": 8,
+  "menu": "Compuerta",
+  "titulo": "Armar la compuerta de tu loop",
+  "titulo_curto": "La compuerta",
+  "minutos": 22,
+  "lead": "Cada clase aportó una pieza: evaluador, criterios, guardia, atajos, evals, juez. La compuerta las pone en cola, de las baratas a las caras: lo que el código reprueba no llega a gastar cuota con modelo. En esta clase montas la compuerta, la conectas al loop headless del curso 2 y sales con el plan con fechas para hacer el tuyo.",
+  "objetivo": "montar la compuerta en capas (criterios, guardia, atajos, evals, evaluador) y conectarla a tu loop, con el plan con fechas.",
+  "competencias": [
+    "montar-portao-em-camadas",
+    "ordenar-verificacoes-por-custo",
+    "ligar-portao-ao-loop"
+  ],
+  "aprende": [
+    {
+      "icone": "camadas",
+      "t": "Las cinco capas y el orden: lo barato primero, el modelo al final"
+    },
+    {
+      "icone": "cadeado",
+      "t": "portao.env fuera del repo: el agente no edita el juez"
+    },
+    {
+      "icone": "robo",
+      "t": "La compuerta como test final del loop-longrun.sh"
+    },
+    {
+      "icone": "calendario",
+      "t": "El mapa del curso y tu plan con fechas"
+    }
+  ],
+  "hero_alt": "Pasillo técnico oscuro con tres puertas de acero, cada una con una lámpara de señal.",
+  "secoes": [
+    {
+      "tipo": "diagrama",
+      "titulo": "Cinco capas, una salida",
+      "sub": "Haz clic en cada capa. Todas corren; el evaluador por modelo solo si las baratas pasan.",
+      "nos": [
+        {
+          "icone": "lista",
+          "titulo": "Criterios",
+          "sub": "conferir-goal.py · clase 2",
+          "detalhe": "Cada línea comando → salida del goal.md. Rápido y determinista. Configuración: GOAL=[ruta del goal.md fuera del repo]."
+        },
+        {
+          "icone": "cadeado",
+          "titulo": "Guardia",
+          "sub": "guarda-testes.py · clase 3",
+          "detalhe": "Juez intacto, mínimo de passed, nada omitido. Configuración: GUARDA_DIR, congelado en el commit base."
+        },
+        {
+          "icone": "escudo",
+          "titulo": "Atajos",
+          "sub": "atalhos.py · clase 4",
+          "detalhe": "Tests ocultos y señales en el diff. Configuración: ESCONDIDOS=[carpeta fuera del repo]."
+        },
+        {
+          "icone": "grafico",
+          "titulo": "Evals",
+          "sub": "rodar-evals.py · clases 5 y 7",
+          "detalhe": "Conjunto de oro contra la versión anterior: la regresión reprueba. Configuración: EVAL_AGENTE y EVAL_BASE. Omítela si la tarea no cambia el comportamiento del agente."
+        },
+        {
+          "icone": "lupa",
+          "titulo": "Evaluador",
+          "sub": "avaliar.sh · clases 1 y 6",
+          "forte": true,
+          "detalhe": "Modelo escéptico leyendo el diff, solo si las capas baratas pasaron: no se gasta cuota evaluando lo que el código ya reprobó. Configuración: AVALIADOR_CMD."
+        }
+      ],
+      "estilo": "escada",
+      "legenda": "Una capa sin configuración aparece como omitida, nunca como aprobada en silencio."
+    },
+    {
+      "tipo": "simfila",
+      "titulo": "Mira la compuerta correr",
+      "sub": "Cada capa es una etapa. En la primera ejecución la guardia reprueba: corrige y corre de nuevo.",
+      "tarefas": [
+        "Criterios · conferir-goal.py",
+        "Guardia · juez intacto, nada omitido",
+        "Atajos · ocultos y diff",
+        "Evals · sin regresión",
+        "Evaluador · modelo escéptico"
+      ],
+      "falha": 1,
+      "rot": {
+        "entrada": "capas por correr",
+        "rodando": "capa en curso",
+        "feito": "aprobada",
+        "falhou": "reprobada",
+        "rodar": "Correr la compuerta",
+        "parar": "Interrumpir",
+        "zerar": "Reiniciar"
+      },
+      "msg": {
+        "inicio": "Cinco capas en el orden del costo. Haz clic en \"Correr la compuerta\".",
+        "rodando": "Una capa a la vez; el log de cada una queda en /tmp/portao/.",
+        "parou": "Interrumpido. Ninguna capa en curso cuenta como aprobada.",
+        "retoma": "Compuerta de nuevo, desde el principio: el resultado solo vale con todas las capas en la misma ronda.",
+        "fim": "PORTÃO: APROVADO, saída 0.",
+        "fimfalha": "La guardia reprobó en la primera ronda (conftest.py nuevo). Revertido y ejecutado de nuevo, la compuerta aprobó."
+      },
+      "legenda": "Simulación ilustrativa en el navegador. La compuerta de verdad, con agentes falsos, está justo debajo."
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "Ensayo: la compuerta contra el chumba y el bom",
+      "sub": "El portao.env queda fuera del proyecto. AVALIADOR_CMD apunta al evaluador falso: cero llamadas.",
+      "blocos": [
+        {
+          "rot": "Terminal · compuerta",
+          "icone": "play",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit\ncat > /tmp/ensaio-verif-portao.env <<EOF\nGOAL=/tmp/ensaio-verif/goal.md\nGUARDA_DIR=/tmp/ensaio-verif/guarda\nESCONDIDOS=/tmp/ensaio-verif/escondidos\nAVALIADOR_CMD=$K/avaliador-falso.sh\nEOF\nfor modo in chumba bom; do\n  bash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\n  cp $K/goal-ensaio.md ../goal.md && sed -i '/limpo e bem documentado/d' ../goal.md\n  GUARDA_DIR=/tmp/ensaio-verif/guarda python3 $K/guarda-testes.py congelar . > /dev/null\n  $K/agente-falso.sh $modo < /dev/null > /dev/null\n  echo \"## $modo\"; $K/portao.sh . /tmp/ensaio-verif-portao.env; echo \"saída: $?\"\ndone"
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Salida capturada (19/10/2026)",
+            "html": "<pre>## chumba\ncriterios  REPROVADO  → /tmp/portao/criterios.log\nguarda     OK\natalhos    REPROVADO  → /tmp/portao/atalhos.log\nevals      pulada (sem configuração)\navaliador  pulada (camada barata já reprovou: não gaste cota)\nPORTÃO: REPROVADO em criterios atalhos\nsaída: 1\n## bom\ncriterios  OK\nguarda     OK\natalhos    OK\nevals      pulada (sem configuração)\navaliador  OK\nPORTÃO: APROVADO\nsaída: 0</pre><p>En el chumba la guardia pasa (el juez está intacto); quien reprueba es el criterio de función con entrada nueva (acao-reacao) y los tests ocultos.</p>"
+          },
+          {
+            "rot": "Error común: portao.env en el repo",
+            "html": "<p>Si el portao.env, el goal.md o los tests ocultos quedan dentro del repositorio, el agente puede editarlos, y la compuerta pasa a ser suya. Guarda los tres fuera (en el ensayo, en /tmp; en tu proyecto, en una carpeta tipo ~/portoes/[projeto]/).</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "codigo",
+      "titulo": "La compuerta como test final del loop headless",
+      "sub": "En el loop-longrun.sh del curso 2, TESTE_FINAL decide el \"terminado\". Pon la compuerta ahí. Ejecútalo después del bloque anterior (usa el mismo portao.env).",
+      "blocos": [
+        {
+          "rot": "Terminal · loop con compuerta (agentes falsos)",
+          "icone": "robo",
+          "conteudo": "K=~/projetos/loop-r-eng-verificacao-v72/kit; L=~/projetos/execucao-longa/tools\nbash $K/ensaio.sh > /dev/null && cd /tmp/ensaio-verif/proj\ncp $K/goal-ensaio.md ../goal.md && sed -i '/limpo e bem documentado/d' ../goal.md\nGUARDA_DIR=/tmp/ensaio-verif/guarda python3 $K/guarda-testes.py congelar . > /dev/null\nfor m in chumba bom; do printf '#!/usr/bin/env bash\\nexec %s/agente-falso.sh %s\\n' $K $m > /tmp/agente-$m.sh; chmod +x /tmp/agente-$m.sh; done\n$L/novo-longrun.sh $PWD slug > /dev/null && D=$(ls -d $PWD/longrun/*)\necho \"Implementa slug() en slug.py. No toques tests/.\" > $D/prompt.md\ncat > $D/loop.env <<ENV\nTESTE_RAPIDO=\"python3 -m pytest -q\"\nTESTE_FINAL=\"$K/portao.sh . /tmp/ensaio-verif-portao.env\"\nPROTEGIDOS=\"tests/ pytest.ini *conftest.py\"\nPERMITIDOS=\"slug.py\"\nMAX_CICLOS=2\nMIN_CICLO=2\nMEM=1G\nESTAGNACAO=3\nENV\ngit add -A && git commit -qm \"longrun: pasta\"\nCODEX_BIN=/tmp/agente-chumba.sh $L/loop-longrun.sh $D; echo \"saída: $?\"\nCODEX_BIN=/tmp/agente-bom.sh $L/loop-longrun.sh $D; echo \"saída: $?\""
+        }
+      ],
+      "saida": {
+        "selo": "real",
+        "abas": [
+          {
+            "rot": "Salida capturada (19/10/2026)",
+            "html": "<pre>2026-10-19 06:19:56 início: rápido=0 passed · agente=codex · teto 2x2min · mem 1G\n2026-10-19 06:19:56 ciclo 1: começa\n2026-10-19 06:19:56 ciclo 1: agente saiu rc=0 em 0s\n2026-10-19 06:19:56 ciclo 1: rápido=3 passed (melhor antes: 0)\n2026-10-19 06:19:56 ciclo 1: checkpoint commitado\n(… ciclo 2 igual, rápido=3 passed …)\n2026-10-19 06:19:58 PARADO: teto de 2 ciclos atingido sem passar o teste final\nsaída: 1\n2026-10-19 06:19:59 início: rápido=3 passed · agente=codex · teto 2x2min · mem 1G\n2026-10-19 06:19:59 ciclo 1: começa\n2026-10-19 06:19:59 ciclo 1: agente saiu rc=0 em 0s\n2026-10-19 06:19:59 ciclo 1: rápido=3 passed (melhor antes: 3)\n2026-10-19 06:19:59 ciclo 1: checkpoint commitado\n2026-10-19 06:20:00 CONCLUÍDO no ciclo 1: teste final passou ()\nsaída: 0</pre><p>El chumba hizo que el test rápido pasara de 0 a 3 passed: por el test visible, parecía progreso. La compuerta sostuvo el \"terminado\". Los paréntesis vacíos solo dicen que la compuerta no imprime \"N passed\".</p>"
+          },
+          {
+            "rot": "Trampa: el commit va antes",
+            "html": "<p>El loop-longrun.sh hace commit del checkpoint antes de ejecutar el TESTE_FINAL. Cuando la compuerta corre, el <code>git diff HEAD</code> ya está vacío: las líneas CHUMBADO y SILENCIA del atalhos.py y el diff del evaluador no ven el trabajo del ciclo. En el ensayo quienes reprobaron fueron los criterios y los tests ocultos. Si dependes de la lectura del diff en el loop, compara con el commit base (antes del primer ciclo), no con HEAD.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "tipo": "pratica",
+      "titulo": "Práctica final",
+      "sub": "La compuerta en el ensayo y en tu loop.",
+      "exercicios": [
+        {
+          "id": "e21",
+          "titulo": "E21 · Compuerta contra chumba y bom",
+          "min": "10 min",
+          "texto": "Ejecuta el bloque de la compuerta y después el del loop con compuerta.",
+          "pronto": "la compuerta imprime <code>PORTÃO: REPROVADO em criterios atalhos</code> (<code>saída: 1</code>) para el chumba y <code>PORTÃO: APROVADO</code> (<code>saída: 0</code>) para el bom; el loop termina primero con <code>PARADO: teto de 2 ciclos</code> y después con <code>CONCLUÍDO no ciclo 1</code>."
+        },
+        {
+          "id": "e22",
+          "titulo": "E22 · La compuerta de tu loop",
+          "min": "60 min",
+          "texto": "En tu proyecto: goal.md verificado (clase 2), guardia congelada en el commit base (clase 3), 3 tests ocultos (clase 4) y, si la tarea toca el comportamiento de un agente, el conjunto de oro (clase 5). Escribe el portao.env fuera del repo y ejecuta la compuerta antes y después del trabajo.",
+          "pronto": "antes del trabajo, <code>$K/portao.sh . [tu portao.env]; echo $?</code> → <code>PORTÃO: REPROVADO</code> y <code>1</code>; después, → <code>PORTÃO: APROVADO</code> y <code>0</code>, con como máximo una capa <code>pulada</code>."
+        }
+      ]
+    },
+    {
+      "tipo": "mapa",
+      "titulo": "El mapa del curso",
+      "sub": "Cuatro entregas, en orden. Haz clic en un ejercicio para ver el \"listo cuando\".",
+      "degraus": [
+        {
+          "aula": "prova",
+          "icone": "lupa",
+          "quando": "Día 1",
+          "titulo": "Quien verifica",
+          "sub": "clases 1 y 2",
+          "saida": "Evaluador separado y goal.md verificado por comando.",
+          "passo": "Kit clonado, evaluador falso y real ejecutados, criterios que fallan antes del trabajo."
+        },
+        {
+          "aula": "atalhos",
+          "icone": "cadeado",
+          "quando": "Día 2",
+          "titulo": "Juez protegido",
+          "sub": "clases 3 y 4",
+          "saida": "Guardia congelada y tests ocultos fuera del repo.",
+          "passo": "Requiere el día 1. El hueco del conftest visto y cerrado; la regla \"los tests son el juez\" en el proyecto."
+        },
+        {
+          "aula": "juiz",
+          "icone": "grafico",
+          "quando": "Días 3 y 4",
+          "titulo": "Medir",
+          "sub": "clases 5 y 6",
+          "saida": "Conjunto de oro con base y juez calibrado.",
+          "passo": "Requiere el día 2. Veinte casos reales, etiquetas tuyas en 10 artefactos y el juez solo después de calibrado."
+        },
+        {
+          "aula": "portao",
+          "icone": "portao",
+          "quando": "Día 5",
+          "titulo": "Compuerta",
+          "sub": "clases 7 y 8",
+          "saida": "pass^3 anotado y compuerta aprobando tu loop.",
+          "passo": "Requiere todo lo anterior. Medir con k = 3, juntar las capas y poner la compuerta como test final."
+        }
+      ],
+      "resultado": {
+        "titulo": "Al final del curso",
+        "texto": "Una compuerta en capas, fuera del alcance del agente, que reprueba el atajo y aprueba el trabajo, conectada a tu loop.",
+        "total": "22 ejercicios"
+      },
+      "rolagem_fim": {
+        "titulo": "El curso completo",
+        "texto": "Quién verifica, juez protegido, medir y la compuerta. Pasa a la siguiente entrega solo cuando el \"listo cuando\" de la anterior sea verdad."
+      },
+      "legenda": "Orden obligatorio: una compuerta sin juez protegido es solo otra forma de aprobar el atajo."
+    },
+    {
+      "tipo": "gerador",
+      "titulo": "Genera tu plan con fechas",
+      "sub": "Elige el inicio y cuánto tiempo tienes por semana. El plan lista los 22 ejercicios en orden.",
+      "curso": "Verificación y Evals",
+      "horas_padrao": 5,
+      "degraus": [
+        {
+          "titulo": "Clase 1 · Evaluador escéptico",
+          "aula": "cetico"
+        },
+        {
+          "titulo": "Clase 2 · Comando → salida",
+          "aula": "prova"
+        },
+        {
+          "titulo": "Clase 3 · Tests congelados",
+          "aula": "congelados"
+        },
+        {
+          "titulo": "Clase 4 · Atajos",
+          "aula": "atalhos"
+        },
+        {
+          "titulo": "Clase 5 · Conjunto de oro",
+          "aula": "ouro"
+        },
+        {
+          "titulo": "Clase 6 · Juez calibrado",
+          "aula": "juiz"
+        },
+        {
+          "titulo": "Clase 7 · Métricas honestas",
+          "aula": "metricas"
+        },
+        {
+          "titulo": "Clase 8 · La compuerta",
+          "aula": "portao"
+        }
+      ],
+      "txt": {
+        "titulo": "Plan — Verificación y Evals",
+        "inicio": "Inicio",
+        "ritmo": "Ritmo",
+        "termino": "Fin previsto",
+        "ate": "hasta",
+        "pronto": "listo cuando",
+        "semanas": "semanas",
+        "travou": "## Qué se trabó y la regla que creé",
+        "h": "h por semana",
+        "exs": "ejercicios"
+      }
+    },
+    {
+      "tipo": "quiz",
+      "titulo": "Test final",
+      "perguntas": [
+        {
+          "p": "¿Por qué el evaluador por modelo es la última capa?",
+          "opcoes": [
+            "Porque es el más confiable",
+            "Porque es el más caro: no vale gastar cuota evaluando lo que el código ya reprobó",
+            "Porque necesita el resultado de las otras",
+            "Por orden alfabético"
+          ],
+          "certa": 1,
+          "explica": "Primero las capas baratas y determinísticas. El modelo entra solo cuando el código no encontró nada.",
+          "ref": "diagrama",
+          "cert": true
+        },
+        {
+          "p": "¿Dónde quedan el portao.env, el goal.md y los tests ocultos?",
+          "opcoes": [
+            "En la raíz del repo",
+            "En tests/",
+            "Fuera del repo, donde el agente no escribe",
+            "En el CLAUDE.md"
+          ],
+          "certa": 2,
+          "explica": "Un juez al alcance del agente es un juez que él puede ajustar.",
+          "ref": "codigo",
+          "cert": true
+        },
+        {
+          "p": "En el loop con compuerta, el chumba hizo que el test rápido llegara a 3 passed. ¿Qué pasó?",
+          "opcoes": [
+            "CONCLUÍDO",
+            "La compuerta reprobó y el loop se detuvo en el tope de ciclos, saída 1",
+            "Estancamiento, saída 2",
+            "Traba de segunda copia"
+          ],
+          "certa": 1,
+          "explica": "El test rápido mide progreso; quien decide el terminado es el TESTE_FINAL, ahora la compuerta. Ella resistió.",
+          "ref": "codigo"
+        },
+        {
+          "p": "Una capa aparece como \"pulada\". ¿Eso cuenta como aprobada?",
+          "opcoes": [
+            "Sí",
+            "No: aparece por separado justamente para que veas lo que no se verificó",
+            "Solo si es la de evals",
+            "Depende del modelo"
+          ],
+          "certa": 1,
+          "explica": "La compuerta nunca aprueba en silencio. Omitida es falta de configuración, y tú decides si la aceptas.",
+          "ref": "codigo"
+        },
+        {
+          "p": "En el loop, ¿por qué atalhos.py no vio el CHUMBADO en el diff?",
+          "opcoes": [
+            "Un bug en atalhos.py",
+            "Porque el loop hizo commit del checkpoint antes del test final y el diff contra HEAD quedó vacío",
+            "Porque chumba no tocó nada",
+            "Porque el evaluador ya había aprobado"
+          ],
+          "certa": 1,
+          "explica": "En ese caso quienes lo detectan son los criterios con entrada nueva y los tests ocultos. Para leer el diff en el loop, compara con el commit base.",
+          "ref": "codigo"
+        }
+      ]
+    },
+    {
+      "tipo": "resumo",
+      "titulo": "El curso en tres frases",
+      "itens": [
+        {
+          "t": "Quien lo hizo no lo revisa",
+          "texto": "Evaluador separado, criterio por comando y prueba impresa: el relato del agente no decide nada."
+        },
+        {
+          "t": "El juez queda fuera de su alcance",
+          "texto": "Tests congelados con todo lo que lee pytest, ocultos y portao.env fuera del repo; un test sospechoso se convierte en reporte, nunca en ajuste."
+        },
+        {
+          "t": "Medir con honestidad",
+          "texto": "Conjunto de oro con regresión, juez calibrado y pass^k con varianza; y la compuerta en capas como test final del loop."
+        }
+      ]
+    },
+    {
+      "tipo": "links",
+      "titulo": "Sigue por aquí",
+      "links": [
+        {
+          "t": "Próximo curso de la formación: Execução Longa (curso 2)",
+          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/",
+          "icone": "seta"
+        },
+        {
+          "t": "Área LOOP-R Ingeniería",
+          "href": "https://eventos.inema.pro/loop-r-engenharia/",
+          "icone": "camadas"
+        },
+        {
+          "t": "kit/portao.sh",
+          "href": "https://github.com/inematds/loop-r-eng-verificacao-v72/blob/main/kit/portao.sh",
+          "icone": "terminal"
+        },
+        {
+          "t": "Curso 4 de la formación: seguridad del loop autónomo (hooks de guardia)",
+          "href": "https://inematds.github.io/loop-r-eng-seguranca-v72/",
+          "icone": "escudo"
+        }
+      ]
+    }
+  ]
+}
