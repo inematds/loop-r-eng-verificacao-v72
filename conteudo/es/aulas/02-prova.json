@@ -78,7 +78,7 @@
       "sub": "Seis criterios. Uno no tiene comando y otro pasa por un atajo. Encuentra los dos antes de ejecutar.",
       "blocos": [
         {
-          "rot": "kit/goal-ensaio.md (criterios)",
+          "rot": "kit/goal-ensaio.md (criterios; traducción para leer; el archivo del kit está en portugués)",
           "icone": "arquivo",
           "conteudo": "## Criterios de terminado\n**Función**\n- [ ] `python3 -m pytest -q tests/` → `3 passed`\n- [ ] `python3 -c \"from slug import slug; print(slug('Ação & Reação!'))\"` → `acao-reacao`\n\n**Regresión**\n- [ ] `python3 -m pytest -q tests/ -rs` → `código 0`\n\n**Límite**\n- [ ] `git diff --stat HEAD -- tests/ pytest.ini` → `vazio`\n- [ ] `git ls-files --others --exclude-standard -- '*conftest.py' tests/` → `vazio`\n- [ ] o código fica limpo e bem documentado"
         },
@@ -136,7 +136,7 @@
           "titulo": "E5 · Tu goal.md verificado",
           "min": "20 min",
           "texto": "Toma un goal.md tuyo (o escribe uno con la plantilla del curso 2) y ejecuta el conferir-goal.py sobre él antes de empezar el trabajo. Reescribe todo criterio que dio \"sem comando\" y todo criterio de función que ya pasa.",
-          "pronto": "<code>python3 $K/conferir-goal.py [seu goal.md] --pasta [seu projeto]</code> → ninguna línea <code>sem comando</code> y al menos un <code>FALHOU</code> de función antes del trabajo (código de salida mayor que 0)."
+          "pronto": "<code>python3 $K/conferir-goal.py [tu goal.md] --pasta [tu proyecto]</code> → ninguna línea <code>sem comando</code> y al menos un <code>FALHOU</code> de función antes del trabajo (código de salida mayor que 0)."
         },
         {
           "id": "e6",
@@ -232,12 +232,12 @@
         },
         {
           "t": "Curso 2, clase 2: escribir el goal.md nivel 3+",
-          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/aulas/goal/",
+          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/es/aulas/goal/",
           "icone": "arquivo"
         },
         {
           "t": "Curso 0 de la formación: la escala del criterio de terminado (0 a 4)",
-          "href": "https://inematds.github.io/loop-r-eng-base-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-base-v72/es/",
           "icone": "camadas"
         },
         {

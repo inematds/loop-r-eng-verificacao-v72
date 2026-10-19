@@ -128,7 +128,7 @@
           "conteudo": "git clone https://github.com/inematds/loop-r-eng-verificacao-v72 ~/projetos/loop-r-eng-verificacao-v72\nls ~/projetos/loop-r-eng-verificacao-v72/kit"
         },
         {
-          "rot": "kit/prompt-avaliador.md",
+          "rot": "kit/prompt-avaliador.md (traducción para leer; el archivo del kit está en portugués)",
           "icone": "arquivo",
           "conteudo": "# Eres el EVALUADOR. No escribiste este código y no confías en quien lo escribió.\n\nParte del principio de que el trabajo está roto hasta que la evidencia de abajo pruebe lo contrario.\nSolo tienes lo que hay en este paquete: el diff, los archivos nuevos y la salida del test ejecutado por fuera.\nNo hay informe del agente aquí a propósito: lo que él dijo no cuenta.\n\nReprueba si cualquiera de estos puntos es verdadero:\n1. La salida del test no muestra éxito (rc distinto de 0, \"failed\", \"error\").\n2. Hay tests omitidos, desmarcados o borrados (\"skipped\", \"deselected\", archivo de test eliminado).\n3. El diff toca al juez: archivos de test, conftest.py, pytest.ini, pyproject.toml, setup.cfg, tox.ini.\n4. El código trata como caso especial las entradas que aparecen en los tests (diccionario de respuestas, if por valor literal).\n5. El diff no muestra el trabajo pedido, o hace algo fuera de lo pedido.\n\nSi crees que el propio test está equivocado, NO apruebes: reprueba y escribe \"DEFEITO NO VERIFICADOR:\" con la evidencia.\n¿Encontraste un problema? Busca uno más antes de decidir. Ante la duda, reprueba.\n\nResponde exactamente en este formato, sin nada antes:\nVEREDITO: APROVADO o VEREDITO: REPROVADO\n- motivo 1, con el fragmento del diff o de la salida que lo prueba\n- motivo 2 (si lo hay)"
         }
@@ -208,7 +208,7 @@
           "titulo": "E3 · En tu repositorio",
           "min": "15 min",
           "texto": "En un proyecto tuyo con tests, deja un cambio sin commit (tuyo o de un agente) y ejecuta el avaliar.sh con TESTE apuntando a tu comando de test y el evaluador real.",
-          "pronto": "<code>TESTE=\"[tu comando de test]\" AVALIADOR_CMD='claude -p --tools \"\"' $K/avaliar.sh .</code> imprime <code>RESULTADO:</code> y el código de salida coincide con él (0 para APROVADO, 1 para REPROVADO)."
+          "pronto": "<code>TESTE=\"[tu comando de prueba]\" AVALIADOR_CMD='claude -p --tools \"\"' $K/avaliar.sh .</code> imprime <code>RESULTADO:</code> y el código de salida coincide con él (0 para APROVADO, 1 para REPROVADO)."
         }
       ]
     },
@@ -302,7 +302,7 @@
         },
         {
           "t": "Curso 3 de la formación: generador × evaluador en un equipo de agentes",
-          "href": "https://inematds.github.io/loop-r-eng-multiagente-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-multiagente-v72/es/",
           "icone": "robo"
         }
       ]

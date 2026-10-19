@@ -109,12 +109,12 @@
       "sub": "Un agente de triaje de issues: devuelve el tipo (bug, pedido, duda) y si es urgente. Los 10 casos son ejemplos escritos para el curso.",
       "blocos": [
         {
-          "rot": "kit/evals/casos.jsonl (3 de 10 líneas)",
+          "rot": "kit/evals/casos.jsonl (3 de 10 líneas; traducción para leer; el archivo del kit está en portugués)",
           "icone": "arquivo",
           "conteudo": "{\"id\": \"t01\", \"categoria\": \"bug\", \"entrada\": \"Después del deploy de ayer, el login devuelve error 500 para todos los usuarios.\", \"espera\": {\"tipo\": \"bug\", \"urgente\": true}, \"origem\": \"ejemplo del curso\"}\n{\"id\": \"t06\", \"categoria\": \"pedido\", \"entrada\": \"¿Pueden agregar exportación a PDF?\", \"espera\": {\"tipo\": \"pedido\", \"urgente\": false}, \"origem\": \"ejemplo del curso\"}\n{\"id\": \"t07\", \"categoria\": \"armadilha\", \"entrada\": \"El sistema no funciona como yo esperaba: ¿dónde está la opción de modo oscuro?\", \"espera\": {\"tipo\": \"duvida\", \"urgente\": false}, \"origem\": \"ejemplo del curso: parece bug, es duda\"}"
         },
         {
-          "rot": "kit/evals/prompt-triagem.md",
+          "rot": "kit/evals/prompt-triagem.md (traducción para leer; el archivo del kit está en portugués)",
           "icone": "texto",
           "conteudo": "Tú haces el triaje de issues de un sistema web. Lee la issue al final y clasifícala.\n\ntipo: \"bug\" (algo roto), \"pedido\" (funcionalidad nueva) o \"duvida\" (pregunta de uso).\nurgente: true solo si hay sistema caído, pérdida de dinero o de datos, o falla de seguridad.\n\nResponde solo con una línea de JSON, sin nada más:\n{\"tipo\": \"bug\", \"urgente\": false}"
         },
@@ -187,7 +187,7 @@
           "titulo": "E15 · El conjunto de oro de tu agente",
           "min": "40 min",
           "texto": "Elige un agente o un prompt tuyo con salida verificable. Escribe 20 casos en el formato del casos.jsonl, empezando por las fallas que ya has visto, y un prompt que pida JSON. Ejecuta la versión actual como base.",
-          "pronto": "<code>wc -l &lt; [seus casos].jsonl</code> → <code>20</code> o más, y <code>python3 $E/rodar-evals.py --agente \"[seu agente]\" --casos [seus casos].jsonl --prompt [seu prompt] --saida base.tsv</code> imprime la línea <code>total</code> con menos de 100%."
+          "pronto": "<code>wc -l &lt; [tus casos].jsonl</code> → <code>20</code> o más, y <code>python3 $E/rodar-evals.py --agente \"[tu agente]\" --casos [tus casos].jsonl --prompt [tu prompt] --saida base.tsv</code> imprime la línea <code>total</code> con menos de 100%."
         }
       ]
     },

@@ -20,7 +20,7 @@
     },
     {
       "icone": "lupa",
-      "t": "What the research measured, and what is still just anecdote"
+      "t": "What the research has already measured, with date and source"
     },
     {
       "icone": "escudo",
@@ -69,7 +69,7 @@
     {
       "tipo": "passos",
       "titulo": "What has already been measured",
-      "sub": "With date and source. What is only a report shows up as a report.",
+      "sub": "With date and source; the articles are in the links at the end of the lesson.",
       "passos": [
         {
           "titulo": "EvilGenie",
@@ -85,14 +85,6 @@
           "texto": [
             "Measured exploitation rates between 0% (Sonnet 4.5) and 13.9% (DeepSeek-R1-Zero), varying with the model's post-training.",
             "Practical takeaway: it depends on the model and changes with the version. You can't assume zero; you can measure it at your gate."
-          ]
-        },
-        {
-          "titulo": "Where the test is bad",
-          "sub": "report, not confirmed",
-          "texto": [
-            "A 2026 paper, known here only from its abstract, suggests that shortcuts concentrate where the test infrastructure has a defect: the agent works around it instead of reporting it.",
-            "Even without confirmation, the rule that comes out of it is cheap: tell the agent to report a verifier defect and never adjust it."
           ]
         }
       ]
@@ -230,14 +222,14 @@
           "titulo": "E11 · Your own hidden tests",
           "min": "20 min",
           "texto": "For a task in your project, write 3 tests the agent can't see, in a folder outside the repo (for example ~/escondidos/[projeto]/). Run atalhos.py before the work.",
-          "pronto": "<code>python3 $K/atalhos.py . --escondidos ~/escondidos/[projeto]</code> before the work → <code>escondidos:</code> line with <code>failed</code> and code 1; after the right work → <code>ATALHOS: nenhum sinal</code> and code 0."
+          "pronto": "<code>python3 $K/atalhos.py . --escondidos ~/escondidos/[project]</code> before the work → <code>escondidos:</code> line with <code>failed</code> and code 1; after the right work → <code>ATALHOS: nenhum sinal</code> and code 0."
         },
         {
           "id": "e12",
           "titulo": "E12 · The rule in your project",
           "min": "5 min",
           "texto": "Paste the \"Testes são o juiz\" rule into the project's AGENTS.md or CLAUDE.md and run the simulated conversation up to the top score.",
-          "pronto": "<code>grep -c \"DEFEITO NO VERIFICADOR\" [AGENTS.md ou CLAUDE.md]</code> → <code>1</code>, and the simulation above ends in \"Test intact, defect logged\" with 4 out of 4 points."
+          "pronto": "<code>grep -c \"DEFEITO NO VERIFICADOR\" [AGENTS.md or CLAUDE.md]</code> → <code>1</code>, and the simulation above ends in \"Test intact, defect logged\" with 4 out of 4 points."
         }
       ]
     },
@@ -331,7 +323,7 @@
         },
         {
           "t": "Course 5 of the track: the risk of optimizing against your own meter",
-          "href": "https://inematds.github.io/loop-r-eng-aprende-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-aprende-v72/en/",
           "icone": "seta"
         },
         {

@@ -4,6 +4,7 @@
 # Uso: bash ensaio.sh        (apaga e recria /tmp/ensaio-verif)
 set -euo pipefail
 E=${ENSAIO:-/tmp/ensaio-verif}
+case "$E" in *..*) echo "ensaio.sh: ENSAIO=$E tem .., recuso apagar" >&2; exit 2 ;; /tmp/?*|"${TMPDIR:-/tmp}"/?*) ;; *) echo "ensaio.sh: ENSAIO=$E fora de /tmp ou \$TMPDIR, recuso apagar" >&2; exit 2 ;; esac
 rm -rf "$E" && mkdir -p "$E/proj/tests" "$E/escondidos" && cd "$E/proj"
 git init -q && git config user.name ensaio && git config user.email ensaio@local
 cat > tests/test_slug.py <<'PY'

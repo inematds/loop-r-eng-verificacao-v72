@@ -59,7 +59,7 @@
           "icone": "grafico",
           "titulo": "Evals",
           "sub": "rodar-evals.py · clases 5 y 7",
-          "detalhe": "Conjunto de oro contra la versión anterior: la regresión reprueba. Configuración: EVAL_AGENTE y EVAL_BASE. Omítela si la tarea no cambia el comportamiento del agente."
+          "detalhe": "Conjunto de oro contra la versión anterior: una regresión reprueba. Configuración: EVAL_AGENTE y EVAL_BASE, más EVAL_CASOS y EVAL_PROMPT para usar tus casos y tu prompt (sin ellos, corre el ejemplo del kit). Sáltalo si la tarea no cambia el comportamiento del agente."
         },
         {
           "icone": "lupa",
@@ -169,7 +169,7 @@
           "id": "e22",
           "titulo": "E22 · La compuerta de tu loop",
           "min": "60 min",
-          "texto": "En tu proyecto: goal.md verificado (clase 2), guardia congelada en el commit base (clase 3), 3 tests ocultos (clase 4) y, si la tarea toca el comportamiento de un agente, el conjunto de oro (clase 5). Escribe el portao.env fuera del repo y ejecuta la compuerta antes y después del trabajo.",
+          "texto": "En tu proyecto: goal.md conferido (clase 2), guardia congelada en el commit de base (clase 3), 3 tests ocultos (clase 4) y, si la tarea toca el comportamiento de un agente, el conjunto de oro (clase 5). Escribe el portao.env fuera del repo (con el conjunto de oro: EVAL_AGENTE, EVAL_BASE, EVAL_CASOS y EVAL_PROMPT apuntando a tus archivos de la clase 5) y corre la compuerta antes y después del trabajo.",
           "pronto": "antes del trabajo, <code>$K/portao.sh . [tu portao.env]; echo $?</code> → <code>PORTÃO: REPROVADO</code> y <code>1</code>; después, → <code>PORTÃO: APROVADO</code> y <code>0</code>, con como máximo una capa <code>pulada</code>."
         }
       ]
@@ -372,7 +372,7 @@
       "links": [
         {
           "t": "Próximo curso de la formación: Execução Longa (curso 2)",
-          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/es/",
           "icone": "seta"
         },
         {
@@ -387,7 +387,7 @@
         },
         {
           "t": "Curso 4 de la formación: seguridad del loop autónomo (hooks de guardia)",
-          "href": "https://inematds.github.io/loop-r-eng-seguranca-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-seguranca-v72/es/",
           "icone": "escudo"
         }
       ]

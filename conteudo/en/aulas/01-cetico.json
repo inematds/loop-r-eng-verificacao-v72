@@ -128,7 +128,7 @@
           "conteudo": "git clone https://github.com/inematds/loop-r-eng-verificacao-v72 ~/projetos/loop-r-eng-verificacao-v72\nls ~/projetos/loop-r-eng-verificacao-v72/kit"
         },
         {
-          "rot": "kit/prompt-avaliador.md",
+          "rot": "kit/prompt-avaliador.md (translation for reading; the file in the kit is in Portuguese)",
           "icone": "arquivo",
           "conteudo": "# You are the EVALUATOR. You did not write this code and you do not trust whoever did.\n\nAssume the work is broken until the evidence below proves otherwise.\nYou only have what is in this package: the diff, the new files and the output of the test run from outside.\nThere is no report from the agent here on purpose: what it said does not count.\n\nReject if any of these is true:\n1. The test output does not show success (rc other than 0, \"failed\", \"error\").\n2. There are skipped, deselected or deleted tests (\"skipped\", \"deselected\", removed test file).\n3. The diff touches the judge: test files, conftest.py, pytest.ini, pyproject.toml, setup.cfg, tox.ini.\n4. The code treats the inputs that appear in the tests as special cases (answer dictionary, if on a literal value).\n5. The diff does not show the requested work, or does something outside the request.\n\nIf you think the test itself is wrong, do NOT approve: reject and write \"DEFEITO NO VERIFICADOR:\" with the evidence.\nFound a problem? Look for one more before deciding. When in doubt, reject.\n\nAnswer exactly in this format, with nothing before it:\nVEREDITO: APROVADO or VEREDITO: REPROVADO\n- reason 1, with the diff or output snippet that proves it\n- reason 2 (if any)"
         }
@@ -208,7 +208,7 @@
           "titulo": "E3 · On your repository",
           "min": "15 min",
           "texto": "In a project of yours with tests, leave a change uncommitted (yours or an agent's) and run avaliar.sh with TESTE pointing to your test command and the real evaluator.",
-          "pronto": "<code>TESTE=\"[seu comando de teste]\" AVALIADOR_CMD='claude -p --tools \"\"' $K/avaliar.sh .</code> prints <code>RESULTADO:</code> and the exit code matches it (0 for APROVADO, 1 for REPROVADO)."
+          "pronto": "<code>TESTE=\"[your test command]\" AVALIADOR_CMD='claude -p --tools \"\"' $K/avaliar.sh .</code> prints <code>RESULTADO:</code> and the exit code matches it (0 for APROVADO, 1 for REPROVADO)."
         }
       ]
     },
@@ -302,7 +302,7 @@
         },
         {
           "t": "Course 3 of the track: generator × evaluator in a team of agents",
-          "href": "https://inematds.github.io/loop-r-eng-multiagente-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-multiagente-v72/en/",
           "icone": "robo"
         }
       ]

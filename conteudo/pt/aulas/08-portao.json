@@ -47,7 +47,7 @@
           "icone": "grafico",
           "titulo": "Evals",
           "sub": "rodar-evals.py · aulas 5 e 7",
-          "detalhe": "Conjunto de ouro contra a versão anterior: regressão reprova. Configuração: EVAL_AGENTE e EVAL_BASE. Pule se a tarefa não muda o comportamento do agente."
+          "detalhe": "Conjunto de ouro contra a versão anterior: regressão reprova. Configuração: EVAL_AGENTE e EVAL_BASE, mais EVAL_CASOS e EVAL_PROMPT para usar os seus casos e o seu prompt (sem eles, roda o exemplo do kit). Pule se a tarefa não muda o comportamento do agente."
         },
         {
           "icone": "lupa",
@@ -157,7 +157,7 @@
           "id": "e22",
           "titulo": "E22 · O portão do seu loop",
           "min": "60 min",
-          "texto": "No seu projeto: goal.md conferido (aula 2), guarda congelada no commit de base (aula 3), 3 testes escondidos (aula 4) e, se a tarefa mexe no comportamento de um agente, o conjunto de ouro (aula 5). Escreva o portao.env fora do repo e rode o portão antes e depois do trabalho.",
+          "texto": "No seu projeto: goal.md conferido (aula 2), guarda congelada no commit de base (aula 3), 3 testes escondidos (aula 4) e, se a tarefa mexe no comportamento de um agente, o conjunto de ouro (aula 5). Escreva o portao.env fora do repo (com o conjunto de ouro: EVAL_AGENTE, EVAL_BASE, EVAL_CASOS e EVAL_PROMPT apontando para os seus arquivos da aula 5) e rode o portão antes e depois do trabalho.",
           "pronto": "antes do trabalho, <code>$K/portao.sh . [seu portao.env]; echo $?</code> → <code>PORTÃO: REPROVADO</code> e <code>1</code>; depois, → <code>PORTÃO: APROVADO</code> e <code>0</code>, com no máximo uma camada <code>pulada</code>."
         }
       ]

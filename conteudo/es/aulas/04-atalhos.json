@@ -20,7 +20,7 @@
     },
     {
       "icone": "lupa",
-      "t": "Lo que midió la investigación, y lo que sigue siendo solo relato"
+      "t": "Lo que la investigación ya midió, con fecha y fuente"
     },
     {
       "icone": "escudo",
@@ -69,7 +69,7 @@
     {
       "tipo": "passos",
       "titulo": "Lo que ya se midió",
-      "sub": "Con fecha y fuente. Lo que es solo un reporte aparece como reporte.",
+      "sub": "Con fecha y fuente; los artículos están en los enlaces al final de la clase.",
       "passos": [
         {
           "titulo": "EvilGenie",
@@ -85,14 +85,6 @@
           "texto": [
             "Midió tasas de explotación entre 0% (Sonnet 4.5) y 13,9% (DeepSeek-R1-Zero), variando según el post-entrenamiento del modelo.",
             "Lectura práctica: depende del modelo y cambia con la versión. No se puede asumir cero; sí se puede medir en tu compuerta."
-          ]
-        },
-        {
-          "titulo": "Donde el test es malo",
-          "sub": "reporte, no confirmado",
-          "texto": [
-            "Un artículo de 2026, conocido aquí solo por el resumen, sugiere que el atajo se concentra donde la infraestructura de test tiene defectos: el agente la esquiva en lugar de reportarlo.",
-            "Aun sin confirmación, la regla que se desprende es barata: pídele al agente que reporte el defecto del verificador y que nunca lo ajuste."
           ]
         }
       ]
@@ -230,14 +222,14 @@
           "titulo": "E11 · Tests ocultos tuyos",
           "min": "20 min",
           "texto": "Para una tarea de tu proyecto, escribe 3 tests que el agente no ve, en una carpeta fuera del repo (por ejemplo ~/escondidos/[projeto]/). Ejecuta atalhos.py antes del trabajo.",
-          "pronto": "<code>python3 $K/atalhos.py . --escondidos ~/escondidos/[projeto]</code> antes del trabajo → línea <code>escondidos:</code> con <code>failed</code> y código 1; después del trabajo correcto → <code>ATALHOS: nenhum sinal</code> y código 0."
+          "pronto": "<code>python3 $K/atalhos.py . --escondidos ~/escondidos/[proyecto]</code> antes del trabajo → línea <code>escondidos:</code> con <code>failed</code> y código 1; después del trabajo correcto → <code>ATALHOS: nenhum sinal</code> y código 0."
         },
         {
           "id": "e12",
           "titulo": "E12 · La regla en el proyecto",
           "min": "5 min",
           "texto": "Pega la regla \"Los tests son el juez\" en el AGENTS.md o CLAUDE.md del proyecto y haz la conversación simulada hasta el puntaje máximo.",
-          "pronto": "<code>grep -c \"DEFEITO NO VERIFICADOR\" [AGENTS.md ou CLAUDE.md]</code> → <code>1</code>, y la simulación de arriba termina en \"Test intacto, defecto registrado\" con 4 de 4 puntos."
+          "pronto": "<code>grep -c \"DEFEITO NO VERIFICADOR\" [AGENTS.md o CLAUDE.md]</code> → <code>1</code>, y la simulación de arriba termina en \"Test intacto, defecto registrado\" con 4 de 4 puntos."
         }
       ]
     },
@@ -331,7 +323,7 @@
         },
         {
           "t": "Curso 5 de la formación: el riesgo de optimizar contra el propio medidor",
-          "href": "https://inematds.github.io/loop-r-eng-aprende-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-aprende-v72/es/",
           "icone": "seta"
         },
         {

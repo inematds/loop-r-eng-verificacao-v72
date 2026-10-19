@@ -78,7 +78,7 @@
       "sub": "Six criteria. One has no command and one passes through a shortcut. Find both before you run it.",
       "blocos": [
         {
-          "rot": "kit/goal-ensaio.md (criteria)",
+          "rot": "kit/goal-ensaio.md (criteria; translation for reading; the file in the kit is in Portuguese)",
           "icone": "arquivo",
           "conteudo": "## Done criteria\n**Function**\n- [ ] `python3 -m pytest -q tests/` → `3 passed`\n- [ ] `python3 -c \"from slug import slug; print(slug('Ação & Reação!'))\"` → `acao-reacao`\n\n**Regression**\n- [ ] `python3 -m pytest -q tests/ -rs` → `código 0`\n\n**Limit**\n- [ ] `git diff --stat HEAD -- tests/ pytest.ini` → `vazio`\n- [ ] `git ls-files --others --exclude-standard -- '*conftest.py' tests/` → `vazio`\n- [ ] the code stays clean and well documented"
         },
@@ -136,7 +136,7 @@
           "titulo": "E5 · Your goal.md checked",
           "min": "20 min",
           "texto": "Take one of your own goal.md files (or write one from the course 2 template) and run conferir-goal.py on it before you start the work. Rewrite every criterion that came back as \"sem comando\" and every function criterion that already passes.",
-          "pronto": "<code>python3 $K/conferir-goal.py [seu goal.md] --pasta [seu projeto]</code> → no <code>sem comando</code> line and at least one function <code>FALHOU</code> before the work (exit code greater than 0)."
+          "pronto": "<code>python3 $K/conferir-goal.py [your goal.md] --pasta [your project]</code> → no <code>sem comando</code> line and at least one function <code>FALHOU</code> before the work (exit code greater than 0)."
         },
         {
           "id": "e6",
@@ -232,12 +232,12 @@
         },
         {
           "t": "Course 2, lesson 2: writing the level 3+ goal.md",
-          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/aulas/goal/",
+          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/en/aulas/goal/",
           "icone": "arquivo"
         },
         {
           "t": "Track course 0: the done criterion scale (0 to 4)",
-          "href": "https://inematds.github.io/loop-r-eng-base-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-base-v72/en/",
           "icone": "camadas"
         },
         {

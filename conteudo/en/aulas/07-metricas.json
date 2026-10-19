@@ -167,7 +167,7 @@
           "titulo": "E20 · Your set with k = 3",
           "min": "20 min",
           "texto": "Run your golden set (lesson 5) with --k 3 and your real agent. Write one line in progress.md or in the agent's README with the date, number of cases, pass^3 and the spread between rounds.",
-          "pronto": "<code>python3 $E/passk.py [seu tsv]</code> prints the lines <code>pass@3:</code>, <code>pass^3:</code> and <code>instáveis:</code>, and <code>grep -c \"pass^3\" [arquivo onde anotou]</code> → <code>1</code> or more."
+          "pronto": "<code>python3 $E/passk.py [your tsv]</code> prints the lines <code>pass@3:</code>, <code>pass^3:</code> and <code>instáveis:</code>, and <code>grep -c \"pass^3\" [file where you took notes]</code> → <code>1</code> or more."
         }
       ]
     },

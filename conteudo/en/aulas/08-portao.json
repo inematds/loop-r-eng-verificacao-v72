@@ -59,7 +59,7 @@
           "icone": "grafico",
           "titulo": "Evals",
           "sub": "rodar-evals.py · lessons 5 and 7",
-          "detalhe": "Golden set against the previous version: a regression fails. Configuration: EVAL_AGENTE and EVAL_BASE. Skip it if the task doesn't change the agent's behavior."
+          "detalhe": "Golden set against the previous version: a regression fails. Setup: EVAL_AGENTE and EVAL_BASE, plus EVAL_CASOS and EVAL_PROMPT to use your own cases and your own prompt (without them, it runs the kit's example). Skip it if the task doesn't change the agent's behavior."
         },
         {
           "icone": "lupa",
@@ -169,8 +169,8 @@
           "id": "e22",
           "titulo": "E22 · The gate for your loop",
           "min": "60 min",
-          "texto": "In your project: goal.md checked (lesson 2), guard frozen at the base commit (lesson 3), 3 hidden tests (lesson 4) and, if the task changes an agent's behavior, the golden set (lesson 5). Write the portao.env outside the repo and run the gate before and after the work.",
-          "pronto": "before the work, <code>$K/portao.sh . [seu portao.env]; echo $?</code> → <code>PORTÃO: REPROVADO</code> and <code>1</code>; after, → <code>PORTÃO: APROVADO</code> and <code>0</code>, with at most one layer <code>pulada</code>."
+          "texto": "In your project: goal.md checked (lesson 2), guard frozen at the base commit (lesson 3), 3 hidden tests (lesson 4) and, if the task changes an agent's behavior, the golden set (lesson 5). Write portao.env outside the repo (with the golden set: EVAL_AGENTE, EVAL_BASE, EVAL_CASOS and EVAL_PROMPT pointing to your files from lesson 5) and run the gate before and after the work.",
+          "pronto": "before the work, <code>$K/portao.sh . [your portao.env]; echo $?</code> → <code>PORTÃO: REPROVADO</code> and <code>1</code>; after, → <code>PORTÃO: APROVADO</code> and <code>0</code>, with at most one layer <code>pulada</code>."
         }
       ]
     },
@@ -372,7 +372,7 @@
       "links": [
         {
           "t": "Next course in the track: Long Execution (course 2)",
-          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-execucao-longa-v72/en/",
           "icone": "seta"
         },
         {
@@ -387,7 +387,7 @@
         },
         {
           "t": "Course 4 of the track: autonomous loop security (guard hooks)",
-          "href": "https://inematds.github.io/loop-r-eng-seguranca-v72/",
+          "href": "https://inematds.github.io/loop-r-eng-seguranca-v72/en/",
           "icone": "escudo"
         }
       ]

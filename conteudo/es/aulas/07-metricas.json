@@ -167,7 +167,7 @@
           "titulo": "E20 · Tu conjunto con k = 3",
           "min": "20 min",
           "texto": "Ejecuta tu conjunto de oro (clase 5) con --k 3 y tu agente real. Anota en progress.md o en el README del agente una línea con fecha, N de casos, pass^3 y desvío entre rondas.",
-          "pronto": "<code>python3 $E/passk.py [seu tsv]</code> imprime las líneas <code>pass@3:</code>, <code>pass^3:</code> e <code>instáveis:</code>, y <code>grep -c \"pass^3\" [arquivo onde anotou]</code> → <code>1</code> o más."
+          "pronto": "<code>python3 $E/passk.py [tu tsv]</code> imprime las líneas <code>pass@3:</code>, <code>pass^3:</code> e <code>instáveis:</code>, y <code>grep -c \"pass^3\" [archivo donde anotaste]</code> → <code>1</code> o más."
         }
       ]
     },

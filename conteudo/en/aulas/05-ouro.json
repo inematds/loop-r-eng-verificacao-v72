@@ -109,12 +109,12 @@
       "sub": "An issue triage agent: it returns the type (bug, request, question) and whether it is urgent. The 10 cases are examples written for the course.",
       "blocos": [
         {
-          "rot": "kit/evals/casos.jsonl (3 of 10 lines)",
+          "rot": "kit/evals/casos.jsonl (3 of 10 lines; translation for reading; the file in the kit is in Portuguese)",
           "icone": "arquivo",
           "conteudo": "{\"id\": \"t01\", \"categoria\": \"bug\", \"entrada\": \"After yesterday's deploy, login returns a 500 error for all users.\", \"espera\": {\"tipo\": \"bug\", \"urgente\": true}, \"origem\": \"course example\"}\n{\"id\": \"t06\", \"categoria\": \"pedido\", \"entrada\": \"Can you add PDF export?\", \"espera\": {\"tipo\": \"pedido\", \"urgente\": false}, \"origem\": \"course example\"}\n{\"id\": \"t07\", \"categoria\": \"armadilha\", \"entrada\": \"The system doesn't work the way I expected: where is the dark mode option?\", \"espera\": {\"tipo\": \"duvida\", \"urgente\": false}, \"origem\": \"course example: looks like a bug, is a question\"}"
         },
         {
-          "rot": "kit/evals/prompt-triagem.md",
+          "rot": "kit/evals/prompt-triagem.md (translation for reading; the file in the kit is in Portuguese)",
           "icone": "texto",
           "conteudo": "You triage issues for a web system. Read the issue at the end and classify it.\n\ntipo: \"bug\" (something broken), \"pedido\" (new feature) or \"duvida\" (usage question).\nurgente: true only if the system is down, money or data is being lost, or there is a security flaw.\n\nAnswer with a single line of JSON only, nothing else:\n{\"tipo\": \"bug\", \"urgente\": false}"
         },
@@ -187,7 +187,7 @@
           "titulo": "E15 · Your agent's golden set",
           "min": "40 min",
           "texto": "Choose an agent or prompt of your own with output you can check. Write 20 cases in the casos.jsonl format, starting with the failures you have already seen, and a prompt that asks for JSON. Run the current version as a baseline.",
-          "pronto": "<code>wc -l &lt; [seus casos].jsonl</code> → <code>20</code> or more, and <code>python3 $E/rodar-evals.py --agente \"[seu agente]\" --casos [seus casos].jsonl --prompt [seu prompt] --saida base.tsv</code> prints the <code>total</code> line with less than 100%."
+          "pronto": "<code>wc -l &lt; [your cases].jsonl</code> → <code>20</code> or more, and <code>python3 $E/rodar-evals.py --agente \"[your agent]\" --casos [your cases].jsonl --prompt [your prompt] --saida base.tsv</code> prints the <code>total</code> line with less than 100%."
         }
       ]
     },

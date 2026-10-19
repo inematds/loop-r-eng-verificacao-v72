@@ -93,7 +93,7 @@
       "sub": "Mensajes de commit escritos por un agente. 10 mensajes en kit/juiz/artefatos.jsonl, con las etiquetas de una persona en humano.csv.",
       "blocos": [
         {
-          "rot": "kit/juiz/rubrica.md",
+          "rot": "kit/juiz/rubrica.md (traducción para leer; el archivo del kit está en portugués)",
           "icone": "arquivo",
           "conteudo": "# Rúbrica — mensaje de commit escrito por el agente\n\nCriterios sim/nao. Nunca nota de 1 a 10. (invariável) = un \"nao\" reprueba el mensaje, independientemente del resto.\nLo que se puede comprobar por código (tamaño de la 1ª línea, formato) NO entra aquí: va a un test.\n\nR1 | ¿El mensaje dice POR QUÉ se hizo el cambio, no solo qué cambió? | qualidade\nR2 | ¿Todo CAMBIO que cita el mensaje está en el diff (no inventa archivo, test ni efecto)? El motivo puede venir de fuera del diff. | invariável\nR3 | ¿Quien no vio el diff entiende qué cambió solo por el mensaje? | qualidade"
         },

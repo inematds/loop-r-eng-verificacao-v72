@@ -93,7 +93,7 @@
       "sub": "Commit messages written by an agent. 10 messages in kit/juiz/artefatos.jsonl, with one person's labels in humano.csv.",
       "blocos": [
         {
-          "rot": "kit/juiz/rubrica.md",
+          "rot": "kit/juiz/rubrica.md (translation for reading; the file in the kit is in Portuguese)",
           "icone": "arquivo",
           "conteudo": "# Rubric — commit message written by the agent\n\nYes/no criteria. Never a 1-to-10 score. (invariável) = a \"nao\" fails the message, regardless of the rest.\nWhat can be checked by code (length of the 1st line, format) does NOT go here: it goes to a test.\n\nR1 | Does the message say WHY the change was made, not just what changed? | qualidade\nR2 | Does every CHANGE the message mentions appear in the diff (it doesn't invent a file, test or effect)? The reason may come from outside the diff. | invariável\nR3 | Can someone who hasn't seen the diff understand what changed from the message alone? | qualidade"
         },

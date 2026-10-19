@@ -15,7 +15,7 @@
   ],
   "aprende": [
     { "icone": "x", "t": "Os quatro atalhos: mexer no juiz, decorar, silenciar, mentir" },
-    { "icone": "lupa", "t": "O que a pesquisa mediu, e o que ainda é só relato" },
+    { "icone": "lupa", "t": "O que a pesquisa já mediu, com data e fonte" },
     { "icone": "escudo", "t": "atalhos.py: testes escondidos + sinais no diff, sem modelo" },
     { "icone": "chat", "t": "O que fazer quando o agente diz que o teste está errado" }
   ],
@@ -57,7 +57,7 @@
     {
       "tipo": "passos",
       "titulo": "O que já foi medido",
-      "sub": "Com data e fonte. O que é só relato aparece como relato.",
+      "sub": "Com data e fonte; os artigos estão nos links do fim da aula.",
       "passos": [
         {
           "titulo": "EvilGenie",
@@ -73,14 +73,6 @@
           "texto": [
             "Mediu taxas de exploração entre 0% (Sonnet 4.5) e 13,9% (DeepSeek-R1-Zero), variando com o pós-treino do modelo.",
             "Leitura prática: depende do modelo e muda com a versão. Não dá para assumir zero; dá para medir no seu portão."
-          ]
-        },
-        {
-          "titulo": "Onde o teste é ruim",
-          "sub": "relato, não confirmado",
-          "texto": [
-            "Um artigo de 2026, conhecido aqui só pelo resumo, sugere que o atalho se concentra onde a infraestrutura de teste tem defeito: o agente contorna em vez de reportar.",
-            "Mesmo sem confirmação, a regra que sai daí é barata: mande o agente relatar defeito do verificador e nunca ajustá-lo."
           ]
         }
       ]
